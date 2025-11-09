@@ -1,6 +1,6 @@
-# Pokemon Save Web
+# Bill's PC
 
-A web-based Pokemon save file editor, CLI tool, and TypeScript parser core with PWA support.
+A web-based Pokémon save file editor, CLI tool, and TypeScript parser core with PWA support.
 
 ## 🚀 Features
 

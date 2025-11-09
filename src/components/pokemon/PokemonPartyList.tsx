@@ -14,10 +14,7 @@ interface PokemonPartyListProps {
   onPokemonHover?: (id: number) => void
 }
 
-export const PokemonPartyList: React.FC<PokemonPartyListProps> = ({
-  isRenaming,
-  onPokemonHover,
-}) => {
+export const PokemonPartyList: React.FC<PokemonPartyListProps> = ({ isRenaming, onPokemonHover }) => {
   const partyList = usePokemonStore(s => s.partyList)
   const activePokemonId = usePokemonStore(s => s.activePokemonId)
   const setActivePokemonId = usePokemonStore(s => s.setActivePokemonId)
@@ -38,12 +35,7 @@ export const PokemonPartyList: React.FC<PokemonPartyListProps> = ({
 
   return (
     <div ref={constraintsRef} className="flex flex-col gap-4">
-      <Reorder.Group
-        axis="y"
-        values={partyList}
-        onReorder={handleReorder}
-        className="flex flex-col gap-4"
-      >
+      <Reorder.Group axis="y" values={partyList} onReorder={handleReorder} className="flex flex-col gap-4">
         {partyList.map(pokemon => (
           <Reorder.Item
             key={pokemon.id}

@@ -27,10 +27,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'safari-pinned-tab.svg'],
       manifest: {
-        name: 'Pokemon Save Editor',
-        short_name: 'PokeSave',
-        description:
-          'A powerful web-based Pokemon save file editor for various Pokemon games and ROM hacks',
+        name: "Bill's PC",
+        short_name: 'BillsPC',
+        description: 'A powerful web-based Pokémon save file editor for various Pokémon games and ROM hacks',
         theme_color: '#09090b',
         background_color: '#09090b',
         display: 'standalone',

@@ -153,13 +153,7 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
       try {
         usePokemonStore.getState().setPendingIdsBySlot(previous.idsBySlot)
       } catch {}
-      await parse(
-        previous.bytes.buffer.slice(
-          previous.bytes.byteOffset,
-          previous.bytes.byteOffset + previous.bytes.byteLength
-        ),
-        { transient: true }
-      )
+      await parse(previous.bytes.buffer.slice(previous.bytes.byteOffset, previous.bytes.byteOffset + previous.bytes.byteLength), { transient: true })
     } finally {
       set({ isApplying: false })
     }
@@ -190,13 +184,7 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
       try {
         usePokemonStore.getState().setPendingIdsBySlot(next.idsBySlot)
       } catch {}
-      await parse(
-        next.bytes.buffer.slice(
-          next.bytes.byteOffset,
-          next.bytes.byteOffset + next.bytes.byteLength
-        ),
-        { transient: true }
-      )
+      await parse(next.bytes.buffer.slice(next.bytes.byteOffset, next.bytes.byteOffset + next.bytes.byteLength), { transient: true })
     } finally {
       set({ isApplying: false })
     }
@@ -222,13 +210,7 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
       try {
         usePokemonStore.getState().setPendingIdsBySlot(initial.idsBySlot)
       } catch {}
-      await parse(
-        initial.bytes.buffer.slice(
-          initial.bytes.byteOffset,
-          initial.bytes.byteOffset + initial.bytes.byteLength
-        ),
-        { transient: true }
-      )
+      await parse(initial.bytes.buffer.slice(initial.bytes.byteOffset, initial.bytes.byteOffset + initial.bytes.byteLength), { transient: true })
       // After reset, clear history to reflect fresh baseline
       set(() => ({ past: [], future: [] }))
     } finally {

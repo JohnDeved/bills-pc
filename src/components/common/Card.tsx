@@ -24,10 +24,7 @@ export const Card: React.FC<CardProps> = ({ children, className, ...props }) => 
   const theme = useSettingsStore(s => s.theme)
   const { base, shadow } = themeStyles[theme]
   return (
-    <section
-      {...props}
-      className={cn(base, shadow, 'backdrop-blur-lg rounded-xl border relative', className)}
-    >
+    <section {...props} className={cn(base, shadow, 'backdrop-blur-lg rounded-xl border relative', className)}>
       {children}
     </section>
   )

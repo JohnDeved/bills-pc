@@ -14,10 +14,7 @@ interface AnyRef<T> {
   current: T | null
 }
 
-export function useSmoothWheelScroll(
-  scrollRef: AnyRef<HTMLDivElement>,
-  { enabled = true }: Options = {}
-) {
+export function useSmoothWheelScroll(scrollRef: AnyRef<HTMLDivElement>, { enabled = true }: Options = {}) {
   const rafRef = useRef<number | null>(null)
   const targetRef = useRef<number | null>(null)
   const prefersReducedMotionRef = useRef(false)
@@ -35,8 +32,7 @@ export function useSmoothWheelScroll(
 
   useEffect(() => {
     try {
-      prefersReducedMotionRef.current =
-        globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
+      prefersReducedMotionRef.current = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
     } catch {
       prefersReducedMotionRef.current = false
     }

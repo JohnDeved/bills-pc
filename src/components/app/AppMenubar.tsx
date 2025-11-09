@@ -2,38 +2,13 @@ import { Copy, ExternalLinkIcon } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { toast } from 'sonner'
 import { triggerPWAInstall } from '@/components/common/PWAInstallPrompt'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import {
-  Menubar,
-  MenubarCheckboxItem,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarRadioGroup,
-  MenubarRadioItem,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarSub,
-  MenubarSubContent,
-  MenubarSubTrigger,
-  MenubarTrigger,
-} from '@/components/ui/menubar'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Menubar, MenubarCheckboxItem, MenubarContent, MenubarItem, MenubarMenu, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger } from '@/components/ui/menubar'
 import { getPokemonDetails } from '@/hooks/usePokemonData'
 import { useRecentFiles } from '@/hooks/useRecentFiles'
 import { buildTeamClipboardText } from '@/lib/utils'
 import { usePokemonStore, useSaveFileStore, useSettingsStore } from '@/stores'
-import {
-  canRedoSelector,
-  canUndoSelector,
-  hasEditsSelector,
-  useHistoryStore,
-} from '@/stores/useHistoryStore'
+import { canRedoSelector, canUndoSelector, hasEditsSelector, useHistoryStore } from '@/stores/useHistoryStore'
 import { hasFsPermissions } from '@/types/fs'
 
 interface AppMenubarProps {
@@ -42,11 +17,7 @@ interface AppMenubarProps {
   commitHash: string
 }
 
-export const AppMenubar: React.FC<AppMenubarProps> = ({
-  onRequestOpenFile,
-  canSaveAs,
-  commitHash,
-}) => {
+export const AppMenubar: React.FC<AppMenubarProps> = ({ onRequestOpenFile, canSaveAs, commitHash }) => {
   const [aboutOpen, setAboutOpen] = useState(false)
   const shaderEnabled = useSettingsStore(s => s.shaderEnabled)
   const setShaderEnabled = useSettingsStore(s => s.setShaderEnabled)
@@ -100,10 +71,7 @@ export const AppMenubar: React.FC<AppMenubarProps> = ({
       partyWithDetails = resolved
 
       usePokemonStore.setState(prevState => ({
-        partyList: prevState.partyList.map(
-          existing =>
-            resolved.find(resolvedPokemon => resolvedPokemon.id === existing.id) ?? existing
-        ),
+        partyList: prevState.partyList.map(existing => resolved.find(resolvedPokemon => resolvedPokemon.id === existing.id) ?? existing),
       }))
     }
 
@@ -196,10 +164,7 @@ export const AppMenubar: React.FC<AppMenubarProps> = ({
               Unload
             </MenubarItem>
             <MenubarSeparator />
-            <MenubarItem
-              disabled={!parser?.fileHandle}
-              onClick={() => reconstructAndDownload('save')}
-            >
+            <MenubarItem disabled={!parser?.fileHandle} onClick={() => reconstructAndDownload('save')}>
               Save <MenubarShortcut>Ctrl+S</MenubarShortcut>
             </MenubarItem>
             <MenubarItem onClick={() => reconstructAndDownload('saveAs')} disabled={!canSaveAs}>
@@ -229,10 +194,7 @@ export const AppMenubar: React.FC<AppMenubarProps> = ({
               </MenubarSubContent>
             </MenubarSub>
             <MenubarSeparator />
-            <MenubarItem
-              disabled={partyList.length === 0}
-              onSelect={() => void copyPartyToClipboard()}
-            >
+            <MenubarItem disabled={partyList.length === 0} onSelect={() => void copyPartyToClipboard()}>
               <Copy className="size-4" />
               <span>Copy Pokemon Team</span>
             </MenubarItem>
@@ -256,17 +218,11 @@ export const AppMenubar: React.FC<AppMenubarProps> = ({
         <MenubarMenu>
           <MenubarTrigger>Theme</MenubarTrigger>
           <MenubarContent>
-            <MenubarCheckboxItem
-              checked={shaderEnabled}
-              onCheckedChange={value => setShaderEnabled(Boolean(value))}
-            >
+            <MenubarCheckboxItem checked={shaderEnabled} onCheckedChange={value => setShaderEnabled(Boolean(value))}>
               Animated Background
             </MenubarCheckboxItem>
             <MenubarSeparator />
-            <MenubarRadioGroup
-              value={theme}
-              onValueChange={value => setTheme(value as typeof theme)}
-            >
+            <MenubarRadioGroup value={theme} onValueChange={value => setTheme(value as typeof theme)}>
               <MenubarRadioItem value="zinc">Zinc</MenubarRadioItem>
               <MenubarRadioItem value="slate">Slate</MenubarRadioItem>
               <MenubarRadioItem value="light">Light</MenubarRadioItem>
@@ -279,11 +235,7 @@ export const AppMenubar: React.FC<AppMenubarProps> = ({
             <MenubarItem onClick={() => location.reload()}>Restart</MenubarItem>
             <MenubarSeparator />
             <MenubarItem asChild>
-              <a
-                href="https://github.com/JohnDeved/pokemon-save-web"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href="https://github.com/JohnDeved/pokemon-save-web" target="_blank" rel="noopener noreferrer">
                 GitHub <ExternalLinkIcon className="ml-1" />
               </a>
             </MenubarItem>
@@ -297,18 +249,15 @@ export const AppMenubar: React.FC<AppMenubarProps> = ({
       <Dialog open={aboutOpen} onOpenChange={setAboutOpen}>
         <DialogContent className="geist-font">
           <DialogHeader>
-            <DialogTitle>Pokemon Save Editor</DialogTitle>
-            <DialogDescription>
-              A web-based save editor for Pokemon games and ROM hacks.
-            </DialogDescription>
+            <DialogTitle>Bill's PC</DialogTitle>
+            <DialogDescription>A web-based save editor for Pokémon games and ROM hacks.</DialogDescription>
           </DialogHeader>
           <div className="text-sm leading-relaxed space-y-3">
             <div>
               <span className="text-muted-foreground">Version:</span> {commitHash}
             </div>
             <div>
-              <span className="text-muted-foreground">Credits (Discord):</span>{' '}
-              can_not_read_properties_of
+              <span className="text-muted-foreground">Credits (Discord):</span> can_not_read_properties_of
             </div>
           </div>
         </DialogContent>

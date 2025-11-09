@@ -35,7 +35,7 @@ export function useThemeSync({ theme, hasFile, saveFileName, defaultTitle }: Use
     }
 
     if (hasFile && saveFileName) {
-      document.title = `${saveFileName} — Pokemon Save Editor`
+      document.title = `${saveFileName} — Bill's PC`
     } else {
       document.title = defaultTitle
     }

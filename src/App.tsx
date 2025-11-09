@@ -3,29 +3,16 @@ import { Card } from './components/common'
 import { AppMenubar } from './components/app/AppMenubar'
 import { PWAInstallPrompt } from './components/common/PWAInstallPrompt'
 import { ShaderBackground } from './components/common/ShaderBackground'
-import {
-  PokemonHeader,
-  PokemonMovesSection,
-  PokemonPartyList,
-  PokemonStatDisplay,
-  PokemonTraitsSection,
-  SaveFileDropzone,
-} from './components/pokemon'
+import { PokemonHeader, PokemonMovesSection, PokemonPartyList, PokemonStatDisplay, PokemonTraitsSection, SaveFileDropzone } from './components/pokemon'
 import { Toaster } from './components/ui/sonner'
-import {
-  useAutoRestore,
-  useHistorySync,
-  usePokemonData,
-  useThemeSync,
-  useUndoRedoShortcuts,
-} from './hooks'
+import { useAutoRestore, useHistorySync, usePokemonData, useThemeSync, useUndoRedoShortcuts } from './hooks'
 import { useSaveFileStore, useSettingsStore } from './stores'
 import { useHistoryStore } from './stores/useHistoryStore'
 
 export const App: React.FC = () => {
   const { partyList, preloadPokemonDetails } = usePokemonData()
   const commitHash = typeof __COMMIT_HASH__ === 'string' ? __COMMIT_HASH__ : 'dev'
-  const defaultTitle = 'Pokemon Save Editor - Edit Pokemon Save Files Online'
+  const defaultTitle = "Bill's PC - Edit Pokémon Save Files Online"
 
   const parse = useSaveFileStore(s => s.parse)
   const error = useSaveFileStore(s => s.error)

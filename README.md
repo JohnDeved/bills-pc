@@ -2,6 +2,8 @@
 
 A web-based Pokémon save file editor, CLI tool, and TypeScript parser core with PWA support.
 
+https://github.com/user-attachments/assets/c0cf27de-2d38-4185-9356-a7cc493a5d53
+
 ## 🚀 Features
 
 - **Progressive Web App (PWA)**: Install for offline use and app-like experience

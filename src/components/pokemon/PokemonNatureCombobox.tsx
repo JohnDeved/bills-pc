@@ -5,6 +5,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { getStatAbbr, natureEffects, natures } from '@/lib/parser/core/utils'
 import { cn } from '@/lib/utils'
+import { usePopoverSide } from '@/hooks'
 
 export interface PokemonNatureComboboxProps {
   value?: string
@@ -20,16 +21,7 @@ export interface PokemonNatureComboboxProps {
 export function PokemonNatureCombobox({ value, onChange, disabled = false, triggerClassName, buttonVariant = 'outline', buttonSize = 'sm', hideIcon = false, asText = false }: PokemonNatureComboboxProps) {
   const [open, setOpen] = React.useState(false)
   const inputRef = React.useRef<HTMLInputElement>(null)
-  const [side, setSide] = React.useState<'top' | 'bottom'>('top')
-
-  function decideSideFromEl(el: HTMLElement | null) {
-    if (!el) return
-    const rect = el.getBoundingClientRect()
-    const viewportH = window.innerHeight
-    const spaceBelow = viewportH - rect.bottom
-    const spaceAbove = rect.top
-    setSide(spaceBelow >= spaceAbove ? 'bottom' : 'top')
-  }
+  const { side, decideSideFromElement } = usePopoverSide()
 
   const label = value && natures.includes(value) ? value : undefined
 
@@ -44,7 +36,7 @@ export function PokemonNatureCombobox({ value, onChange, disabled = false, trigg
             disabled={disabled}
             onClick={e => {
               if (!disabled) {
-                decideSideFromEl(e.currentTarget)
+                decideSideFromElement(e.currentTarget)
                 setOpen(true)
               }
             }}
@@ -63,7 +55,7 @@ export function PokemonNatureCombobox({ value, onChange, disabled = false, trigg
             disabled={disabled}
             onClick={e => {
               if (!disabled) {
-                decideSideFromEl(e.currentTarget)
+                decideSideFromElement(e.currentTarget)
                 setOpen(true)
               }
             }}

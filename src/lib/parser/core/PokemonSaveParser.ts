@@ -117,23 +117,22 @@ export class PokemonSaveParser {
         }
       } else if (input instanceof Uint8Array) {
         // If already a Uint8Array, create a proper ArrayBuffer copy (avoiding SharedArrayBuffer)
-        const copy = new Uint8Array(input)
-        buffer = copy.buffer
+        const { buffer } = new Uint8Array(input)
+        this.saveData = new Uint8Array(buffer)
       } else {
         buffer = input as ArrayBuffer
+        this.saveData = new Uint8Array(buffer)
       }
 
-      this.saveData = new Uint8Array(buffer)
-
       // Auto-detect config if not provided
-      if (!this.config) {
+      if (!this.config && this.saveData) {
         this.config = GameConfigRegistry.detectGameConfig(this.saveData)
         if (!this.config) {
           throw new Error('Unable to detect game type from save file')
         }
       }
     } catch (error) {
-      throw new Error(`Failed to load save file: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      throw new Error(`Failed to load save file: ${error instanceof Error ? error.message : 'Unknown error'}`, { cause: error })
     }
   }
 

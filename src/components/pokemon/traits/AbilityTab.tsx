@@ -1,6 +1,7 @@
 import { ScrollableContainer, Skeleton } from '@/components/common'
 import { usePokemonStore } from '@/stores'
 import { useMegaPreview } from '@/hooks'
+import type { Ability } from '@/types'
 
 export const AbilityTab: React.FC = () => {
   const pokemon = usePokemonStore(s => s.partyList.find(p => p.id === s.activePokemonId))
@@ -20,8 +21,8 @@ export const AbilityTab: React.FC = () => {
         {!!pokemon?.details?.abilities?.length && !isMega && (
           <div className="flex flex-wrap gap-1.5 mb-2">
             {pokemon.details.abilities
-              .sort((a, b) => a.slot - b.slot)
-              .map((opt: { slot: number; name: string }) => {
+              .toSorted((a: Ability, b: Ability) => a.slot - b.slot)
+              .map((opt: Ability) => {
                 const isActive = opt.slot === pokemon.data.abilityNumber + 1
                 return (
                   <button

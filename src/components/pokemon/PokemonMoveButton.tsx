@@ -8,7 +8,7 @@ import { PokemonTypeBadge } from '@/components/pokemon/PokemonTypeBadge'
 import { useSmoothWheelScroll } from '@/hooks/useSmoothWheelScroll'
 import { useMegaPreview } from '@/hooks'
 import { cn } from '@/lib/utils'
-import type { MoveWithDetails } from '@/types'
+import type { MoveWithDetails, Ability } from '@/types'
 import { computeMovePowerPreview } from '@/lib/battle'
 
 const damageClassIcons: Record<'physical' | 'special' | 'status', string> = {
@@ -42,12 +42,12 @@ export const PokemonMoveButton: React.FC<MoveButtonProps> = ({ move, isExpanded,
   // Determine effective ability name (prefer Mega ability if previewing)
   const effectiveAbilityName = (() => {
     if (megaPreviewEnabled && Array.isArray(megaAbilities) && megaAbilities.length > 0) {
-      const sorted = [...megaAbilities].sort((a, b) => (a.slot ?? 0) - (b.slot ?? 0))
+      const sorted = [...megaAbilities].toSorted((a: { slot?: number }, b: { slot?: number }) => (a.slot ?? 0) - (b.slot ?? 0))
       return sorted[0]?.name
     }
     const abilities = activePokemon?.details?.abilities ?? []
     if (abilities.length === 0) return undefined
-    const sorted = [...abilities].sort((a, b) => a.slot - b.slot)
+    const sorted = [...abilities].toSorted((a: Ability, b: Ability) => a.slot - b.slot)
     const idx = activePokemon?.data.abilityNumber ?? 0
     return sorted[idx]?.name ?? sorted[0]?.name
   })()

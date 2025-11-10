@@ -6,6 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import itemMapData from '@/lib/parser/games/quetzal/data/item_map.json'
 import { cn } from '@/lib/utils'
 import { getItemSpriteUrl } from '@/lib/parser/core/utils'
+import { usePopoverSide } from '@/hooks'
 
 interface ItemEntry {
   id: number
@@ -21,7 +22,7 @@ interface RawItem {
 const ITEMS: ItemEntry[] = (Object.values(itemMapData) as RawItem[])
   .filter((v): v is { id: number; name: string; id_name: string } => v !== null && typeof v === 'object' && typeof v.id === 'number')
   .map(v => ({ id: v.id, name: v.name, id_name: v.id_name }))
-  .sort((a, b) => a.name.localeCompare(b.name))
+  .toSorted((a: ItemEntry, b: ItemEntry) => a.name.localeCompare(b.name))
 
 export interface PokemonItemComboboxProps {
   valueIdName?: string | null
@@ -37,14 +38,7 @@ export interface PokemonItemComboboxProps {
 export function PokemonItemCombobox({ valueIdName, onChange, disabled = false, triggerClassName, buttonVariant = 'outline', buttonSize = 'sm', hideIcon = false, asText = false }: PokemonItemComboboxProps) {
   const [open, setOpen] = React.useState(false)
   const inputRef = React.useRef<HTMLInputElement>(null)
-  const [side, setSide] = React.useState<'top' | 'bottom'>('top')
-
-  function decideSideFromEl(el: HTMLElement | null) {
-    if (!el) return
-    const rect = el.getBoundingClientRect()
-    const viewportH = window.innerHeight
-    setSide(viewportH - rect.bottom >= rect.top ? 'bottom' : 'top')
-  }
+  const { side, decideSideFromElement } = usePopoverSide()
 
   const selected = valueIdName ? ITEMS.find(i => i.id_name === valueIdName) : undefined
   const label = selected?.name ?? 'None'
@@ -55,7 +49,7 @@ export function PokemonItemCombobox({ valueIdName, onChange, disabled = false, t
     disabled,
     onClick: (e: React.MouseEvent<HTMLElement>) => {
       if (!disabled) {
-        decideSideFromEl(e.currentTarget)
+        decideSideFromElement(e.currentTarget)
         setOpen(true)
       }
     },

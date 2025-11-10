@@ -232,7 +232,7 @@ export class MgbaWebSocketClient {
       const bytes = JSON.parse(result.result ?? '[]')
       return new Uint8Array(bytes)
     } catch (error) {
-      throw new Error(`Failed to parse memory data: ${String(error)}`)
+      throw new Error(`Failed to parse memory data: ${String(error)}`, { cause: error })
     }
   }
 

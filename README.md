@@ -77,14 +77,11 @@ console.log(`Party: ${saveData.party_pokemon.length} Pokémon`)
 
 ### Real-time Memory Synchronization
 
-The WebSocket client now supports **push-based memory updates** instead of constant polling:
+The WebSocket client now supports **push-based memory updates**:
 
 - **Memory Watching**: Configure regions to watch and receive updates only when they change
 - **Intelligent Caching**: Watched regions use cached data, dramatically reducing network calls
 - **Real-time Notifications**: React to memory changes as they happen in the emulator
-- **Backward Compatibility**: All existing eval-based functionality remains unchanged
-
-For detailed documentation, see [src/lib/mgba/README.md](./src/lib/mgba/README.md).
 
 ## Usage
 

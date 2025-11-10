@@ -189,31 +189,3 @@ export class MyGameConfig implements GameConfig {
   }
 }
 ```
-
-## PWA (Progressive Web App)
-
-This application is built as a PWA with:
-
-- **Offline Support**: Edit previously loaded save files without internet
-- **Native Installation**: Install on desktop and mobile devices
-- **Performance Optimized**: Smart caching and code splitting
-- **SEO Optimized**: Complete meta tags and search engine support
-
-## Performance
-
-The app uses advanced optimization techniques:
-
-- **Code Splitting**: Vendor libraries, UI components, and 3D assets are loaded separately
-- **Lazy Loading**: 3D shader background loads only when needed
-- **Smart Caching**: Service worker caches assets and fonts for fast loading
-- **Bundle Analysis**: Optimized chunk sizes for better caching strategies
-
-## License
-
-MIT License - see [LICENSE](LICENSE) file for details.
-### Mega Stats Preview
-
-- Visible only when the current game config supports Mega Evolutions (e.g., Pokemon Quetzal).
-- On the Stats panel, toggle "Mega Preview" to see recalculated totals using the Mega form's base stats.
-- If multiple Mega forms exist (e.g., Charizard X/Y), use the form selector. If holding a matching Mega Stone, the form is preselected.
-- This is a non-destructive preview; it does not change the saved Pokémon.

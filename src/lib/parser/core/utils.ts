@@ -3,20 +3,20 @@
  * Modern utilities for Pokemon data processing
  */
 
-import type { PokemonBase } from './PokemonBase'
-import charmapData from '../data/pokemon_charmap.json'
+import type { PokemonBase } from "./PokemonBase";
+import charmapData from "../data/pokemon_charmap.json";
 
 // Convert charmap keys from strings to numbers for faster lookup
-const charmap: Record<number, string> = {}
+const charmap: Record<number, string> = {};
 for (const [key, value] of Object.entries(charmapData)) {
-  charmap[parseInt(key, 10)] = value
+  charmap[parseInt(key, 10)] = value;
 }
 
 /**
  * Get sprite URL for a Pokemon item
  */
 export function getItemSpriteUrl(itemIdName: string): string {
-  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${itemIdName}.png`
+  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${itemIdName}.png`;
 }
 
 /**
@@ -25,22 +25,22 @@ export function getItemSpriteUrl(itemIdName: string): string {
  * See: https://bulbapedia.bulbagarden.net/wiki/Character_encoding_in_Generation_III
  */
 export function bytesToGbaString(bytes: Uint8Array): string {
-  let result = ''
-  const endIndex = findStringEnd(bytes)
+  let result = "";
+  const endIndex = findStringEnd(bytes);
 
   // Process only the actual string content (before padding/garbage)
   for (let i = 0; i < endIndex; i++) {
-    const byte = bytes[i]!
-    const char = charmap[byte]
+    const byte = bytes[i]!;
+    const char = charmap[byte];
 
-    if (char === undefined) continue // Skip unmapped bytes
-    if (char === '\\n') result += '\n'
-    else if (char === '\\l' || char === '\\p')
-      continue // Skip control codes
-    else result += char
+    if (char === undefined) continue; // Skip unmapped bytes
+    if (char === "\\n") result += "\n";
+    else if (char === "\\l" || char === "\\p")
+      continue; // Skip control codes
+    else result += char;
   }
 
-  return result.trim()
+  return result.trim();
 }
 
 /**
@@ -48,27 +48,27 @@ export function bytesToGbaString(bytes: Uint8Array): string {
  */
 function findStringEnd(bytes: Uint8Array): number {
   // Check for trailing 0xFF padding (more than 2 suggests padding)
-  let trailingFFs = 0
+  let trailingFFs = 0;
   for (let i = bytes.length - 1; i >= 0 && bytes[i] === 0xff; i--) {
-    trailingFFs++
+    trailingFFs++;
   }
 
   if (trailingFFs > 2) {
-    return bytes.length - trailingFFs
+    return bytes.length - trailingFFs;
   }
 
   // Look for garbage pattern: 0xFF followed by low values (0x01-0x0F)
   for (let i = 0; i < bytes.length - 1; i++) {
     if (bytes[i] === 0xff) {
       for (let j = i + 1; j < bytes.length; j++) {
-        const nextByte = bytes[j]!
-        if (nextByte > 0 && nextByte < 0x10) return i // Found garbage
-        if (nextByte !== 0xff && nextByte !== 0) break
+        const nextByte = bytes[j]!;
+        if (nextByte > 0 && nextByte < 0x10) return i; // Found garbage
+        if (nextByte !== 0xff && nextByte !== 0) break;
       }
     }
   }
 
-  return bytes.length
+  return bytes.length;
 }
 
 /**
@@ -81,69 +81,116 @@ function findStringEnd(bytes: Uint8Array): number {
  */
 export function gbaStringToBytes(str: string, length = 10): Uint8Array {
   // Build a reverse charmap: char -> byte
-  const reverseCharmap: Record<string, number> = {}
+  const reverseCharmap: Record<string, number> = {};
   for (const [key, value] of Object.entries(charmap)) {
-    reverseCharmap[value] = Number(key)
+    reverseCharmap[value] = Number(key);
   }
-  const bytes = new Uint8Array(length).fill(0xff)
-  let i = 0
+  const bytes = new Uint8Array(length).fill(0xff);
+  let i = 0;
   for (const char of str) {
-    if (i >= length) break
+    if (i >= length) break;
     // Find the byte for this character
-    const byte = reverseCharmap[char]
-    if (typeof byte !== 'undefined') {
-      bytes[i++] = byte
+    const byte = reverseCharmap[char];
+    if (typeof byte !== "undefined") {
+      bytes[i++] = byte;
     } else {
       // If not found, use 0x00 (could also skip or use a placeholder)
-      bytes[i++] = 0x00
+      bytes[i++] = 0x00;
     }
   }
-  return bytes
+  return bytes;
 }
 
 /**
  * Format play time as a human-readable string
  */
-export function formatPlayTime(hours: number, minutes: number, seconds: number): string {
-  return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+export function formatPlayTime(
+  hours: number,
+  minutes: number,
+  seconds: number,
+): string {
+  return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 }
 
-export const statStrings: string[] = ['HP', 'Attack', 'Defense', 'Speed', 'Special Attack', 'Special Defense']
+export const statStrings: string[] = [
+  "HP",
+  "Attack",
+  "Defense",
+  "Speed",
+  "Special Attack",
+  "Special Defense",
+];
 
 // Shared stat abbreviations used across UI components
-export const statAbbreviations: readonly string[] = ['HP', 'Atk', 'Def', 'Spe', 'SpA', 'SpD'] as const
+export const statAbbreviations: readonly string[] = [
+  "HP",
+  "Atk",
+  "Def",
+  "Spe",
+  "SpA",
+  "SpD",
+] as const;
 
 export function getStatAbbr(index: number): string {
-  return statAbbreviations[index] ?? statStrings[index] ?? ''
+  return statAbbreviations[index] ?? statStrings[index] ?? "";
 }
 
 // Shared gameplay constants
-export const MAX_IV = 31
-export const MAX_EV = 252
-export const MAX_TOTAL_EV = 510
+export const MAX_IV = 31;
+export const MAX_EV = 252;
+export const MAX_TOTAL_EV = 510;
 
-export const natures = ['Hardy', 'Lonely', 'Brave', 'Adamant', 'Naughty', 'Bold', 'Docile', 'Relaxed', 'Impish', 'Lax', 'Timid', 'Hasty', 'Serious', 'Jolly', 'Naive', 'Modest', 'Mild', 'Quiet', 'Bashful', 'Rash', 'Calm', 'Gentle', 'Sassy', 'Careful', 'Quirky']
+export const natures = [
+  "Hardy",
+  "Lonely",
+  "Brave",
+  "Adamant",
+  "Naughty",
+  "Bold",
+  "Docile",
+  "Relaxed",
+  "Impish",
+  "Lax",
+  "Timid",
+  "Hasty",
+  "Serious",
+  "Jolly",
+  "Naive",
+  "Modest",
+  "Mild",
+  "Quiet",
+  "Bashful",
+  "Rash",
+  "Calm",
+  "Gentle",
+  "Sassy",
+  "Careful",
+  "Quirky",
+];
 /**
  * Get Pokemon nature from the first byte of the personality value
  * Pokemon nature is determined by (personality & 0xFF) % 25
  */
 export function getPokemonNature(personality: number): string {
   // Gen 3 standard formula: full personality value modulo 25
-  return natures[personality % 25]!
+  return natures[personality % 25]!;
 }
 
 export function setPokemonNature(pokemon: PokemonBase, nature: string): void {
   // Find the index of the nature in the natures array
-  const natureIndex = natures.indexOf(nature)
+  const natureIndex = natures.indexOf(nature);
   if (natureIndex === -1) {
-    throw new Error(`Invalid nature: ${nature}`)
+    throw new Error(`Invalid nature: ${nature}`);
   }
 
   // Calculate the new personality value
-  pokemon.setNatureRaw(natureIndex)
+  pokemon.setNatureRaw(natureIndex);
 }
 
-export const natureEffects: Record<string, { increased: number; decreased: number }> = {
+export const natureEffects: Record<
+  string,
+  { increased: number; decreased: number }
+> = {
   Lonely: { increased: 1, decreased: 2 },
   Brave: { increased: 1, decreased: 3 },
   Adamant: { increased: 1, decreased: 4 },
@@ -164,18 +211,22 @@ export const natureEffects: Record<string, { increased: number; decreased: numbe
   Gentle: { increased: 5, decreased: 2 },
   Sassy: { increased: 5, decreased: 3 },
   Careful: { increased: 5, decreased: 4 },
-}
+};
 
 /**
  * Find the nature name that raises one stat index and lowers another.
  * Returns 'Serious' (neutral) when indices are invalid or identical.
  */
-export function findNatureForEffects(increased: number, decreased: number): string {
-  if (increased === decreased || increased <= 0 || decreased <= 0) return 'Serious'
+export function findNatureForEffects(
+  increased: number,
+  decreased: number,
+): string {
+  if (increased === decreased || increased <= 0 || decreased <= 0)
+    return "Serious";
   for (const [name, eff] of Object.entries(natureEffects)) {
-    if (eff.increased === increased && eff.decreased === decreased) return name
+    if (eff.increased === increased && eff.decreased === decreased) return name;
   }
-  return 'Serious'
+  return "Serious";
 }
 /**
  * Get nature modifier for a given stat
@@ -184,12 +235,12 @@ export function findNatureForEffects(increased: number, decreased: number): stri
  * @returns The stat modifier (1.1, 0.9, or 1.0)
  */
 export function getNatureModifier(nature: string, statIndex: number): number {
-  const effect = natureEffects[nature]
-  if (typeof effect !== 'undefined') {
-    if (statIndex === effect.increased) return 1.1
-    if (statIndex === effect.decreased) return 0.9
+  const effect = natureEffects[nature];
+  if (typeof effect !== "undefined") {
+    if (statIndex === effect.increased) return 1.1;
+    if (statIndex === effect.decreased) return 0.9;
   }
-  return 1
+  return 1;
 }
 
 /**
@@ -198,21 +249,24 @@ export function getNatureModifier(nature: string, statIndex: number): number {
  * @param baseStats The array of base stats in the order: HP, Atk, Def, Spe, SpA, SpD
  * @returns An array of calculated total stats
  */
-export function calculateTotalStats(pokemon: PokemonBase, baseStats: readonly number[]): readonly number[] {
+export function calculateTotalStats(
+  pokemon: PokemonBase,
+  baseStats: readonly number[],
+): readonly number[] {
   // Extract properties with type guards for safety
-  const level = Number(pokemon.level)
-  const nature = String(pokemon.nature)
+  const level = Number(pokemon.level);
+  const nature = String(pokemon.nature);
 
   // Type-safe array conversion
-  const ivs: number[] = []
-  const evs: number[] = []
+  const ivs: number[] = [];
+  const evs: number[] = [];
 
   for (let i = 0; i < 6; i++) {
-    ivs.push(Number(pokemon.ivs[i] ?? 0))
-    evs.push(Number(pokemon.evs[i] ?? 0))
+    ivs.push(Number(pokemon.ivs[i] ?? 0));
+    evs.push(Number(pokemon.evs[i] ?? 0));
   }
 
-  return calculateTotalStatsDirect([...baseStats], ivs, evs, level, nature)
+  return calculateTotalStatsDirect([...baseStats], ivs, evs, level, nature);
 }
 
 /**
@@ -224,24 +278,39 @@ export function calculateTotalStats(pokemon: PokemonBase, baseStats: readonly nu
  * @param nature Nature string
  * @returns Array of calculated total stats
  */
-export function calculateTotalStatsDirect(baseStats: readonly number[], ivs: readonly number[], evs: readonly number[], level: number, nature: string): number[] {
+export function calculateTotalStatsDirect(
+  baseStats: readonly number[],
+  ivs: readonly number[],
+  evs: readonly number[],
+  level: number,
+  nature: string,
+): number[] {
   // HP calculation
-  const hp = Math.floor(((2 * baseStats[0]! + ivs[0]! + Math.floor(evs[0]! / 4)) * level) / 100) + level + 10
+  const hp =
+    Math.floor(
+      ((2 * baseStats[0]! + ivs[0]! + Math.floor(evs[0]! / 4)) * level) / 100,
+    ) +
+    level +
+    10;
 
   // Stat order: [HP, Atk, Def, Spe, SpA, SpD]
   // Calculate non-HP stats (Atk, Def, Spe, SpA, SpD)
-  const statIndices = [1, 2, 3, 4, 5]
-  const otherStats = statIndices.map(i => {
-    const base = baseStats[i]
-    const iv = ivs[i]
-    const ev = evs[i]
-    const natureMod = getNatureModifier(nature, i)
-    const stat = Math.floor((Math.floor(((2 * base! + iv! + Math.floor(ev! / 4)) * level) / 100) + 5) * natureMod)
-    return stat
-  })
+  const statIndices = [1, 2, 3, 4, 5];
+  const otherStats = statIndices.map((i) => {
+    const base = baseStats[i];
+    const iv = ivs[i];
+    const ev = evs[i];
+    const natureMod = getNatureModifier(nature, i);
+    const stat = Math.floor(
+      (Math.floor(((2 * base! + iv! + Math.floor(ev! / 4)) * level) / 100) +
+        5) *
+        natureMod,
+    );
+    return stat;
+  });
 
   // Return in order: HP, Atk, Def, Spe, SpA, SpD
-  return [hp, ...otherStats]
+  return [hp, ...otherStats];
 }
 
 /**
@@ -254,26 +323,33 @@ export function calculateTotalStatsDirect(baseStats: readonly number[], ivs: rea
  * @param saveblock1Size Expected size of SaveBlock1
  * @param maxPartySize Maximum party size
  */
-export function updatePartyInSaveblock1(saveblock1: Uint8Array, party: readonly PokemonBase[], partyStartOffset: number, partyPokemonSize: number, saveblock1Size: number, maxPartySize: number): Uint8Array {
+export function updatePartyInSaveblock1(
+  saveblock1: Uint8Array,
+  party: readonly PokemonBase[],
+  partyStartOffset: number,
+  partyPokemonSize: number,
+  saveblock1Size: number,
+  maxPartySize: number,
+): Uint8Array {
   if (saveblock1.length < saveblock1Size) {
-    throw new Error(`SaveBlock1 must be at least ${saveblock1Size} bytes`)
+    throw new Error(`SaveBlock1 must be at least ${saveblock1Size} bytes`);
   }
   if (party.length > maxPartySize) {
-    throw new Error(`Party size cannot exceed ${maxPartySize}`)
+    throw new Error(`Party size cannot exceed ${maxPartySize}`);
   }
-  const updated = new Uint8Array(saveblock1)
+  const updated = new Uint8Array(saveblock1);
   for (let i = 0; i < party.length; i++) {
-    const offset = partyStartOffset + i * partyPokemonSize
-    const pokemon = party[i]
+    const offset = partyStartOffset + i * partyPokemonSize;
+    const pokemon = party[i];
     if (pokemon?.rawBytes) {
       // Type-safe conversion to Uint8Array - use destructuring
-      const { rawBytes } = pokemon
+      const { rawBytes } = pokemon;
       if (rawBytes instanceof Uint8Array) {
-        updated.set(rawBytes, offset)
+        updated.set(rawBytes, offset);
       }
     }
   }
-  return updated
+  return updated;
 }
 
 /**
@@ -281,9 +357,9 @@ export function updatePartyInSaveblock1(saveblock1: Uint8Array, party: readonly 
  */
 
 export interface BaseMappingItem {
-  readonly id: number | null
-  readonly name: string
-  readonly id_name: string
+  readonly id: number | null;
+  readonly name: string;
+  readonly id_name: string;
 }
 
 /**
@@ -291,12 +367,17 @@ export interface BaseMappingItem {
  * @param mapData - Raw JSON mapping data
  * @returns Map with numeric keys and validated mapping objects
  */
-export function createMapping<T extends BaseMappingItem>(mapData: Record<string, unknown>): Map<number, T> {
+export function createMapping<T extends BaseMappingItem>(
+  mapData: Record<string, unknown>,
+): Map<number, T> {
   return new Map<number, T>(
     Object.entries(mapData)
-      .filter(([_, v]) => typeof v === 'object' && v !== null && 'id' in v && v.id !== null)
-      .map(([k, v]) => [parseInt(k, 10), v as T])
-  )
+      .filter(
+        ([_, v]) =>
+          typeof v === "object" && v !== null && "id" in v && v.id !== null,
+      )
+      .map(([k, v]) => [parseInt(k, 10), v as T]),
+  );
 }
 
 /**
@@ -304,12 +385,15 @@ export function createMapping<T extends BaseMappingItem>(mapData: Record<string,
  * @param mappingData - Object containing different mapping data sets
  * @returns Object with the same keys but containing Map instances
  */
-export function createMappings<T extends Record<string, Record<string, unknown>>>(mappingData: T): { [K in keyof T]: Map<number, BaseMappingItem> } {
-  const result: { [K in keyof T]: Map<number, BaseMappingItem> } = Object.create(null)
+export function createMappings<
+  T extends Record<string, Record<string, unknown>>,
+>(mappingData: T): { [K in keyof T]: Map<number, BaseMappingItem> } {
+  const result: { [K in keyof T]: Map<number, BaseMappingItem> } =
+    Object.create(null);
 
   for (const [key, data] of Object.entries(mappingData)) {
-    result[key as keyof T] = createMapping(data)
+    result[key as keyof T] = createMapping(data);
   }
 
-  return result
+  return result;
 }

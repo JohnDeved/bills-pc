@@ -15,8 +15,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "oxlint --fix .; biome format --write .",
-    "format": "npx biome format --write .",
+    "lint": "oxlint --fix .; oxfmt .",
+    "format": "oxfmt .",
     "test": "vitest run",
     "test:run": "vitest run",
     "test:watch": "vitest",

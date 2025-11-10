@@ -1,13 +1,13 @@
-import { Skeleton } from '@/components/common'
-import { AbilityTab } from '@/components/pokemon/traits/AbilityTab'
-import { ItemTab } from '@/components/pokemon/traits/ItemTab'
-import { NatureTab } from '@/components/pokemon/traits/NatureTab'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { BoostSandboxTab } from '@/components/pokemon/traits/BoostSandboxTab'
-import { useActivePokemonLoading } from '@/hooks'
+import { Skeleton } from "@/components/common";
+import { AbilityTab } from "@/components/pokemon/traits/AbilityTab";
+import { ItemTab } from "@/components/pokemon/traits/ItemTab";
+import { NatureTab } from "@/components/pokemon/traits/NatureTab";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BoostSandboxTab } from "@/components/pokemon/traits/BoostSandboxTab";
+import { useActivePokemonLoading } from "@/hooks";
 
 export const PokemonTraitsSection: React.FC = () => {
-  const isLoading = useActivePokemonLoading()
+  const isLoading = useActivePokemonLoading();
   return (
     <Skeleton.LoadingProvider loading={isLoading}>
       <div className="flex flex-col h-full">
@@ -51,5 +51,5 @@ export const PokemonTraitsSection: React.FC = () => {
         </Tabs>
       </div>
     </Skeleton.LoadingProvider>
-  )
-}
+  );
+};

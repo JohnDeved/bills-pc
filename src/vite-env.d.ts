@@ -1,7 +1,5 @@
-import 'vite/client'
+import "vite/client";
 
 declare global {
-  const __COMMIT_HASH__: string
+  const __COMMIT_HASH__: string;
 }
-
-export {}

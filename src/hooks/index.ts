@@ -1,8 +1,9 @@
-export { usePokemonData } from './usePokemonData'
-export { useActivePokemonLoading } from './useActivePokemonLoading'
-export { useActiveItemDetails } from './useActiveItemDetails'
-export { useMegaPreview } from './useMegaPreview'
-export { useAutoRestore } from './useAutoRestore'
-export { useThemeSync } from './useThemeSync'
-export { useUndoRedoShortcuts } from './useUndoRedoShortcuts'
-export { useHistorySync } from './useHistorySync'
+export { usePokemonData } from "./usePokemonData";
+export { useActivePokemonLoading } from "./useActivePokemonLoading";
+export { useActiveItemDetails } from "./useActiveItemDetails";
+export { useMegaPreview } from "./useMegaPreview";
+export { useAutoRestore } from "./useAutoRestore";
+export { useThemeSync } from "./useThemeSync";
+export { useUndoRedoShortcuts } from "./useUndoRedoShortcuts";
+export { useHistorySync } from "./useHistorySync";
+export { usePopoverSide } from "./usePopoverSide";

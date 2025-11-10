@@ -5,7 +5,7 @@ export interface RecentEntry {
   updatedAt: number
 }
 
-const DB_NAME = 'pokemon-save-web'
+const DB_NAME = 'bills-pc'
 const STORE = 'recents'
 const MAX_RECENTS = 5
 

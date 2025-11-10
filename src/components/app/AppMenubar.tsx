@@ -235,7 +235,7 @@ export const AppMenubar: React.FC<AppMenubarProps> = ({ onRequestOpenFile, canSa
             <MenubarItem onClick={() => location.reload()}>Restart</MenubarItem>
             <MenubarSeparator />
             <MenubarItem asChild>
-              <a href="https://github.com/JohnDeved/pokemon-save-web" target="_blank" rel="noopener noreferrer">
+              <a href="https://github.com/JohnDeved/bills-pc" target="_blank" rel="noopener noreferrer">
                 GitHub <ExternalLinkIcon className="ml-1" />
               </a>
             </MenubarItem>

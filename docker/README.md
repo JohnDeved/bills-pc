@@ -39,7 +39,7 @@ npm run mgba -- run:build --game quetzal
 
 ## Using the Prebuilt Image
 Since local build can take several minutes, you can use the prebuilt image
-Prebuilt image from GitHub Container Registry (`ghcr.io/johndeved/pokemon-save-web/mgba-test-env:latest`)
+Prebuilt image from GitHub Container Registry (`ghcr.io/johndeved/bills-pc/mgba-test-env:latest`)
 
 ## Troubleshooting
 - If you see a warning about an unsupported `GAME` value, the container will use `emerald`.

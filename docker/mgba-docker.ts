@@ -4,7 +4,7 @@ import { execSync } from 'node:child_process'
 const composeFile = 'docker/docker-compose.yml'
 const dockerfile = 'docker/Dockerfile'
 const image = 'mgba-test-env:latest'
-const remoteImage = 'ghcr.io/johndeved/pokemon-save-web/mgba-test-env:latest'
+const remoteImage = 'ghcr.io/johndeved/bills-pc/mgba-test-env:latest'
 const container = 'mgba-test-environment'
 
 function run(cmd: string, env?: NodeJS.ProcessEnv) {

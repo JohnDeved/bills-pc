@@ -190,8 +190,6 @@ export class MyGameConfig implements GameConfig {
 }
 ```
 
-For detailed instructions, see [src/lib/parser/README.md](./src/lib/parser/README.md#adding-game-support).
-
 ## PWA (Progressive Web App)
 
 This application is built as a PWA with:
@@ -200,8 +198,6 @@ This application is built as a PWA with:
 - **Native Installation**: Install on desktop and mobile devices
 - **Performance Optimized**: Smart caching and code splitting
 - **SEO Optimized**: Complete meta tags and search engine support
-
-See [PWA_IMPLEMENTATION.md](./PWA_IMPLEMENTATION.md) for detailed PWA features and technical implementation.
 
 ## Performance
 

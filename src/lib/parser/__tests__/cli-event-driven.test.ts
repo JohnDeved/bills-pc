@@ -11,22 +11,28 @@ const mockRemoveMemoryChangeListener = vi.fn()
 const mockStartWatching = vi.fn()
 const mockDisconnect = vi.fn()
 
-vi.mock('../../mgba/websocket-client', () => ({
-  MgbaWebSocketClient: vi.fn().mockImplementation(() => ({
-    addMemoryChangeListener: mockAddMemoryChangeListener,
-    removeMemoryChangeListener: mockRemoveMemoryChangeListener,
-    startWatching: mockStartWatching,
-    disconnect: mockDisconnect,
-  })),
-}))
+vi.mock('../../mgba/websocket-client', () => {
+  class MockMgbaWebSocketClient {
+    addMemoryChangeListener = mockAddMemoryChangeListener
+    removeMemoryChangeListener = mockRemoveMemoryChangeListener
+    startWatching = mockStartWatching
+    disconnect = mockDisconnect
+  }
+  return {
+    MgbaWebSocketClient: MockMgbaWebSocketClient,
+  }
+})
 
 // Mock the PokemonSaveParser
 const mockParseSaveFile = vi.fn()
-vi.mock('../core/PokemonSaveParser', () => ({
-  PokemonSaveParser: vi.fn().mockImplementation(() => ({
-    parse: mockParseSaveFile,
-  })),
-}))
+vi.mock('../core/PokemonSaveParser', () => {
+  class MockPokemonSaveParser {
+    parse = mockParseSaveFile
+  }
+  return {
+    PokemonSaveParser: MockPokemonSaveParser,
+  }
+})
 
 // Mock console methods to avoid test output pollution
 vi.mock('console', () => ({

@@ -69,10 +69,10 @@ export class PokemonSaveParser {
   }
 
   /**
-   * Load input data from a File, ArrayBuffer, or WebSocket connection
+   * Load input data from a File, ArrayBuffer, Uint8Array, or WebSocket connection
    * When WebSocket is provided, switches to memory mode
    */
-  async loadInputData(input: File | ArrayBuffer | FileSystemFileHandle | MgbaWebSocketClient): Promise<void> {
+  async loadInputData(input: File | ArrayBuffer | Uint8Array | FileSystemFileHandle | MgbaWebSocketClient): Promise<void> {
     try {
       // Always clear sectorMap before loading new data to avoid stale state
       this.sectorMap.clear()
@@ -115,6 +115,10 @@ export class PokemonSaveParser {
             reader.readAsArrayBuffer(input as File)
           })
         }
+      } else if (input instanceof Uint8Array) {
+        // If already a Uint8Array, create a proper ArrayBuffer copy (avoiding SharedArrayBuffer)
+        const copy = new Uint8Array(input)
+        buffer = copy.buffer
       } else {
         buffer = input as ArrayBuffer
       }
@@ -474,7 +478,7 @@ export class PokemonSaveParser {
    * Parse input data and return structured data
    * Supports both file and memory input via WebSocket
    */
-  async parse(input: File | ArrayBuffer | FileSystemFileHandle | MgbaWebSocketClient): Promise<SaveData> {
+  async parse(input: File | ArrayBuffer | Uint8Array | FileSystemFileHandle | MgbaWebSocketClient): Promise<SaveData> {
     await this.loadInputData(input)
 
     // Memory mode: read directly from emulator memory

@@ -127,7 +127,9 @@ export const useSaveFileStore = create<SaveFileStore>((set, get) => ({
 
     // Use the same parser instance
     const newSave = parser.reconstructSaveFile(saveData.party_pokemon)
-    const blob = new Blob([newSave], { type: 'application/octet-stream' })
+    // Create a copy to ensure it's not a SharedArrayBuffer
+    const safeCopy = new Uint8Array(newSave)
+    const blob = new Blob([safeCopy.buffer], { type: 'application/octet-stream' })
     const defaultFileName = parser.saveFileName ?? 'pokemon_save.sav'
 
     if (method === 'saveAs') {

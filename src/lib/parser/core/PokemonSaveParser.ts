@@ -69,6 +69,29 @@ export class PokemonSaveParser {
   }
 
   /**
+   * Expose memory layout info needed for write-back in emulator mode
+   */
+  public getMemoryLayout(): { partyData: number; pokemonSize: number } | null {
+    if (!this.config?.memoryAddresses?.partyData) return null
+    return { partyData: this.config.memoryAddresses.partyData, pokemonSize: this.config.pokemonSize }
+  }
+
+  /**
+   * Return the set of external item IDs available in the current game config.
+   * Used by the item combobox to filter the item list.
+   */
+  public getAvailableItemIds(): Set<number> | null {
+    const items = this.config?.mappings?.items
+    if (!items) return null
+    const ids = new Set<number>()
+    for (const entry of items.values()) {
+      if (entry.id != null) ids.add(entry.id)
+    }
+    return ids
+  }
+
+
+  /**
    * Load input data from a File, ArrayBuffer, or WebSocket connection
    * When WebSocket is provided, switches to memory mode
    */

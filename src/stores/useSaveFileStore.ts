@@ -2,6 +2,7 @@ import { saveAs } from 'file-saver'
 import { toast } from 'sonner'
 import { create } from 'zustand'
 import { addRecent } from '@/lib/recentFiles'
+import type { MgbaWebSocketClient } from '../lib/mgba/websocket-client'
 import { PokemonSaveParser } from '../lib/parser/core/PokemonSaveParser'
 import type { PokemonBase } from '../lib/parser/core/PokemonBase'
 import type { SaveData } from '../lib/parser/core/types'
@@ -23,7 +24,7 @@ export interface SaveFileState {
 
 export interface SaveFileActions {
   // Accept same inputs as PokemonSaveParser.parse to preserve file handle where possible
-  parse: (input: File | ArrayBuffer | FileSystemFileHandle, options?: { transient?: boolean }) => Promise<SaveData>
+  parse: (input: File | ArrayBuffer | FileSystemFileHandle | MgbaWebSocketClient, options?: { transient?: boolean }) => Promise<SaveData>
   clearSaveFile: () => void
   reconstructAndDownload: (method?: 'download' | 'saveAs' | 'save') => Promise<void>
   updatePartyOrder: (party: PokemonBase[]) => void
@@ -43,7 +44,7 @@ export const useSaveFileStore = create<SaveFileStore>((set, get) => ({
   lastUpdateTransient: false,
 
   // Actions
-  parse: async (input: File | ArrayBuffer | FileSystemFileHandle, options?: { transient?: boolean }) => {
+  parse: async (input: File | ArrayBuffer | FileSystemFileHandle | MgbaWebSocketClient, options?: { transient?: boolean }) => {
     const transient = Boolean(options?.transient)
     // For non-transient parses (i.e., loading a new file), clear details and bump session
     if (!transient) {

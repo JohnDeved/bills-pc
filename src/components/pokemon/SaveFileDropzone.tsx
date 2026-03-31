@@ -4,6 +4,7 @@ import { useDropzone } from 'react-dropzone'
 import { toast } from 'sonner'
 import type { PokemonSaveParser } from '@/lib/parser/core/PokemonSaveParser'
 import { cn } from '@/lib/utils'
+import { EmulatorConnect } from './EmulatorConnect'
 
 interface SaveFileDropzoneProps {
   onFileLoad: PokemonSaveParser['parse']
@@ -161,6 +162,11 @@ export const SaveFileDropzone: React.FC<SaveFileDropzoneProps> = ({ onFileLoad, 
           <h2 className="text-2xl font-bold text-foreground">{isDragActive ? 'Drop your Savegame to load!' : 'Drop your Savegame here'}</h2>
           {showDropzone && <span className="text-muted-foreground mt-1 text-base">or click to browse</span>}
           <p className="text-xs text-muted-foreground mt-2">Supported: .sav, .sa2</p>
+          {showDropzone && !isDragActive && (
+            <div className="mt-6" onClick={e => e.stopPropagation()}>
+              <EmulatorConnect />
+            </div>
+          )}
         </div>
       </div>
     </div>

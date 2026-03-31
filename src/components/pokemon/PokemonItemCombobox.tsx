@@ -6,6 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import itemMapData from '@/lib/parser/games/quetzal/data/item_map.json'
 import { cn } from '@/lib/utils'
 import { getItemSpriteUrl } from '@/lib/parser/core/utils'
+import { useSaveFileStore } from '@/stores/useSaveFileStore'
 
 interface ItemEntry {
   id: number
@@ -18,7 +19,7 @@ interface RawItem {
   name: string
   id_name: string
 }
-const ITEMS: ItemEntry[] = (Object.values(itemMapData) as RawItem[])
+const ALL_ITEMS: ItemEntry[] = (Object.values(itemMapData) as RawItem[])
   .filter((v): v is { id: number; name: string; id_name: string } => v !== null && typeof v === 'object' && typeof v.id === 'number')
   .map(v => ({ id: v.id, name: v.name, id_name: v.id_name }))
   .sort((a, b) => a.name.localeCompare(b.name))
@@ -38,6 +39,12 @@ export function PokemonItemCombobox({ valueIdName, onChange, disabled = false, t
   const [open, setOpen] = React.useState(false)
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [side, setSide] = React.useState<'top' | 'bottom'>('top')
+
+  const availableIds = useSaveFileStore(s => s.parser?.getAvailableItemIds())
+  const ITEMS = React.useMemo(
+    () => (availableIds ? ALL_ITEMS.filter(i => availableIds.has(i.id)) : ALL_ITEMS),
+    [availableIds],
+  )
 
   function decideSideFromEl(el: HTMLElement | null) {
     if (!el) return

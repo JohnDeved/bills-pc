@@ -154,6 +154,25 @@ export class PokemonBase {
       const origView = new DataView(this.data.buffer, this.data.byteOffset + substructOffset + i, 4)
       origView.setUint32(0, encrypted, true)
     }
+
+    this.recalculateChecksum()
+  }
+
+  /**
+   * Recalculate the 16-bit checksum at offset 0x1C.
+   * The checksum is the sum of all 16-bit words in the decrypted substruct data (48 bytes).
+   */
+  protected recalculateChecksum(): void {
+    let sum = 0
+    for (let i = 0; i < 4; i++) {
+      const substruct = this.getDecryptedSubstruct(this.data, i)
+      const subView = new DataView(substruct.buffer, substruct.byteOffset, substruct.byteLength)
+      for (let j = 0; j < 12; j += 2) {
+        sum = (sum + subView.getUint16(j, true)) & 0xffff
+      }
+    }
+    const view = new DataView(this.data.buffer, this.data.byteOffset, this.data.byteLength)
+    view.setUint16(0x1c, sum, true)
   }
 
   protected getDecryptedSubstruct(data: Uint8Array, substructIndex: number): Uint8Array {

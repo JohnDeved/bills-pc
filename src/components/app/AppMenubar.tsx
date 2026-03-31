@@ -7,7 +7,7 @@ import { Menubar, MenubarCheckboxItem, MenubarContent, MenubarItem, MenubarMenu,
 import { getPokemonDetails } from '@/hooks/usePokemonData'
 import { useRecentFiles } from '@/hooks/useRecentFiles'
 import { buildTeamClipboardText } from '@/lib/utils'
-import { usePokemonStore, useSaveFileStore, useSettingsStore } from '@/stores'
+import { useEmulatorStore, usePokemonStore, useSaveFileStore, useSettingsStore } from '@/stores'
 import { canRedoSelector, canUndoSelector, hasEditsSelector, useHistoryStore } from '@/stores/useHistoryStore'
 import { hasFsPermissions } from '@/types/fs'
 
@@ -42,6 +42,11 @@ export const AppMenubar: React.FC<AppMenubarProps> = ({ onRequestOpenFile, canSa
   const reset = useHistoryStore(s => s.reset)
 
   const { recents, clear: clearRecents } = useRecentFiles()
+
+  const emulatorStatus = useEmulatorStore(s => s.status)
+  const emulatorGameTitle = useEmulatorStore(s => s.gameTitle)
+  const emulatorDisconnect = useEmulatorStore(s => s.disconnect)
+  const isEmulatorConnected = emulatorStatus === 'connected' || emulatorStatus === 'watching'
 
   const copyPartyToClipboard = useCallback(async () => {
     if (partyList.length === 0) {
@@ -155,6 +160,15 @@ export const AppMenubar: React.FC<AppMenubarProps> = ({ onRequestOpenFile, canSa
                 </MenubarItem>
               </MenubarSubContent>
             </MenubarSub>
+            {isEmulatorConnected && (
+              <>
+                <MenubarSeparator />
+                <MenubarItem disabled>
+                  Emulator <MenubarShortcut>{emulatorGameTitle ?? 'Connected'}</MenubarShortcut>
+                </MenubarItem>
+                <MenubarItem onClick={emulatorDisconnect}>Disconnect Emulator</MenubarItem>
+              </>
+            )}
             <MenubarItem
               onClick={() => {
                 setSuppressAutoRestore(true)

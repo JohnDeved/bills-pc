@@ -1,17 +1,21 @@
 # mGBA Docker environment with Lua HTTP server support  
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 # Set environment to avoid interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install build and runtime dependencies (matching native working environment)
+# Install build and runtime dependencies (Qt6 for mGBA master)
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
     git \
     pkg-config \
-    qtbase5-dev \
-    qtmultimedia5-dev \
+    qt6-base-dev \
+    qt6-multimedia-dev \
+    qt6-tools-dev \
+    qt6-tools-dev-tools \
+    qt6-l10n-tools \
+    libqt6opengl6-dev \
     liblua5.4-dev \
     lua5.4 \
     libpng-dev \
@@ -38,6 +42,7 @@ RUN cmake -B build \
     -DUSE_MINIZIP=OFF \
     -DUSE_LIBZIP=OFF \
     -DUSE_DISCORD_RPC=OFF \
+    -DSKIP_GIT=ON \
     && cmake --build build --parallel 2 \
     && cp build/qt/mgba-qt /usr/local/bin/mgba-qt \
     && cp build/libmgba.so.* /usr/local/lib/ \

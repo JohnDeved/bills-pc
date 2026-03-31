@@ -1,4 +1,24 @@
 {
+  "1": {
+    "name": "Master Ball",
+    "id_name": "master-ball",
+    "id": 1
+  },
+  "2": {
+    "name": "Ultra Ball",
+    "id_name": "ultra-ball",
+    "id": 2
+  },
+  "3": {
+    "name": "Great Ball",
+    "id_name": "great-ball",
+    "id": 3
+  },
+  "4": {
+    "name": "Poke Ball",
+    "id_name": "poke-ball",
+    "id": 4
+  },
   "5": {
     "name": "Safari Ball",
     "id_name": "safari-ball",

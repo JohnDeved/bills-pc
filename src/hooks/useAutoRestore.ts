@@ -47,6 +47,8 @@ export function useAutoRestore({ parse, suppressAutoRestore }: UseAutoRestoreOpt
 
     return () => {
       cancelled = true
+      // Reset so StrictMode double-mount can retry
+      triedRestore.current = false
     }
   }, [parse, suppressAutoRestore])
 

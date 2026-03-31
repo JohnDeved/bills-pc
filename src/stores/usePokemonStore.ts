@@ -3,12 +3,58 @@ import type { PokemonBase } from '@/lib/parser/core/PokemonBase'
 import type { SaveData } from '@/lib/parser/core/types'
 import { calculateTotalStats, natures } from '@/lib/parser/core/utils'
 import type { UIPokemonData } from '../types'
+import { beginEmulatorWrite, endEmulatorWrite, useEmulatorStore } from './useEmulatorStore'
 import { useHistoryStore } from './useHistoryStore'
 import { useSaveFileStore } from './useSaveFileStore'
 
 // Constants
 const MAX_EV_PER_STAT = 252
 const MAX_TOTAL_EVS = 508
+
+/**
+ * Write a Pokemon's raw bytes back to emulator memory at the correct party slot address.
+ * No-op if not connected to an emulator.
+ */
+function syncPokemonToEmulator(pokemon: PokemonBase, partyList: UIPokemonData[]): void {
+  const { client, status } = useEmulatorStore.getState()
+  if (!client || (status !== 'connected' && status !== 'watching')) return
+
+  const { parser } = useSaveFileStore.getState()
+  const layout = parser?.getMemoryLayout()
+  if (!layout) return
+
+  const slotIndex = partyList.findIndex(p => p.data === pokemon)
+  if (slotIndex === -1) return
+
+  const address = layout.partyData + slotIndex * layout.pokemonSize
+  beginEmulatorWrite()
+  client.writeBytes(address, pokemon.rawBytes).catch(err => {
+    console.error('Failed to write Pokemon to emulator:', err)
+  }).finally(endEmulatorWrite)
+}
+
+/**
+ * Write all party Pokemon to emulator memory (used after reordering).
+ * Concatenates all slots into a single write for efficiency.
+ */
+function syncFullPartyToEmulator(partyList: UIPokemonData[]): void {
+  const { client, status } = useEmulatorStore.getState()
+  if (!client || (status !== 'connected' && status !== 'watching')) return
+
+  const { parser } = useSaveFileStore.getState()
+  const layout = parser?.getMemoryLayout()
+  if (!layout) return
+
+  const fullBuffer = new Uint8Array(partyList.length * layout.pokemonSize)
+  for (let i = 0; i < partyList.length; i++) {
+    fullBuffer.set(partyList[i]!.data.rawBytes, i * layout.pokemonSize)
+  }
+
+  beginEmulatorWrite()
+  client.writeBytes(layout.partyData, fullBuffer).catch(err => {
+    console.error('Failed to write party to emulator:', err)
+  }).finally(endEmulatorWrite)
+}
 
 export interface PokemonState {
   activePokemonId: number
@@ -79,6 +125,7 @@ export const usePokemonStore = create<PokemonStore>((set, get) => ({
         // Directly mutate the class instance
         p.data.setEvByIndex(statIndex, finalEvValue)
         p.data.setStats(calculateTotalStats(p.data, p.details.baseStats))
+        syncPokemonToEmulator(p.data, state.partyList)
         // Return a new object reference for React to detect change
         return { ...p }
       }),
@@ -97,6 +144,7 @@ export const usePokemonStore = create<PokemonStore>((set, get) => ({
         // Directly mutate the class instance
         p.data.setIvByIndex(statIndex, ivValue)
         p.data.setStats(calculateTotalStats(p.data, p.details.baseStats))
+        syncPokemonToEmulator(p.data, state.partyList)
         // Return a new object reference for React to detect change
         return { ...p }
       }),
@@ -114,6 +162,7 @@ export const usePokemonStore = create<PokemonStore>((set, get) => ({
         p.data.setNatureRaw(natureValue)
         // Optionally, recalculate stats if needed
         p.data.setStats(calculateTotalStats(p.data, p.details.baseStats))
+        syncPokemonToEmulator(p.data, state.partyList)
         return { ...p }
       }),
     }))
@@ -127,6 +176,7 @@ export const usePokemonStore = create<PokemonStore>((set, get) => ({
         if (p.data.abilityNumber === desired) return p
         useHistoryStore.getState().queueSnapshot()
         p.data.abilityNumber = desired
+        syncPokemonToEmulator(p.data, state.partyList)
         return { ...p }
       }),
     }))
@@ -143,6 +193,7 @@ export const usePokemonStore = create<PokemonStore>((set, get) => ({
         if (p.data.item === desired) return p
         useHistoryStore.getState().queueSnapshot()
         p.data.setItem(desired)
+        syncPokemonToEmulator(p.data, state.partyList)
         // Update details immediately for name (description will refetch separately elsewhere)
         const idName = p.data.itemIdName
         if (p.details) {
@@ -219,6 +270,7 @@ export const usePokemonStore = create<PokemonStore>((set, get) => ({
       const bases = newOrder.map(p => p.data)
       useSaveFileStore.getState().updatePartyOrder(bases)
     } catch {}
+    syncFullPartyToEmulator(newOrder)
   },
 }))
 

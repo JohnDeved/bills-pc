@@ -1,9 +1,9 @@
 import { ScrollableContainer, Skeleton } from '@/components/common'
-import { usePokemonStore } from '@/stores'
+import { selectActivePokemon, usePokemonStore } from '@/stores'
 import { useMegaPreview } from '@/hooks'
 
 export const AbilityTab: React.FC = () => {
-  const pokemon = usePokemonStore(s => s.partyList.find(p => p.id === s.activePokemonId))
+  const pokemon = usePokemonStore(selectActivePokemon)
   const setAbilitySlot = usePokemonStore(s => s.setAbilitySlot)
   const { megaPreviewEnabled, megaAbilities } = useMegaPreview()
   const baseAbility = !pokemon?.details ? null : pokemon.details.abilities.find(a => a.slot === pokemon.data.abilityNumber + 1)
@@ -20,6 +20,7 @@ export const AbilityTab: React.FC = () => {
         {!!pokemon?.details?.abilities?.length && !isMega && (
           <div className="flex flex-wrap gap-1.5 mb-2">
             {pokemon.details.abilities
+              .filter(opt => opt.slot <= pokemon.data.maxAbilityNumber + 1)
               .sort((a, b) => a.slot - b.slot)
               .map((opt: { slot: number; name: string }) => {
                 const isActive = opt.slot === pokemon.data.abilityNumber + 1
@@ -27,6 +28,7 @@ export const AbilityTab: React.FC = () => {
                   <button
                     key={`ability-${opt.slot}`}
                     type="button"
+                    aria-pressed={isActive}
                     className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs transition-colors duration-150 cursor-pointer ${
                       isActive ? 'dark:bg-cyan-900/20 bg-cyan-100 dark:text-cyan-200 text-cyan-800 dark:border-cyan-700/60 border-cyan-300' : 'bg-card/50 text-muted-foreground hover:dark:text-cyan-200 hover:text-cyan-700 hover:dark:border-cyan-700/40 hover:border-cyan-300/60'
                     }`}

@@ -52,7 +52,7 @@ function getCurrentSnapshot(idsBySlotOverride?: number[]): HistorySnapshot | nul
   const { saveData, parser } = useSaveFileStore.getState()
   if (!saveData || !parser) return null
   try {
-    const bytes = parser.reconstructSaveFile(saveData.party_pokemon)
+    const bytes = parser.reconstructSaveFile(saveData.party_pokemon, saveData.boxes)
     const idsBySlot = idsBySlotOverride ?? usePokemonStore.getState().partyList.map(p => p.id)
     return { bytes, idsBySlot }
   } catch {

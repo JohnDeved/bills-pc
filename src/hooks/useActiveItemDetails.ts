@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { usePokemonStore, useSaveFileStore } from '@/stores'
+import { selectActivePokemon, usePokemonStore, useSaveFileStore } from '@/stores'
 import type { PokeAPI } from 'pokeapi-types/dist/index'
 import type { z } from 'zod'
 
@@ -38,7 +38,7 @@ function getBestEnglishItemDescription(apiObj: PokeAPI.Item): string {
 const formatName = (name: string): string => name.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
 
 export function useActiveItemDetails() {
-  const pokemon = usePokemonStore(s => s.partyList.find(p => p.id === s.activePokemonId))
+  const pokemon = usePokemonStore(selectActivePokemon)
   const saveSessionId = useSaveFileStore(s => s.saveSessionId)
   const itemIdName = pokemon?.data.itemIdName
   const queryKey = ['pokemon', 'item', saveSessionId, pokemon?.data.speciesId ?? 'none', String(pokemon?.id ?? -1), itemIdName ?? 'none'] as const

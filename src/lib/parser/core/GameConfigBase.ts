@@ -41,9 +41,9 @@ export abstract class GameConfigBase {
   /**
    * Build a map of sector IDs to their physical indices
    */
-  protected buildSectorMap(saveData: Uint8Array, activeSlot: number, expectedSignature: number = VANILLA_EMERALD_SIGNATURE): Map<number, number> {
+  protected buildSectorMap(saveData: Uint8Array, activeSlot: number, expectedSignature: number = VANILLA_EMERALD_SIGNATURE, sectorsPerSlot = 14): Map<number, number> {
     const sectorMap = new Map<number, number>()
-    const sectorRange = Array.from({ length: 18 }, (_, i) => i + activeSlot)
+    const sectorRange = Array.from({ length: sectorsPerSlot }, (_, i) => i + activeSlot)
 
     for (const i of sectorRange) {
       const footerOffset = i * 4096 + 4096 - 12
@@ -84,7 +84,7 @@ export abstract class GameConfigBase {
   /**
    * Helper to determine active save slot by comparing sector counters
    */
-  protected getActiveSlot(saveData: Uint8Array, expectedSignature: number = VANILLA_EMERALD_SIGNATURE): number {
+  protected getActiveSlot(saveData: Uint8Array, expectedSignature: number = VANILLA_EMERALD_SIGNATURE, sectorsPerSlot = 14): number {
     const getCounterSum = (sectorIndices: number[]): number => {
       let sum = 0
       for (const sectorIndex of sectorIndices) {
@@ -93,19 +93,19 @@ export abstract class GameConfigBase {
           const view = new DataView(saveData.buffer, saveData.byteOffset + footerOffset, 12)
           const signature = view.getUint32(4, true)
           if (signature === expectedSignature) {
-            sum += view.getUint16(8, true) // counter
+            sum += view.getUint32(8, true)
           }
         }
       }
       return sum
     }
 
-    const slot1Range = Array.from({ length: 18 }, (_, i) => i)
-    const slot2Range = Array.from({ length: 18 }, (_, i) => i + 14)
+    const slot1Range = Array.from({ length: sectorsPerSlot }, (_, i) => i)
+    const slot2Range = Array.from({ length: sectorsPerSlot }, (_, i) => i + sectorsPerSlot)
     const slot1Sum = getCounterSum(slot1Range)
     const slot2Sum = getCounterSum(slot2Range)
 
-    return slot2Sum >= slot1Sum ? 14 : 0
+    return slot2Sum >= slot1Sum ? sectorsPerSlot : 0
   }
 
   /**

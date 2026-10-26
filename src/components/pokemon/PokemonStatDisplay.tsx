@@ -1,6 +1,6 @@
 import { calculateTotalStatsDirect, MAX_EV, MAX_IV, statAbbreviations } from '@/lib/parser/core/utils'
 import { applyHeldItemStatBoosts, computeTotalsWithHeldItem } from '@/lib/battle'
-import { usePokemonStore } from '@/stores'
+import { selectActivePokemon, usePokemonStore } from '@/stores'
 import { Skeleton } from '@/components/common'
 import { Slider } from '@/components/ui/slider'
 import { useMemo, useRef, useState } from 'react'
@@ -14,17 +14,31 @@ interface EVSliderProps {
   value: number
   onChange: (newValue: number) => void
   maxVisualValue?: number
+  step: number
+  label: string
+  disabled: boolean
 }
 
-const EVSlider: React.FC<EVSliderProps> = ({ value, onChange, maxVisualValue }) => {
+const EVSlider: React.FC<EVSliderProps> = ({ value, onChange, maxVisualValue, step, label, disabled }) => {
   const handleValueChange = (val: number[]) => {
     onChange(val[0]!)
   }
-  return <Slider value={[value]} max={MAX_EV} onValueChange={handleValueChange} className="[&_[data-slot=slider-track]]:bg-input/30 [&_[data-slot=slider-range]]:bg-gradient-to-r [&_[data-slot=slider-range]]:from-cyan-500 [&_[data-slot=slider-range]]:to-blue-500" maxVisualValue={maxVisualValue} />
+  return (
+    <Slider
+      value={[value]}
+      max={MAX_EV}
+      step={step}
+      aria-label={label}
+      disabled={disabled}
+      onValueChange={handleValueChange}
+      className="[&_[data-slot=slider-track]]:bg-input/30 [&_[data-slot=slider-range]]:bg-gradient-to-r [&_[data-slot=slider-range]]:from-cyan-500 [&_[data-slot=slider-range]]:to-blue-500"
+      maxVisualValue={maxVisualValue}
+    />
+  )
 }
 
 export const PokemonStatDisplay: React.FC = () => {
-  const pokemon = usePokemonStore(s => s.partyList.find(p => p.id === s.activePokemonId))
+  const pokemon = usePokemonStore(selectActivePokemon)
   const setEvIndex = usePokemonStore(s => s.setEvIndex)
   const setIvIndex = usePokemonStore(s => s.setIvIndex)
   const getRemainingEvs = usePokemonStore(s => s.getRemainingEvs)
@@ -41,7 +55,7 @@ export const PokemonStatDisplay: React.FC = () => {
 
   // Track which IV is being hovered for preview
   const [hoveredIvIndex, setHoveredIvIndex] = useState<number | null>(null)
-  const ivCellRefs = useRef<(HTMLDivElement | null)[]>([])
+  const ivCellRefs = useRef<(HTMLButtonElement | null)[]>([])
 
   // Helper to adapt stored element to a RefObject that CursorFollowHint expects
   const getIvAnchorRef = (idx: number): React.RefObject<HTMLElement | null> => {
@@ -136,6 +150,9 @@ export const PokemonStatDisplay: React.FC = () => {
               <div className="col-span-5 flex items-center gap-2">
                 <EVSlider
                   value={evs?.[index] ?? 0}
+                  step={pokemon?.data.evStep ?? 1}
+                  label={`${statName} EV`}
+                  disabled={isLoading}
                   onChange={newValue => {
                     handleEvChange(index, newValue)
                   }}
@@ -143,7 +160,10 @@ export const PokemonStatDisplay: React.FC = () => {
                 />
                 <span className="text-foreground w-8 text-right text-xs flex-shrink-0">{evs?.[index] ?? 0}</span>
               </div>
-              <div
+              <button
+                type="button"
+                aria-label={`Set ${statName} IV to ${iv !== MAX_IV ? MAX_IV : 0}`}
+                disabled={isLoading}
                 className={`relative text-center text-sm ${ivClass} cursor-pointer hover:text-cyan-300 transition-colors`}
                 onClick={() => handleIvClick(index, iv)}
                 onMouseEnter={() => setHoveredIvIndex(index)}
@@ -154,7 +174,7 @@ export const PokemonStatDisplay: React.FC = () => {
               >
                 {ivDisplay}
                 <CursorFollowHint anchorRef={getIvAnchorRef(index)} enabled={isHovered} requireOverflow={false} once={false} label={iv !== MAX_IV ? `Click to set to max (${MAX_IV})` : 'Click to set to 0'} offsetY={-10} />
-              </div>
+              </button>
               <div className="text-muted-foreground text-center text-sm">
                 <Skeleton.Text>{isLoading ? 255 : base}</Skeleton.Text>
               </div>

@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import type { PokemonBase } from '@/lib/parser/core/PokemonBase'
 import type { SaveData } from '@/lib/parser/core/types'
 import { calculateTotalStats, natures } from '@/lib/parser/core/utils'
-import type { UIPokemonData } from '../types'
+import type { UIPokemonBox, UIPokemonData } from '../types'
 import { beginEmulatorWrite, endEmulatorWrite, useEmulatorStore } from './useEmulatorStore'
 import { useHistoryStore } from './useHistoryStore'
 import { useSaveFileStore } from './useSaveFileStore'
@@ -28,9 +28,12 @@ function syncPokemonToEmulator(pokemon: PokemonBase, partyList: UIPokemonData[])
 
   const address = layout.partyData + slotIndex * layout.pokemonSize
   beginEmulatorWrite()
-  client.writeBytes(address, pokemon.rawBytes).catch(err => {
-    console.error('Failed to write Pokemon to emulator:', err)
-  }).finally(endEmulatorWrite)
+  client
+    .writeBytes(address, pokemon.rawBytes)
+    .catch(err => {
+      console.error('Failed to write Pokemon to emulator:', err)
+    })
+    .finally(endEmulatorWrite)
 }
 
 /**
@@ -51,14 +54,20 @@ function syncFullPartyToEmulator(partyList: UIPokemonData[]): void {
   }
 
   beginEmulatorWrite()
-  client.writeBytes(layout.partyData, fullBuffer).catch(err => {
-    console.error('Failed to write party to emulator:', err)
-  }).finally(endEmulatorWrite)
+  client
+    .writeBytes(layout.partyData, fullBuffer)
+    .catch(err => {
+      console.error('Failed to write party to emulator:', err)
+    })
+    .finally(endEmulatorWrite)
 }
 
 export interface PokemonState {
   activePokemonId: number
   partyList: UIPokemonData[]
+  boxList: UIPokemonBox[]
+  storageView: 'party' | 'boxes'
+  activeBoxIndex: number
   megaPreview: Record<number, { enabled: boolean; form?: string }>
   // UI identity management (stable across reorders/undo within a session)
   nextUiId: number
@@ -68,6 +77,9 @@ export interface PokemonState {
 export interface PokemonActions {
   setActivePokemonId: (id: number) => void
   setPartyList: (partyList: UIPokemonData[]) => void
+  setBoxList: (boxList: UIPokemonBox[]) => void
+  setStorageView: (view: 'party' | 'boxes') => void
+  setActiveBoxIndex: (index: number) => void
   setEvIndex: (pokemonId: number, statIndex: number, evValue: number) => void
   setIvIndex: (pokemonId: number, statIndex: number, ivValue: number) => void
   setNature: (pokemonId: number, nature: string) => void
@@ -85,10 +97,49 @@ export interface PokemonActions {
 
 export type PokemonStore = PokemonState & PokemonActions
 
+// Box ids are tied to their saved location, so undo/redo retains the selection.
+const BOX_ID_BASE = 1_000_000
+
+export function findPokemon(state: PokemonState, id: number): UIPokemonData | undefined {
+  const partyPokemon = state.partyList.find(p => p.id === id)
+  if (partyPokemon) return partyPokemon
+  for (const box of state.boxList) {
+    const pokemon = box.pokemon.find(p => p?.id === id)
+    if (pokemon) return pokemon
+  }
+  return undefined
+}
+
+export function selectActivePokemon(state: PokemonState): UIPokemonData | undefined {
+  return findPokemon(state, state.activePokemonId)
+}
+
+function updatePokemon(state: PokemonState, id: number, update: (pokemon: UIPokemonData) => UIPokemonData): Partial<PokemonState> {
+  const partyIndex = state.partyList.findIndex(p => p.id === id)
+  if (partyIndex !== -1) {
+    const previous = state.partyList[partyIndex]!
+    const next = update(previous)
+    return next === previous ? {} : { partyList: state.partyList.map(p => (p.id === id ? next : p)) }
+  }
+  const boxIndex = state.boxList.findIndex(box => box.pokemon.some(p => p?.id === id))
+  if (boxIndex === -1) return {}
+  const box = state.boxList[boxIndex]!
+  const previous = box.pokemon.find(p => p?.id === id)!
+  const next = update(previous)
+  return next === previous
+    ? {}
+    : {
+        boxList: state.boxList.map((entry, index) => (index === boxIndex ? { ...entry, pokemon: entry.pokemon.map(p => (p?.id === id ? next : p)) } : entry)),
+      }
+}
+
 export const usePokemonStore = create<PokemonStore>((set, get) => ({
   // Initial state
   activePokemonId: -1,
   partyList: [],
+  boxList: [],
+  storageView: 'party',
+  activeBoxIndex: 0,
   megaPreview: {},
   nextUiId: 1,
   pendingIdsBySlot: null,
@@ -102,9 +153,28 @@ export const usePokemonStore = create<PokemonStore>((set, get) => ({
     set({ partyList })
   },
 
+  setBoxList: (boxList: UIPokemonBox[]) => {
+    set({ boxList })
+  },
+
+  setStorageView: (storageView: 'party' | 'boxes') => {
+    set(state => {
+      const candidates = storageView === 'party' ? state.partyList : (state.boxList[state.activeBoxIndex]?.pokemon ?? [])
+      const activePokemonId = candidates.some(p => p?.id === state.activePokemonId) ? state.activePokemonId : (candidates.find(p => p)?.id ?? -1)
+      return { storageView, activePokemonId }
+    })
+  },
+
+  setActiveBoxIndex: (activeBoxIndex: number) => {
+    set(state => {
+      if (!Number.isInteger(activeBoxIndex) || activeBoxIndex < 0 || activeBoxIndex >= state.boxList.length) return {}
+      return { activeBoxIndex, storageView: 'boxes', activePokemonId: state.boxList[activeBoxIndex]?.pokemon.find(p => p)?.id ?? -1 }
+    })
+  },
+
   setEvIndex: (pokemonId: number, statIndex: number, evValue: number) => {
-    set(state => ({
-      partyList: state.partyList.map(p => {
+    set(state =>
+      updatePokemon(state, pokemonId, p => {
         if (p.id !== pokemonId || !p.details) return p
 
         // Validate EV constraints
@@ -116,7 +186,8 @@ export const usePokemonStore = create<PokemonStore>((set, get) => ({
 
         // Ensure total EVs don't exceed limit
         const maxAllowedForThisStat = Math.min(MAX_EV_PER_STAT, MAX_TOTAL_EVS - otherEvsTotal)
-        const finalEvValue = Math.min(clampedEvValue, maxAllowedForThisStat)
+        const step = p.data.evStep ?? 1
+        const finalEvValue = Math.floor(Math.max(0, Math.min(clampedEvValue, maxAllowedForThisStat)) / step) * step
 
         // Only update if the value actually changed
         if (currentEvs[statIndex] === finalEvValue) return p
@@ -128,13 +199,13 @@ export const usePokemonStore = create<PokemonStore>((set, get) => ({
         syncPokemonToEmulator(p.data, state.partyList)
         // Return a new object reference for React to detect change
         return { ...p }
-      }),
-    }))
+      })
+    )
   },
 
   setIvIndex: (pokemonId: number, statIndex: number, ivValue: number) => {
-    set(state => ({
-      partyList: state.partyList.map(p => {
+    set(state =>
+      updatePokemon(state, pokemonId, p => {
         if (p.id !== pokemonId || !p.details) return p
 
         // Only update if the value actually changed
@@ -147,13 +218,13 @@ export const usePokemonStore = create<PokemonStore>((set, get) => ({
         syncPokemonToEmulator(p.data, state.partyList)
         // Return a new object reference for React to detect change
         return { ...p }
-      }),
-    }))
+      })
+    )
   },
 
   setNature: (pokemonId: number, nature: string) => {
-    set(state => ({
-      partyList: state.partyList.map(p => {
+    set(state =>
+      updatePokemon(state, pokemonId, p => {
         const natureValue = natures.indexOf(nature)
         if (p.id !== pokemonId || !p.details) return p
         // Only update if the value actually changed
@@ -164,27 +235,27 @@ export const usePokemonStore = create<PokemonStore>((set, get) => ({
         p.data.setStats(calculateTotalStats(p.data, p.details.baseStats))
         syncPokemonToEmulator(p.data, state.partyList)
         return { ...p }
-      }),
-    }))
+      })
+    )
   },
 
   setAbilitySlot: (pokemonId: number, slot: number) => {
-    set(state => ({
-      partyList: state.partyList.map(p => {
+    set(state =>
+      updatePokemon(state, pokemonId, p => {
         if (p.id !== pokemonId || !p.details) return p
-        const desired = Math.max(0, Math.min(2, slot - 1))
+        const desired = Math.max(0, Math.min(p.data.maxAbilityNumber ?? 2, slot - 1))
         if (p.data.abilityNumber === desired) return p
         useHistoryStore.getState().queueSnapshot()
         p.data.abilityNumber = desired
         syncPokemonToEmulator(p.data, state.partyList)
         return { ...p }
-      }),
-    }))
+      })
+    )
   },
 
   setItemId: (pokemonId: number, itemId: number | null) => {
-    set(state => ({
-      partyList: state.partyList.map(p => {
+    set(state =>
+      updatePokemon(state, pokemonId, p => {
         if (p.id !== pokemonId) return p
         // Skip if same item
         const desired = itemId ?? 0
@@ -210,8 +281,8 @@ export const usePokemonStore = create<PokemonStore>((set, get) => ({
           return { ...p, details: newDetails }
         }
         return { ...p }
-      }),
-    }))
+      })
+    )
   },
 
   setMegaPreviewEnabled: (pokemonId: number, enabled: boolean) => {
@@ -233,8 +304,7 @@ export const usePokemonStore = create<PokemonStore>((set, get) => ({
   },
 
   getRemainingEvs: (pokemonId: number) => {
-    const { partyList } = get()
-    const pokemon = partyList.find(p => p.id === pokemonId)
+    const pokemon = findPokemon(get(), pokemonId)
     if (!pokemon) return MAX_TOTAL_EVS
     const totalEvs = pokemon.data.evs.reduce((sum, ev) => sum + ev, 0)
     return Math.max(0, MAX_TOTAL_EVS - totalEvs)
@@ -244,17 +314,21 @@ export const usePokemonStore = create<PokemonStore>((set, get) => ({
     set({
       activePokemonId: -1,
       partyList: [],
+      boxList: [],
+      storageView: 'party',
+      activeBoxIndex: 0,
     })
   },
 
   clearPokemonDetails: () => {
     set(state => ({
       partyList: state.partyList.map(p => ({ ...p, details: undefined })),
+      boxList: state.boxList.map(box => ({ ...box, pokemon: box.pokemon.map(p => (p ? { ...p, details: undefined } : null)) })),
     }))
   },
 
   resetUiIdentities: () => {
-    set({ nextUiId: 1, pendingIdsBySlot: null, megaPreview: {} })
+    set({ nextUiId: 1, pendingIdsBySlot: null, megaPreview: {}, storageView: 'party', activeBoxIndex: 0 })
   },
 
   setPendingIdsBySlot: (ids: number[] | null) => {
@@ -274,6 +348,16 @@ export const usePokemonStore = create<PokemonStore>((set, get) => ({
   },
 }))
 
+function createUiPokemon(data: PokemonBase, id: number): UIPokemonData {
+  const shinyPath = data.isShiny || data.isRadiant ? '/shiny' : ''
+  return {
+    id,
+    spriteUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon${shinyPath}/${data.speciesId}.png`,
+    spriteAniUrl: `/sprites${shinyPath}/${data.nameId}.gif`,
+    data,
+  }
+}
+
 // Helper function to build party list from save data
 export const buildPartyListFromSaveData = (saveData: SaveData): UIPokemonData[] => {
   const { partyList: prevList, pendingIdsBySlot: pending, nextUiId: startingNextId } = usePokemonStore.getState()
@@ -282,14 +366,6 @@ export const buildPartyListFromSaveData = (saveData: SaveData): UIPokemonData[] 
   let nextUiId = startingNextId
 
   const party = saveData.party_pokemon.map((parsedPokemon: PokemonBase, index: number) => {
-    const { isShiny, isRadiant } = parsedPokemon
-    const useAltSprite = isShiny || isRadiant
-    const SPRITE_BASE_URL = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon'
-    const spriteUrl = useAltSprite ? `${SPRITE_BASE_URL}/shiny/${parsedPokemon.speciesId}.png` : `${SPRITE_BASE_URL}/${parsedPokemon.speciesId}.png`
-
-    const SPRITE_ANI_BASE_URL = '/sprites'
-    const spriteAniUrl = useAltSprite ? `${SPRITE_ANI_BASE_URL}/shiny/${parsedPokemon.nameId}.gif` : `${SPRITE_ANI_BASE_URL}/${parsedPokemon.nameId}.gif`
-
     let uiId: number | undefined = Array.isArray(pending) ? pending[index] : undefined
     if (uiId && usedIds.has(uiId)) uiId = undefined
 
@@ -303,12 +379,7 @@ export const buildPartyListFromSaveData = (saveData: SaveData): UIPokemonData[] 
     }
 
     usedIds.add(uiId)
-    return {
-      id: uiId!,
-      spriteUrl,
-      spriteAniUrl,
-      data: parsedPokemon,
-    }
+    return createUiPokemon(parsedPokemon, uiId!)
   })
 
   usePokemonStore.setState(state => ({
@@ -317,4 +388,11 @@ export const buildPartyListFromSaveData = (saveData: SaveData): UIPokemonData[] 
   }))
 
   return party
+}
+
+export const buildBoxListFromSaveData = (saveData: SaveData): UIPokemonBox[] => {
+  return (saveData.boxes ?? []).map((box, boxIndex) => ({
+    name: box.name,
+    pokemon: box.pokemon.map((data, slot) => (data ? createUiPokemon(data, BOX_ID_BASE + boxIndex * 30 + slot) : null)),
+  }))
 }

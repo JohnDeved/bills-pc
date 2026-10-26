@@ -15,16 +15,19 @@ export class PokemonBase {
   protected readonly config: GameConfig
   protected readonly offsets: typeof VANILLA_POKEMON_OFFSETS
   protected readonly saveLayout: typeof VANILLA_SAVE_LAYOUT
+  private boxLevel = 0
+  private readonly boxStats = [0, 0, 0, 0, 0, 0]
 
   constructor(
     protected readonly data: Uint8Array,
-    config: GameConfig
+    config: GameConfig,
+    public readonly isBoxed = false
   ) {
     // Merge config overrides with vanilla defaults
     this.offsets = { ...VANILLA_POKEMON_OFFSETS, ...config.offsetOverrides }
     this.saveLayout = { ...VANILLA_SAVE_LAYOUT, ...config.saveLayoutOverrides }
     // Use a safe fallback when pokemonSize is not provided in config
-    const pokemonSize = typeof config.pokemonSize === 'number' ? config.pokemonSize : 100
+    const pokemonSize = isBoxed ? (config.boxPokemonSize ?? 80) : (config.pokemonSize ?? 100)
 
     if (data.length < pokemonSize) {
       throw new Error(`Insufficient data for Pokemon: ${data.length} bytes`)
@@ -41,49 +44,91 @@ export class PokemonBase {
     return this.view.getUint32(this.offsets.otId, true)
   }
   get currentHp() {
+    if (this.isBoxed) return this.maxHp
     return this.view.getUint16(this.offsets.currentHp, true)
   }
   get status() {
+    if (this.isBoxed) return 0
     return this.view.getUint8(this.offsets.status)
   }
   get level() {
+    if (this.isBoxed) return this.boxLevel
     return this.view.getUint8(this.offsets.level)
   }
+
+  /** Boxes store experience; the UI derives level from the species' growth rate. */
+  get experience(): number {
+    const growth = this.getDecryptedSubstruct(this.data, 0)
+    return new DataView(growth.buffer, growth.byteOffset, growth.byteLength).getUint32(4, true)
+  }
+
+  get boxGrowthRate(): string | undefined {
+    return this.config.boxGrowthRate
+  }
+
+  get hasStoredPP(): boolean {
+    return true
+  }
+
+  get evStep(): number {
+    return 1
+  }
+
+  get maxAbilityNumber(): number {
+    return this.config.getSpeciesId ? 2 : 1
+  }
+
+  setBoxLevel(level: number): void {
+    if (!this.isBoxed) return
+    if (!Number.isInteger(level) || level < 1 || level > 100) throw new Error('Box level must be between 1 and 100')
+    this.boxLevel = level
+  }
+
+  private getStat(index: number, offset: number): number {
+    return this.isBoxed ? this.boxStats[index]! : this.view.getUint16(offset, true)
+  }
+
+  private setStat(index: number, offset: number, value: number): void {
+    // Box records have no party tail. Derived stats must never be serialized into the next slot.
+    if (this.isBoxed) this.boxStats[index] = value
+    else this.view.setUint16(offset, value, true)
+  }
+
   get maxHp() {
-    return this.view.getUint16(this.offsets.maxHp, true)
+    return this.getStat(0, this.offsets.maxHp)
   }
   set maxHp(value) {
-    this.view.setUint16(this.offsets.maxHp, value, true)
+    this.setStat(0, this.offsets.maxHp, value)
   }
   get attack() {
-    return this.view.getUint16(this.offsets.attack, true)
+    return this.getStat(1, this.offsets.attack)
   }
   set attack(value) {
-    this.view.setUint16(this.offsets.attack, value, true)
+    this.setStat(1, this.offsets.attack, value)
   }
   get defense() {
-    return this.view.getUint16(this.offsets.defense, true)
+    return this.getStat(2, this.offsets.defense)
   }
   set defense(value) {
-    this.view.setUint16(this.offsets.defense, value, true)
+    this.setStat(2, this.offsets.defense, value)
   }
   get speed() {
-    return this.view.getUint16(this.offsets.speed, true)
+    return this.getStat(3, this.offsets.speed)
   }
   set speed(value) {
-    this.view.setUint16(this.offsets.speed, value, true)
+    this.setStat(3, this.offsets.speed, value)
   }
   get spAttack() {
-    return this.view.getUint16(this.offsets.spAttack, true)
+    return this.getStat(4, this.offsets.spAttack)
   }
   set spAttack(value) {
-    this.view.setUint16(this.offsets.spAttack, value, true)
+    this.setStat(4, this.offsets.spAttack, value)
   }
   get spDefense() {
-    return this.view.getUint16(this.offsets.spDefense, true)
+    return this.getStat(5, this.offsets.spDefense)
   }
   set spDefense(value) {
-    this.view.setUint16(this.offsets.spDefense, value, true)
+    this.setStat(5, this.offsets.spDefense, value)
   }
 
   private get nicknameRaw() {
@@ -472,7 +517,8 @@ export class PokemonBase {
       if (values.length !== 6) throw new Error('IVs array must have 6 values')
       const substruct3 = this.getDecryptedSubstruct(this.data, 3)
       const subView = new DataView(substruct3.buffer, substruct3.byteOffset, substruct3.byteLength)
-      let ivData = 0
+      // Preserve the egg and ability flags sharing the top two bits with IVs.
+      let ivData = subView.getUint32(4, true) & 0xc0000000
       ivData |= (values[0]! & 0x1f) << 0 // HP
       ivData |= (values[1]! & 0x1f) << 5 // Attack
       ivData |= (values[2]! & 0x1f) << 10 // Defense
@@ -524,11 +570,18 @@ export class PokemonBase {
   }
 
   get nickname(): string {
-    return bytesToGbaString(this.nicknameRaw)
+    return this.decodeName(this.nicknameRaw)
   }
 
   get otName(): string {
-    return bytesToGbaString(this.otNameRaw)
+    return this.decodeName(this.otNameRaw)
+  }
+
+  private decodeName(bytes: Uint8Array): string {
+    // Box names are fixed-width buffers; bytes after the Gen 3 terminator may
+    // contain old data. Trim only the display view, preserving the saved bytes.
+    const end = this.isBoxed ? bytes.indexOf(0xff) : -1
+    return bytesToGbaString(end === -1 ? bytes : bytes.subarray(0, end))
   }
 
   get nature(): string {
@@ -602,6 +655,10 @@ export class PokemonBase {
   }
 
   get abilityNumber(): number {
+    if (!this.config.getSpeciesId) {
+      const misc = this.getDecryptedSubstruct(this.data, 3)
+      return new DataView(misc.buffer, misc.byteOffset, misc.byteLength).getUint32(4, true) >>> 31
+    }
     // if 2nd bit of status is set, ability is 1
     // if 3rd bit is set, ability is 2
     // otherwise ability is 0
@@ -611,6 +668,14 @@ export class PokemonBase {
   }
 
   set abilityNumber(value: number) {
+    if (!this.config.getSpeciesId) {
+      const misc = this.getDecryptedSubstruct(this.data, 3)
+      const view = new DataView(misc.buffer, misc.byteOffset, misc.byteLength)
+      const bits = view.getUint32(4, true)
+      view.setUint32(4, (bits & 0x7fffffff) | (Math.max(0, Math.min(1, value | 0)) << 31), true)
+      this.setEncryptedSubstruct(3, misc)
+      return
+    }
     // Clamp to [0,2] and update encoded bits in status byte while preserving other flags
     const clamped = Math.max(0, Math.min(2, value | 0))
     const statusOffset = this.offsets.status

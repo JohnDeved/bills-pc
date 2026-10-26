@@ -60,8 +60,22 @@ export interface SectorInfo {
 }
 
 // Complete save data structure
+export interface PokemonBox {
+  readonly name: string
+  readonly pokemon: readonly (PokemonBase | null)[]
+}
+
+export interface PokemonStorage {
+  readonly boxes: readonly PokemonBox[]
+  readonly currentBox: number
+}
+
 export interface SaveData {
   readonly party_pokemon: readonly PokemonBase[]
+  /** PC storage is available for save files, not live emulator memory. */
+  readonly boxes?: readonly PokemonBox[]
+  readonly current_box?: number
+  readonly box_error?: string
   readonly player_name: string
   readonly play_time: PlayTimeData
   readonly active_slot: number
@@ -116,7 +130,7 @@ export const VANILLA_SAVE_LAYOUT = {
   sectorSize: 4096,
   sectorDataSize: 3968,
   sectorCount: 32,
-  slotsPerSave: 18,
+  slotsPerSave: 14,
   saveBlockSize: 3968 * 4,
   partyOffset: 0x238,
   partyCountOffset: 0x234,
@@ -159,6 +173,10 @@ export interface GameConfig {
   /** Pokemon size in bytes (defaults to 100 for vanilla) */
   readonly pokemonSize: number
 
+  /** Serialized boxed record size for games using the standard PokemonBase layout. */
+  readonly boxPokemonSize?: number
+  readonly boxGrowthRate?: string
+
   /** Maximum party size (defaults to 6 for vanilla) */
   readonly maxPartySize: number
 
@@ -195,6 +213,12 @@ export interface GameConfig {
   }
 
   readonly preloadRegions?: readonly { address: number; size: number }[]
+
+  /** Storage data is assembled in logical sector order, starting at sector 5. */
+  parseBoxStorage?(data: Uint8Array): PokemonStorage
+  writeBoxStorage?(data: Uint8Array, boxes: readonly PokemonBox[]): Uint8Array
+  /** Number of bytes included in a section's checksum (padding is excluded). */
+  getSectorDataSize?(sectorId: number): number
 
   // Optional behavioral overrides for game-specific mechanics
   calculateNature?(personality: number): string

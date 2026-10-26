@@ -4,7 +4,7 @@ import { MousePointerClick } from 'lucide-react'
 import { Skeleton } from '@/components/common'
 import { PokemonTypeBadge } from '@/components/pokemon/PokemonTypeBadge'
 import { useActivePokemonLoading, useMegaPreview } from '@/hooks'
-import { usePokemonStore } from '@/stores'
+import { selectActivePokemon, usePokemonStore } from '@/stores'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { Button } from '../ui/button'
 import { CursorFollowHint } from '@/components/common/CursorFollowHint'
@@ -12,7 +12,7 @@ import { CursorFollowHint } from '@/components/common/CursorFollowHint'
 
 export const PokemonHeader: React.FC = () => {
   const isLoading = useActivePokemonLoading()
-  const pokemon = usePokemonStore(s => s.partyList.find(p => p.id === s.activePokemonId))
+  const pokemon = usePokemonStore(selectActivePokemon)
   const megaAnchorRef = useRef<HTMLElement | null>(null)
   const { supportsMega, hasMegaForms, megaPreviewEnabled, setMegaPreviewEnabled, forms, selectedForm, setSelectedForm, statsLoading, megaTypes } = useMegaPreview()
   return (
@@ -78,7 +78,7 @@ export const PokemonHeader: React.FC = () => {
               <PokemonTypeBadge key={type} type={type} isLarge />
             ))}
           </Skeleton.Container>
-          <div className="flex items-center gap-2 min-w-8" />
+          <div className="flex items-center gap-2 min-w-8">{pokemon?.data.isBoxed && <span className="text-xs text-muted-foreground">{pokemon.data.level > 0 ? `Lv.${pokemon.data.level}` : 'Level…'}</span>}</div>
         </div>
       </div>
     </Skeleton.LoadingProvider>

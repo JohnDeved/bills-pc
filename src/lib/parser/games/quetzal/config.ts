@@ -3,19 +3,34 @@
  * Only overrides differences from vanilla Emerald baseline
  */
 
-import { VANILLA_SAVE_LAYOUT, type GameConfig, type ItemMapping, type MoveMapping, type PokemonMapping, type PokemonOffsetsOverride, type SaveLayoutOverride } from '../../core/types'
+import { VANILLA_EMERALD_SIGNATURE, VANILLA_SAVE_LAYOUT, type GameConfig, type ItemMapping, type MoveMapping, type PokemonBox, type PokemonMapping, type PokemonOffsetsOverride, type SaveLayoutOverride } from '../../core/types'
 import { createMapping, natures } from '../../core/utils'
 import { GameConfigBase } from '../../core/GameConfigBase'
 import itemMapData from './data/item_map.json'
 import moveMapData from './data/move_map.json'
 import pokemonMapData from './data/pokemon_map.json'
+import { parseQuetzalStorage, writeQuetzalStorage } from './storage'
 
 export class QuetzalConfig extends GameConfigBase implements GameConfig {
   readonly name = 'Pokemon Quetzal'
 
   // Override Pokemon size for Quetzal
   readonly pokemonSize = 104
+  readonly boxPokemonSize = 104
+  readonly boxGrowthRate = 'medium-slow'
   readonly maxPartySize = 6
+
+  parseBoxStorage(data: Uint8Array) {
+    return parseQuetzalStorage(data, this)
+  }
+
+  writeBoxStorage(data: Uint8Array, boxes: readonly PokemonBox[]) {
+    return writeQuetzalStorage(data, boxes)
+  }
+
+  getSectorDataSize() {
+    return 0xff4
+  }
 
   // Quetzal includes Mega Evolution feature
   readonly supportsMega = true
@@ -35,6 +50,7 @@ export class QuetzalConfig extends GameConfigBase implements GameConfig {
 
   // Override save layout for Quetzal
   readonly saveLayoutOverrides: SaveLayoutOverride = {
+    slotsPerSave: 16,
     partyOffset: 0x6a8,
     partyCountOffset: 0x6a4,
     playTimeHours: 0x10,
@@ -207,12 +223,12 @@ export class QuetzalConfig extends GameConfigBase implements GameConfig {
    * Override active slot determination for Quetzal
    */
   determineActiveSlot(getCounterSum: (range: number[]) => number): number {
-    const slot1Range = Array.from({ length: 18 }, (_, i) => i)
-    const slot2Range = Array.from({ length: 18 }, (_, i) => i + 14)
+    const slot1Range = Array.from({ length: 16 }, (_, i) => i)
+    const slot2Range = Array.from({ length: 16 }, (_, i) => i + 16)
     const slot1Sum = getCounterSum(slot1Range)
     const slot2Sum = getCounterSum(slot2Range)
 
-    return slot2Sum >= slot1Sum ? 14 : 0
+    return slot2Sum >= slot1Sum ? 16 : 0
   }
 
   /**
@@ -232,7 +248,8 @@ export class QuetzalConfig extends GameConfigBase implements GameConfig {
 
   /**
    * Check if this config can handle the given save file
-   * Use parsing success as detection criteria with base class helpers
+   * The extra storage sections distinguish Quetzal from Emerald. Party-like
+   * bytes elsewhere in a vanilla save are not a reliable format signature.
    */
   canHandle(saveData: Uint8Array): boolean {
     // Use base class to check for valid Emerald signature
@@ -240,20 +257,21 @@ export class QuetzalConfig extends GameConfigBase implements GameConfig {
       return false
     }
 
-    // Try to actually parse Pokemon using Quetzal-specific structure with base class helpers
-    try {
-      const activeSlot = this.getActiveSlot(saveData)
-      const sectorMap = this.buildSectorMap(saveData, activeSlot)
-      const saveblock1Data = this.extractSaveBlock1(saveData, sectorMap)
-
-      // Use base class helper for Pokemon detection
-      const pokemonFound = this.parsePokemonForDetection(saveblock1Data, this.pokemonSize, (data, view) => this.getSpeciesId(data, view))
-
-      // Return true if we found valid Pokemon data
-      return pokemonFound > 0
-    } catch {
-      return false
-    }
+    const view = new DataView(saveData.buffer, saveData.byteOffset, saveData.byteLength)
+    return [0, 16].some(start => {
+      const ids = new Set<number>()
+      let counter: number | undefined
+      for (let index = start; index < start + 16; index++) {
+        const footer = index * 4096 + 4084
+        if (footer + 12 > saveData.length || view.getUint32(footer + 4, true) !== VANILLA_EMERALD_SIGNATURE) return false
+        const id = view.getUint16(footer, true)
+        const currentCounter = view.getUint32(footer + 8, true)
+        if (id >= 16 || ids.has(id) || (counter !== undefined && currentCounter !== counter)) return false
+        ids.add(id)
+        counter = currentCounter
+      }
+      return ids.size === 16
+    })
   }
 
   /**

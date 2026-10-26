@@ -12,6 +12,48 @@ https://github.com/user-attachments/assets/c0cf27de-2d38-4185-9356-a7cc493a5d53
 - **File System Integration**: Modern browser file API support
 - **Cross-Platform**: Web, CLI, and library usage
 - **Mega Stats Preview**: Preview stats if a Mega Evolution exists (gated by game config)
+- **PC Box Editing**: Browse named boxes and edit stored Pokémon's IVs, EVs, nature, ability, and held item in Emerald and Quetzal
+
+### Editing Pokémon in the PC
+
+Open a save file, select **PC boxes**, choose a box, and select an occupied slot.
+The same editor used for the party now applies to that Pokémon. **Undo**, **Redo**,
+**Reset**, and the File menu's save/download actions include box edits. Reopen the
+exported `.sav` in your game to use the changes.
+
+Emerald supports its 14 boxes. Quetzal supports its packed 21-, 31-, and 38-byte
+storage layouts (67, 45, and 37 boxes respectively). Quetzal stores box EVs in
+multiples of four; the controls use that increment. Layouts without saved PP show
+`PP —`. If a Quetzal box format cannot be identified unambiguously, the app explains
+that box editing is unavailable and preserves the original PC data when saving
+party changes. Live emulator connections currently expose the party only.
+
+This edits Pokémon already in a save. Moving Pokémon between saves or games is
+not included.
+
+### Box editing tests
+
+```bash
+npm ci
+npm test
+npm run build
+npx playwright install chromium
+npx playwright test src/__tests__/box-editing.e2e.test.ts --project=chromium
+```
+
+The tests use the checked-in Emerald and Quetzal saves. Quetzal already contains
+232 boxed Pokémon; Emerald's PC is empty, so additional tests place its actual
+Treecko record into known box slots without using the parser being tested.
+Coverage includes sector-spanning records, final slots, encrypted Pokémon and
+section checksums, preservation of other Pokémon and save data, save-slot
+selection, file switching, undo/redo, and browser download/reopen workflows.
+
+To run the browser workflow against another populated Emerald save, set
+`BILLS_PC_EMERALD_SAVE` to its absolute path:
+
+```bash
+BILLS_PC_EMERALD_SAVE=/path/to/emerald.sav npx playwright test src/__tests__/box-editing.e2e.test.ts --project=chromium --project='Mobile Chrome'
+```
 
 ## Quick Start
 

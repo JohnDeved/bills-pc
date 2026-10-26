@@ -4,10 +4,10 @@ import { ScrollableContainer, Skeleton } from '@/components/common'
 import { PokemonNatureCombobox } from '@/components/pokemon/PokemonNatureCombobox'
 import { findNatureForEffects, getStatAbbr, statAbbreviations } from '@/lib/parser/core/utils'
 import { computeTotalsWithHeldItem } from '@/lib/battle'
-import { usePokemonStore, useSaveFileStore } from '@/stores'
+import { selectActivePokemon, usePokemonStore, useSaveFileStore } from '@/stores'
 
 export const NatureTab: React.FC = () => {
-  const pokemon = usePokemonStore(s => s.partyList.find(p => p.id === s.activePokemonId))
+  const pokemon = usePokemonStore(selectActivePokemon)
   const activePokemonId = pokemon?.id ?? -1
   const setNature = usePokemonStore(s => s.setNature)
   const saveSessionId = useSaveFileStore(s => s.saveSessionId)

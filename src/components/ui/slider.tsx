@@ -9,6 +9,7 @@ const Slider = ({
   value,
   min = 0,
   max = 100,
+  step = 1,
   thumbVisibleOnHover = true,
   maxVisualValue,
   disabled,
@@ -35,7 +36,7 @@ const Slider = ({
       if (typeof value === 'undefined' || !Array.isArray(value)) return
       if (disabled) return
       e.preventDefault()
-      const delta = Math.sign(e.deltaY) * (e.shiftKey ? 10 : 1)
+      const delta = Math.sign(e.deltaY) * step * (e.shiftKey ? 10 : 1)
       // Clamp to maxVisualValue if provided
       const upperLimit = typeof maxVisualValue === 'number' ? Math.min(max, maxVisualValue) : max
       const newValue = Math.max(min, Math.min(upperLimit, value[0]! - delta))
@@ -43,7 +44,7 @@ const Slider = ({
         onValueChange([newValue])
       }
     },
-    [value, disabled, onValueChange, max, maxVisualValue, min]
+    [value, disabled, onValueChange, max, maxVisualValue, min, step]
   )
 
   React.useEffect(() => {
@@ -73,6 +74,7 @@ const Slider = ({
       value={clampedValue}
       min={min}
       max={max}
+      step={step}
       disabled={disabled}
       onValueChange={onValueChange}
       className={cn('group relative flex w-full touch-none items-center select-none data-[disabled]:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col', className)}
@@ -92,6 +94,7 @@ const Slider = ({
       {Array.from({ length: _values.length }, (_, index) => (
         <SliderPrimitive.Thumb
           data-slot="slider-thumb"
+          aria-label={props['aria-label']}
           key={index}
           className={cn(
             'border-primary bg-background ring-ring/50 block size-4 shrink-0 rounded-full border shadow-sm transition-[color,box-shadow,opacity] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50 cursor-pointer',

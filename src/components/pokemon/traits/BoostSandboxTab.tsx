@@ -3,7 +3,7 @@ import { IoCaretDown, IoCaretUp } from 'react-icons/io5'
 import { ScrollableContainer } from '@/components/common'
 import { statAbbreviations } from '@/lib/parser/core/utils'
 import { computeTotalsWithHeldItem } from '@/lib/battle'
-import { usePokemonStore, useSaveFileStore } from '@/stores'
+import { selectActivePokemon, usePokemonStore, useSaveFileStore } from '@/stores'
 import { useMegaPreview } from '@/hooks'
 
 // Helpers
@@ -16,7 +16,7 @@ const fmtDelta = (n: number) => {
 }
 
 export const BoostSandboxTab: React.FC = () => {
-  const pokemon = usePokemonStore(s => s.partyList.find(p => p.id === s.activePokemonId))
+  const pokemon = usePokemonStore(selectActivePokemon)
   const activePokemonId = pokemon?.id ?? -1
   const saveSessionId = useSaveFileStore(s => s.saveSessionId)
   const { megaPreviewEnabled, megaBaseStats } = useMegaPreview()

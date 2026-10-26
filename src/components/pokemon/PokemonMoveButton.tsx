@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, Crosshair } from 'lucide-react'
 import { useRef } from 'react'
-import { usePokemonStore } from '@/stores'
+import { selectActivePokemon, usePokemonStore } from '@/stores'
 import { ScrollableContainer } from '@/components/common'
 import { CursorFollowHint } from '@/components/common/CursorFollowHint'
 import { PokemonTypeBadge } from '@/components/pokemon/PokemonTypeBadge'
@@ -34,8 +34,8 @@ export const PokemonMoveButton: React.FC<MoveButtonProps> = ({ move, isExpanded,
   const rootRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const { onWheel } = useSmoothWheelScroll(scrollRef, { enabled: isExpanded })
-  const baseTypes = usePokemonStore(s => s.partyList.find(p => p.id === s.activePokemonId)?.details?.types ?? [])
-  const activePokemon = usePokemonStore(s => s.partyList.find(p => p.id === s.activePokemonId))
+  const activePokemon = usePokemonStore(selectActivePokemon)
+  const baseTypes = activePokemon?.details?.types ?? []
   const heldItemIdName = activePokemon?.data.itemIdName
   const { megaPreviewEnabled, megaTypes, megaAbilities } = useMegaPreview()
   const effectiveTypes = megaPreviewEnabled && Array.isArray(megaTypes) && megaTypes.length > 0 ? megaTypes : baseTypes
@@ -77,7 +77,9 @@ export const PokemonMoveButton: React.FC<MoveButtonProps> = ({ move, isExpanded,
         </div>
         <div className="flex items-center justify-between mt-2">
           <PokemonTypeBadge type={move.type} />
-          <span className="text-xs text-muted-foreground">{move.pp}/--</span>
+          <span className="text-xs text-muted-foreground" title={activePokemon?.data.hasStoredPP === false ? 'Current PP is not stored for this boxed Pokémon.' : undefined}>
+            {activePokemon?.data.hasStoredPP === false ? 'PP —' : `${move.pp}/--`}
+          </span>
         </div>
         {/* Hint rendered outside this block to ensure correct absolute positioning */}
       </div>

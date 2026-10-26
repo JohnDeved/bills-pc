@@ -25,6 +25,11 @@ export interface UIPokemonData {
   details?: PokemonDetails // Optional, for loaded details (types, abilities, moves, baseStats)
 }
 
+export interface UIPokemonBox {
+  readonly name: string
+  readonly pokemon: readonly (UIPokemonData | null)[]
+}
+
 export type Pokemon = UIPokemonData
 
 export interface MoveWithDetails extends BaseMove {
@@ -47,5 +52,6 @@ export interface PokemonDetails {
   abilities: Ability[]
   moves: MoveWithDetails[]
   baseStats: number[]
+  boxLevel?: number
   item?: { name: string; description: string }
 }

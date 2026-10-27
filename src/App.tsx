@@ -87,7 +87,7 @@ export const App: React.FC = () => {
         </Suspense>
       )}
       <Toaster richColors position="bottom-center" />
-      <div className={`min-h-screen flex justify-center p-3 sm:p-4 font-pixel text-foreground ${transferOpen ? 'items-start py-6 sm:py-10' : 'items-center'}`}>
+      <div className={`min-h-screen flex items-center justify-center p-3 sm:p-4 font-pixel text-foreground ${transferOpen ? 'py-6 sm:py-10' : ''}`}>
         {!transferOpen && (
           <SaveFileDropzone
             onFileLoad={parse}

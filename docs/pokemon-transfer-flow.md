@@ -27,6 +27,21 @@ flowchart TD
 
 The close action returns to Bill's PC with its previous editor intact. Selection and review do not write to disk. The result uses a new `File` without the original filesystem write handle. To transfer another batch, open the result and start a new transfer so the next destination includes the previous arrivals.
 
+## Layout and centering
+
+The transfer workbench uses the editor's vertical centering. Every step has equal space above and below when it fits the window. Longer steps grow the document and retain normal scrolling, with 24px mobile / 40px larger-screen vertical padding. Step-heading focus and scrolling remain unchanged.
+
+The centering correction passed 20 browser measurements across all four steps at 1440×1080, 1440×720 and 393×852, with additional tall-window checks at 1440×1440. Fitting examples:
+
+| Step | Viewport | Top and bottom margins |
+| --- | --- | --- |
+| Saves | 1440×1080 | 186.5px each |
+| Pokémon selection | 1440×1440 | 204px each |
+| Review | 1440×1440 | 98.5px each |
+| Download | 1440×1080 | 126px each |
+
+The check includes switching from a long review to the shorter completion screen and reopening transfer from a scrolled mobile editor. All content remained reachable, with no horizontal overflow. Each of the three complete browser flows produced the same SHA-256 as the previously verified four-Pokémon transfer; existing destination records, unrelated bytes, original inputs and Emerald backups passed preservation checks. Build, TypeScript, lint and formatting passed. The [centering verification record](validation/transfer-centering.json) includes source hashes, measurements and download audits.
+
 ## Screens
 
 These are actual browser captures using a real Emerald save and the repository's Quetzal save. The transfer screens show Aggron and Blaziken from the party, plus Lotad and Marill from the PC, copied into box 8, slots 24, 27, 28 and 29. Sprite/font responses are genuine cached resources; the conversion itself uses bundled metadata and does not depend on an external API.

@@ -1,0 +1,842 @@
+{
+  "title": "Transfer workbench vertical centering",
+  "baselineCommit": "06f5d012d201f73fa0debc5a6548025c96bf6ebc",
+  "sourceSha256": {
+    "src/App.tsx": "a77b907a49a7e8d7f0540e2a6d74ea71042fe8cf7f270ed435b4add4df85a9be",
+    "src/components/transfer/TransferWorkbench.tsx": "fbb8939d8b48740714acdb5d0b14b83f293a6cf8c2de09df85c5b09ff009f775"
+  },
+  "method": [
+    "Use the real populated Emerald save and repository Quetzal save through the browser file inputs; retain genuine cached fonts and sprites.",
+    "Exercise Saves, Pokemon selection, Review and Download at 1440x1080, 1440x720 and 393x852; additionally inspect fitting selection and review at 1440x1440.",
+    "Measure the full main workbench. When content plus padding fits, require equal top/bottom viewport margins and zero document scroll. For taller content, scroll to both ends and require reachable controls, preserved document padding and no horizontal overflow.",
+    "Include an empty Saves screen, long-review to shorter-completion transition, and transfer reentry from a scrolled mobile editor. Existing step focus and scroll behavior remains unchanged.",
+    "Transfer Aggron, Blaziken, Lotad and Marill into box 8 slots 24, 27, 28, 29 in each main viewport run. Download the actual result and Emerald backup; reparse and audit existing records and permitted changed byte ranges.",
+    "Source hashes are unchanged within and between final and focused runs; the focused run only adds tall selection measurements. Screenshots are actual browser captures."
+  ],
+  "baseline": {
+    "sourceSha256": {
+      "src/App.tsx": "7d8e55af5f766e02b31806bffc2235fe4995b556e582df7c048f0e37f9e34d31",
+      "src/components/transfer/TransferWorkbench.tsx": "fbb8939d8b48740714acdb5d0b14b83f293a6cf8c2de09df85c5b09ff009f775"
+    },
+    "cases": [
+      {
+        "label": "desktop/empty-saves",
+        "viewport": {
+          "width": 1440,
+          "height": 1080
+        },
+        "main": {
+          "x": 144,
+          "y": 40,
+          "documentY": 40,
+          "width": 1152,
+          "height": 707,
+          "bottom": 747
+        },
+        "scrollY": 0,
+        "pageHeight": 1080,
+        "scrollWidth": 1440,
+        "align": "flex-start",
+        "paddingTop": 40,
+        "paddingBottom": 40,
+        "topMargin": 40,
+        "bottomMargin": 333,
+        "fits": true,
+        "centered": false,
+        "noScroll": true,
+        "passed": false
+      },
+      {
+        "label": "desktop/saves",
+        "viewport": {
+          "width": 1440,
+          "height": 1080
+        },
+        "main": {
+          "x": 144,
+          "y": 40,
+          "documentY": 40,
+          "width": 1152,
+          "height": 707,
+          "bottom": 747
+        },
+        "scrollY": 0,
+        "pageHeight": 1080,
+        "scrollWidth": 1440,
+        "align": "flex-start",
+        "paddingTop": 40,
+        "paddingBottom": 40,
+        "topMargin": 40,
+        "bottomMargin": 333,
+        "fits": true,
+        "centered": false,
+        "noScroll": true,
+        "passed": false
+      }
+    ]
+  },
+  "cases": [
+    {
+      "label": "desktop/empty-saves",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "main": {
+        "x": 144,
+        "y": 186.5,
+        "documentY": 186.5,
+        "width": 1152,
+        "height": 707,
+        "bottom": 893.5
+      },
+      "scrollY": 0,
+      "pageHeight": 1080,
+      "scrollWidth": 1440,
+      "align": "center",
+      "paddingTop": 40,
+      "paddingBottom": 40,
+      "topMargin": 186.5,
+      "bottomMargin": 186.5,
+      "fits": true,
+      "centered": true,
+      "noScroll": true,
+      "passed": true
+    },
+    {
+      "label": "desktop/saves",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "main": {
+        "x": 144,
+        "y": 186.5,
+        "documentY": 186.5,
+        "width": 1152,
+        "height": 707,
+        "bottom": 893.5
+      },
+      "scrollY": 0,
+      "pageHeight": 1080,
+      "scrollWidth": 1440,
+      "align": "center",
+      "paddingTop": 40,
+      "paddingBottom": 40,
+      "topMargin": 186.5,
+      "bottomMargin": 186.5,
+      "fits": true,
+      "centered": true,
+      "noScroll": true,
+      "passed": true
+    },
+    {
+      "label": "desktop/selection",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "main": {
+        "x": 144,
+        "y": 16,
+        "documentY": 40,
+        "width": 1152,
+        "height": 1032,
+        "bottom": 1048
+      },
+      "scrollY": 24,
+      "pageHeight": 1112,
+      "scrollWidth": 1440,
+      "align": "center",
+      "paddingTop": 40,
+      "paddingBottom": 40,
+      "topMargin": 16,
+      "bottomMargin": 32,
+      "fits": false,
+      "topReachable": true,
+      "bottomReachable": true,
+      "documentPadding": {
+        "top": 40,
+        "bottom": 40
+      },
+      "passed": true
+    },
+    {
+      "label": "desktop/review",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "main": {
+        "x": 144,
+        "y": -138,
+        "documentY": 40,
+        "width": 1152,
+        "height": 1243,
+        "bottom": 1105
+      },
+      "scrollY": 178,
+      "pageHeight": 1323,
+      "scrollWidth": 1440,
+      "align": "center",
+      "paddingTop": 40,
+      "paddingBottom": 40,
+      "topMargin": -138,
+      "bottomMargin": -25,
+      "fits": false,
+      "topReachable": true,
+      "bottomReachable": true,
+      "documentPadding": {
+        "top": 40,
+        "bottom": 40
+      },
+      "passed": true
+    },
+    {
+      "label": "desktop-tall/review",
+      "viewport": {
+        "width": 1440,
+        "height": 1440
+      },
+      "main": {
+        "x": 144,
+        "y": 98.5,
+        "documentY": 98.5,
+        "width": 1152,
+        "height": 1243,
+        "bottom": 1341.5
+      },
+      "scrollY": 0,
+      "pageHeight": 1440,
+      "scrollWidth": 1440,
+      "align": "center",
+      "paddingTop": 40,
+      "paddingBottom": 40,
+      "topMargin": 98.5,
+      "bottomMargin": 98.5,
+      "fits": true,
+      "centered": true,
+      "noScroll": true,
+      "passed": true
+    },
+    {
+      "label": "desktop/complete",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "main": {
+        "x": 144,
+        "y": 126,
+        "documentY": 126,
+        "width": 1152,
+        "height": 828,
+        "bottom": 954
+      },
+      "scrollY": 0,
+      "pageHeight": 1080,
+      "scrollWidth": 1440,
+      "align": "center",
+      "paddingTop": 40,
+      "paddingBottom": 40,
+      "topMargin": 126,
+      "bottomMargin": 126,
+      "fits": true,
+      "centered": true,
+      "noScroll": true,
+      "passed": true
+    },
+    {
+      "label": "short-desktop/empty-saves",
+      "viewport": {
+        "width": 1440,
+        "height": 720
+      },
+      "main": {
+        "x": 144,
+        "y": 40,
+        "documentY": 40,
+        "width": 1152,
+        "height": 707,
+        "bottom": 747
+      },
+      "scrollY": 0,
+      "pageHeight": 787,
+      "scrollWidth": 1440,
+      "align": "center",
+      "paddingTop": 40,
+      "paddingBottom": 40,
+      "topMargin": 40,
+      "bottomMargin": -27,
+      "fits": false,
+      "topReachable": true,
+      "bottomReachable": true,
+      "documentPadding": {
+        "top": 40,
+        "bottom": 40
+      },
+      "passed": true
+    },
+    {
+      "label": "short-desktop/saves",
+      "viewport": {
+        "width": 1440,
+        "height": 720
+      },
+      "main": {
+        "x": 144,
+        "y": 40,
+        "documentY": 40,
+        "width": 1152,
+        "height": 707,
+        "bottom": 747
+      },
+      "scrollY": 0,
+      "pageHeight": 787,
+      "scrollWidth": 1440,
+      "align": "center",
+      "paddingTop": 40,
+      "paddingBottom": 40,
+      "topMargin": 40,
+      "bottomMargin": -27,
+      "fits": false,
+      "topReachable": true,
+      "bottomReachable": true,
+      "documentPadding": {
+        "top": 40,
+        "bottom": 40
+      },
+      "passed": true
+    },
+    {
+      "label": "short-desktop/selection",
+      "viewport": {
+        "width": 1440,
+        "height": 720
+      },
+      "main": {
+        "x": 144,
+        "y": -138,
+        "documentY": 40,
+        "width": 1152,
+        "height": 1032,
+        "bottom": 894
+      },
+      "scrollY": 178,
+      "pageHeight": 1112,
+      "scrollWidth": 1440,
+      "align": "center",
+      "paddingTop": 40,
+      "paddingBottom": 40,
+      "topMargin": -138,
+      "bottomMargin": -174,
+      "fits": false,
+      "topReachable": true,
+      "bottomReachable": true,
+      "documentPadding": {
+        "top": 40,
+        "bottom": 40
+      },
+      "passed": true
+    },
+    {
+      "label": "short-desktop/review",
+      "viewport": {
+        "width": 1440,
+        "height": 720
+      },
+      "main": {
+        "x": 144,
+        "y": -138,
+        "documentY": 40,
+        "width": 1152,
+        "height": 1243,
+        "bottom": 1105
+      },
+      "scrollY": 178,
+      "pageHeight": 1323,
+      "scrollWidth": 1440,
+      "align": "center",
+      "paddingTop": 40,
+      "paddingBottom": 40,
+      "topMargin": -138,
+      "bottomMargin": -385,
+      "fits": false,
+      "topReachable": true,
+      "bottomReachable": true,
+      "documentPadding": {
+        "top": 40,
+        "bottom": 40
+      },
+      "passed": true
+    },
+    {
+      "label": "short-desktop/complete",
+      "viewport": {
+        "width": 1440,
+        "height": 720
+      },
+      "main": {
+        "x": 144,
+        "y": -138,
+        "documentY": 40,
+        "width": 1152,
+        "height": 828,
+        "bottom": 690
+      },
+      "scrollY": 178,
+      "pageHeight": 908,
+      "scrollWidth": 1440,
+      "align": "center",
+      "paddingTop": 40,
+      "paddingBottom": 40,
+      "topMargin": -138,
+      "bottomMargin": 30,
+      "fits": false,
+      "topReachable": true,
+      "bottomReachable": true,
+      "documentPadding": {
+        "top": 40,
+        "bottom": 40
+      },
+      "passed": true
+    },
+    {
+      "label": "mobile/empty-saves",
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "main": {
+        "x": 12,
+        "y": 24,
+        "documentY": 24,
+        "width": 369,
+        "height": 1186.5,
+        "bottom": 1210.5
+      },
+      "scrollY": 0,
+      "pageHeight": 1235,
+      "scrollWidth": 393,
+      "align": "center",
+      "paddingTop": 24,
+      "paddingBottom": 24,
+      "topMargin": 24,
+      "bottomMargin": -358.5,
+      "fits": false,
+      "topReachable": true,
+      "bottomReachable": true,
+      "documentPadding": {
+        "top": 24,
+        "bottom": 24.5
+      },
+      "passed": true
+    },
+    {
+      "label": "mobile/saves",
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "main": {
+        "x": 12,
+        "y": 24,
+        "documentY": 24,
+        "width": 369,
+        "height": 1186.5,
+        "bottom": 1210.5
+      },
+      "scrollY": 0,
+      "pageHeight": 1235,
+      "scrollWidth": 393,
+      "align": "center",
+      "paddingTop": 24,
+      "paddingBottom": 24,
+      "topMargin": 24,
+      "bottomMargin": -358.5,
+      "fits": false,
+      "topReachable": true,
+      "bottomReachable": true,
+      "documentPadding": {
+        "top": 24,
+        "bottom": 24.5
+      },
+      "passed": true
+    },
+    {
+      "label": "mobile/selection",
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "main": {
+        "x": 12,
+        "y": -359,
+        "documentY": 24,
+        "width": 369,
+        "height": 1904.5,
+        "bottom": 1545.5
+      },
+      "scrollY": 383,
+      "pageHeight": 1953,
+      "scrollWidth": 393,
+      "align": "center",
+      "paddingTop": 24,
+      "paddingBottom": 24,
+      "topMargin": -359,
+      "bottomMargin": -693.5,
+      "fits": false,
+      "topReachable": true,
+      "bottomReachable": true,
+      "documentPadding": {
+        "top": 24,
+        "bottom": 24.5
+      },
+      "passed": true
+    },
+    {
+      "label": "mobile/review",
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "main": {
+        "x": 12,
+        "y": -203,
+        "documentY": 24,
+        "width": 369,
+        "height": 2893.5,
+        "bottom": 2690.5
+      },
+      "scrollY": 227,
+      "pageHeight": 2942,
+      "scrollWidth": 393,
+      "align": "center",
+      "paddingTop": 24,
+      "paddingBottom": 24,
+      "topMargin": -203,
+      "bottomMargin": -1838.5,
+      "fits": false,
+      "topReachable": true,
+      "bottomReachable": true,
+      "documentPadding": {
+        "top": 24,
+        "bottom": 24.5
+      },
+      "passed": true
+    },
+    {
+      "label": "mobile/complete",
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "main": {
+        "x": 12,
+        "y": -189,
+        "documentY": 24,
+        "width": 369,
+        "height": 1016.5,
+        "bottom": 827.5
+      },
+      "scrollY": 213,
+      "pageHeight": 1065,
+      "scrollWidth": 393,
+      "align": "center",
+      "paddingTop": 24,
+      "paddingBottom": 24,
+      "topMargin": -189,
+      "bottomMargin": 24.5,
+      "fits": false,
+      "topReachable": true,
+      "bottomReachable": true,
+      "documentPadding": {
+        "top": 24,
+        "bottom": 24.5
+      },
+      "passed": true
+    },
+    {
+      "label": "mobile/reentry-from-editor",
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "main": {
+        "x": 12,
+        "y": 12,
+        "documentY": 24,
+        "width": 369,
+        "height": 1186.5,
+        "bottom": 1198.5
+      },
+      "scrollY": 12,
+      "pageHeight": 1235,
+      "scrollWidth": 393,
+      "align": "center",
+      "paddingTop": 24,
+      "paddingBottom": 24,
+      "topMargin": 12,
+      "bottomMargin": -346.5,
+      "fits": false,
+      "topReachable": true,
+      "bottomReachable": true,
+      "documentPadding": {
+        "top": 24,
+        "bottom": 24.5
+      },
+      "passed": true,
+      "priorEditorScrollY": 500
+    },
+    {
+      "label": "desktop-tall/empty-saves",
+      "viewport": {
+        "width": 1440,
+        "height": 1440
+      },
+      "main": {
+        "x": 144,
+        "y": 366.5,
+        "documentY": 366.5,
+        "width": 1152,
+        "height": 707,
+        "bottom": 1073.5
+      },
+      "scrollY": 0,
+      "pageHeight": 1440,
+      "scrollWidth": 1440,
+      "align": "center",
+      "paddingTop": 40,
+      "paddingBottom": 40,
+      "topMargin": 366.5,
+      "bottomMargin": 366.5,
+      "fits": true,
+      "centered": true,
+      "noScroll": true,
+      "passed": true
+    },
+    {
+      "label": "desktop-tall/saves",
+      "viewport": {
+        "width": 1440,
+        "height": 1440
+      },
+      "main": {
+        "x": 144,
+        "y": 366.5,
+        "documentY": 366.5,
+        "width": 1152,
+        "height": 707,
+        "bottom": 1073.5
+      },
+      "scrollY": 0,
+      "pageHeight": 1440,
+      "scrollWidth": 1440,
+      "align": "center",
+      "paddingTop": 40,
+      "paddingBottom": 40,
+      "topMargin": 366.5,
+      "bottomMargin": 366.5,
+      "fits": true,
+      "centered": true,
+      "noScroll": true,
+      "passed": true
+    },
+    {
+      "label": "desktop-tall/selection",
+      "viewport": {
+        "width": 1440,
+        "height": 1440
+      },
+      "main": {
+        "x": 144,
+        "y": 204,
+        "documentY": 204,
+        "width": 1152,
+        "height": 1032,
+        "bottom": 1236
+      },
+      "scrollY": 0,
+      "pageHeight": 1440,
+      "scrollWidth": 1440,
+      "align": "center",
+      "paddingTop": 40,
+      "paddingBottom": 40,
+      "topMargin": 204,
+      "bottomMargin": 204,
+      "fits": true,
+      "centered": true,
+      "noScroll": true,
+      "passed": true
+    }
+  ],
+  "caseCount": 20,
+  "originalInputSha256": {
+    "emerald": "d883d62a7fe6f7404083dd02c0252516519ada231bce1b62800c0b843868fa31",
+    "quetzal": "f35c85108a9dd9e4ec4d8f713f5764c492096be73a5ee948b839cc2d347e44d9"
+  },
+  "originalInputsUnchanged": true,
+  "downloads": [
+    {
+      "viewport": "desktop",
+      "bytes": 131088,
+      "sha256": "b2830e167072a5e52078f55486b815cac5565a1ac862e06a4992371ab2d02c29",
+      "backupSha256": "d883d62a7fe6f7404083dd02c0252516519ada231bce1b62800c0b843868fa31",
+      "audit": {
+        "existingUnchanged": true,
+        "arrivals": [
+          {
+            "box": 7,
+            "slot": 23,
+            "nickname": "AGGRON"
+          },
+          {
+            "box": 7,
+            "slot": 26,
+            "nickname": "BLAZIKEN"
+          },
+          {
+            "box": 7,
+            "slot": 27,
+            "nickname": "LOTAD"
+          },
+          {
+            "box": 7,
+            "slot": 28,
+            "nickname": "MARILL"
+          }
+        ],
+        "unexpectedChangedBytes": [],
+        "sameSize": true,
+        "boxError": null
+      }
+    },
+    {
+      "viewport": "short-desktop",
+      "bytes": 131088,
+      "sha256": "b2830e167072a5e52078f55486b815cac5565a1ac862e06a4992371ab2d02c29",
+      "backupSha256": "d883d62a7fe6f7404083dd02c0252516519ada231bce1b62800c0b843868fa31",
+      "audit": {
+        "existingUnchanged": true,
+        "arrivals": [
+          {
+            "box": 7,
+            "slot": 23,
+            "nickname": "AGGRON"
+          },
+          {
+            "box": 7,
+            "slot": 26,
+            "nickname": "BLAZIKEN"
+          },
+          {
+            "box": 7,
+            "slot": 27,
+            "nickname": "LOTAD"
+          },
+          {
+            "box": 7,
+            "slot": 28,
+            "nickname": "MARILL"
+          }
+        ],
+        "unexpectedChangedBytes": [],
+        "sameSize": true,
+        "boxError": null
+      }
+    },
+    {
+      "viewport": "mobile",
+      "bytes": 131088,
+      "sha256": "b2830e167072a5e52078f55486b815cac5565a1ac862e06a4992371ab2d02c29",
+      "backupSha256": "d883d62a7fe6f7404083dd02c0252516519ada231bce1b62800c0b843868fa31",
+      "audit": {
+        "existingUnchanged": true,
+        "arrivals": [
+          {
+            "box": 7,
+            "slot": 23,
+            "nickname": "AGGRON"
+          },
+          {
+            "box": 7,
+            "slot": 26,
+            "nickname": "BLAZIKEN"
+          },
+          {
+            "box": 7,
+            "slot": 27,
+            "nickname": "LOTAD"
+          },
+          {
+            "box": 7,
+            "slot": 28,
+            "nickname": "MARILL"
+          }
+        ],
+        "unexpectedChangedBytes": [],
+        "sameSize": true,
+        "boxError": null
+      }
+    }
+  ],
+  "previouslyVerifiedOutputSha256": "b2830e167072a5e52078f55486b815cac5565a1ac862e06a4992371ab2d02c29",
+  "pageErrors": [],
+  "resourceErrors": [],
+  "sourceFrozen": true,
+  "staticChecks": {
+    "productionBuild": "passed",
+    "typescript": "passed",
+    "oxlint": {
+      "warnings": 0,
+      "errors": 0
+    },
+    "formatting": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "images": [
+    {
+      "path": "docs/screenshots/transfer-saves.png",
+      "width": 1440,
+      "height": 1080,
+      "bytes": 90841,
+      "sha256": "d5826f8b0ada3081d8b384c7309afe05135d4a9da0d08490a51a2ff720eb4566"
+    },
+    {
+      "path": "docs/screenshots/transfer-selection.png",
+      "width": 1440,
+      "height": 1080,
+      "bytes": 206025,
+      "sha256": "26f6b8857f1ab8067649903b5fa1385d3b28704f765ce190342939ff0f7e484c"
+    },
+    {
+      "path": "docs/screenshots/transfer-review.png",
+      "width": 1440,
+      "height": 1440,
+      "bytes": 238484,
+      "sha256": "55409fce293a092411eb0ee39ee80c19d16b58a8d26f5b0e51268696f8cfe811"
+    },
+    {
+      "path": "docs/screenshots/transfer-complete.png",
+      "width": 1440,
+      "height": 1080,
+      "bytes": 86705,
+      "sha256": "d207556fbd23a732f1442fca7fffd59b0386e9dbd8f28b3fa00ff32d65dd0ecc"
+    },
+    {
+      "path": "docs/screenshots/transfer-review-light.png",
+      "width": 1440,
+      "height": 1440,
+      "bytes": 227050,
+      "sha256": "8789d3c5dddc27def0d53fd0a0ea683bd270ffea002a7e118ce11ff3680d9def"
+    },
+    {
+      "path": "docs/screenshots/transfer-mobile-review.png",
+      "width": 393,
+      "height": 852,
+      "bytes": 69349,
+      "sha256": "2431e34b1d7da39a0c10171f94478fe2dee3cd74272b1d286231a39502179989"
+    }
+  ],
+  "passed": true
+}

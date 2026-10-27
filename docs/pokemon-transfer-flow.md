@@ -29,7 +29,22 @@ The close action returns to Bill's PC with its previous editor intact. Selection
 
 ## Screens
 
-These are actual browser captures using a real Emerald save and the repository's Quetzal save. They show Aggron and Blaziken from the party, plus Lotad and Marill from the PC, copied into box 8, slots 24, 27, 28 and 29. Sprite/font responses are genuine cached resources; the conversion itself uses bundled metadata and does not depend on an external API.
+These are actual browser captures using a real Emerald save and the repository's Quetzal save. The transfer screens show Aggron and Blaziken from the party, plus Lotad and Marill from the PC, copied into box 8, slots 24, 27, 28 and 29. Sprite/font responses are genuine cached resources; the conversion itself uses bundled metadata and does not depend on an external API.
+
+### Compact entry in the editor
+
+Transfer shares the Party/PC toolbar, with a short label on desktop and a 44-pixel icon button on narrow screens. Its keyboard-accessible tooltip explains the Emerald → Quetzal direction. The landing screen uses a single secondary text button. Both entries open the same guided flow.
+
+![Compact transfer action beside the Party and PC tabs](screenshots/pc-compact-transfer.png)
+
+<details>
+<summary>Mobile toolbar and landing screen</summary>
+
+![Mobile PC toolbar with a compact transfer action](screenshots/pc-compact-transfer-mobile.png)
+
+![Landing screen with a secondary transfer action](screenshots/transfer-landing-compact.png)
+
+</details>
 
 ### Choose the saves
 

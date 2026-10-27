@@ -1,5 +1,5 @@
 import { fromEvent } from 'file-selector'
-import { ArrowRight, ArrowRightLeft } from 'lucide-react'
+import { ArrowRightLeft } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { toast } from 'sonner'
@@ -213,16 +213,20 @@ export const SaveFileDropzone: React.FC<SaveFileDropzoneProps> = ({ onFileLoad, 
           {showDropzone && <span className="geist-font text-muted-foreground mt-3 text-sm">or click to browse and edit your Pokémon</span>}
           <p className="geist-font text-xs text-muted-foreground mt-2">Supported: .sav, .sa2</p>
           {showDropzone && !isDragActive && onTransfer && (
-            <div className="geist-font mt-7 w-full rounded-xl border border-cyan-600/20 bg-cyan-500/5 p-4 text-left sm:p-5" onClick={event => event.stopPropagation()}>
-              <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                <ArrowRightLeft className="size-4 text-cyan-700 dark:text-cyan-300" aria-hidden />
-                Your Hoenn journey continues
-              </p>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">Copy Pokémon from your Emerald save into Quetzal, with a clear review before you download.</p>
-              <Button type="button" onClick={onTransfer} disabled={transferDisabled} className="mt-4 min-h-11 w-full rounded-lg bg-cyan-700 text-white hover:bg-cyan-800 dark:bg-cyan-300 dark:text-zinc-950 dark:hover:bg-cyan-200">
-                Transfer Pokémon <ArrowRight className="size-4" aria-hidden />
-              </Button>
-            </div>
+            <Button
+              type="button"
+              variant="ghost"
+              title="Copy Pokémon from Emerald to Quetzal"
+              onClick={event => {
+                event.stopPropagation()
+                onTransfer()
+              }}
+              disabled={transferDisabled}
+              className="geist-font mt-4 min-h-11 gap-2 text-sm text-muted-foreground hover:text-foreground"
+            >
+              <ArrowRightLeft className="size-4" aria-hidden />
+              Transfer Pokémon
+            </Button>
           )}
           {showDropzone && !isDragActive && (
             <div className="mt-6" onClick={e => e.stopPropagation()}>

@@ -19,7 +19,7 @@ flowchart TD
 
 | Step | What the player sees | Behavior |
 | --- | --- | --- |
-| Entry | **Transfer Pokémon** on the landing screen and beside the party/PC navigation | Opens a dedicated workbench. An open file is captured once, including current edits, and prefilled on the correct side. Live emulator sessions are not used as transfer files. |
+| Entry | **Transfer Pokémon** on the landing screen or **File → Transfer Pokémon…** in the editor | Opens a dedicated workbench. An open file is captured once, including current edits, and prefilled on the correct side. Live emulator sessions are not used as transfer files. |
 | 1. Saves | **Copy from Emerald** and **Copy into Quetzal**, with filenames, trainer names, Pokémon counts and box counts | Validates actual save contents. Wrong games, damaged storage and unknown layouts get specific errors. File selection does not replace the current editor. |
 | 2. Pokémon | Search by name/species, party/box filter, multi-selection and a destination box preview | Existing occupants stay visible. New copies are highlighted in ascending empty slots. Box options show available capacity. Unsupported Pokémon remain visible with explanations. |
 | 3. Review | Every Pokémon's source and assigned slot, what carries over, shared format omissions and expanded individual changes | The Create button requires acknowledgement. Changing files, selection or destination invalidates that acknowledgement. Too many Pokémon or an unsupported conversion prevents export. |
@@ -31,16 +31,18 @@ The close action returns to Bill's PC with its previous editor intact. Selection
 
 These are actual browser captures using a real Emerald save and the repository's Quetzal save. The transfer screens show Aggron and Blaziken from the party, plus Lotad and Marill from the PC, copied into box 8, slots 24, 27, 28 and 29. Sprite/font responses are genuine cached resources; the conversion itself uses bundled metadata and does not depend on an external API.
 
-### Compact entry in the editor
+### Open transfer from the File menu
 
-Transfer shares the Party/PC toolbar, with a short label on desktop and a 44-pixel icon button on narrow screens. Its keyboard-accessible tooltip explains the Emerald → Quetzal direction. The landing screen uses a single secondary text button. Both entries open the same guided flow.
+In the editor, choose **File → Transfer Pokémon…**. The Party and PC tabs use the full navigation width. The menu action supports keyboard navigation and stays disabled while a save or history operation is loading. The landing screen retains its secondary text button; both entries open the same guided flow.
 
-![Compact transfer action beside the Party and PC tabs](screenshots/pc-compact-transfer.png)
+![Transfer Pokémon in the File menu](screenshots/pc-transfer-menu.png)
 
 <details>
-<summary>Mobile toolbar and landing screen</summary>
+<summary>Normal editor, mobile menu and landing screen</summary>
 
-![Mobile PC toolbar with a compact transfer action](screenshots/pc-compact-transfer-mobile.png)
+![Normal editor with full-width Party and PC tabs](screenshots/pc-editor-menu-closed.png)
+
+![Transfer Pokémon in the mobile File menu](screenshots/pc-transfer-menu-mobile.png)
 
 ![Landing screen with a secondary transfer action](screenshots/transfer-landing-compact.png)
 

@@ -109,10 +109,12 @@ export const App: React.FC = () => {
                   onRequestOpenFile={() => {
                     filePickerRef.current?.()
                   }}
+                  onTransfer={openTransfer}
+                  transferDisabled={isParsingSave || isApplyingHistory}
                   canSaveAs={canSaveAs}
                   commitHash={commitHash}
                 />
-                <PokemonStorage onPokemonHover={preloadPokemonDetails} onTransfer={openTransfer} transferDisabled={isParsingSave || isApplyingHistory} />
+                <PokemonStorage onPokemonHover={preloadPokemonDetails} />
               </div>
               {activePokemon ? (
                 <section id="pokemon-editor" tabIndex={-1} aria-label="Pokémon editor" className="min-w-0 grid grid-cols-1 grid-rows-[auto_auto_1fr] gap-4 scroll-mt-4 outline-none">

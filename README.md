@@ -37,7 +37,7 @@ also disable PC editing while preserving the original PC bytes.
 
 ### Transferring an Emerald team to Quetzal
 
-Select **Transfer Pokémon** on the landing screen or above the party/PC tabs.
+Select **Transfer Pokémon** on the landing screen, or **File → Transfer Pokémon…** in the editor.
 Choose an Emerald source save and a Quetzal destination save, select Pokémon from
 the source party or PC, and choose a destination box. The preview reserves empty
 slots without replacing existing Pokémon. Review the locations and conversion

@@ -79,7 +79,7 @@ export const App: React.FC = () => {
                 <PokemonStorage onPokemonHover={preloadPokemonDetails} />
               </div>
               {activePokemon ? (
-                <div className="min-w-0 grid grid-rows-[auto_auto_1fr] gap-4">
+                <div className="min-w-0 grid grid-cols-1 grid-rows-[auto_auto_1fr] gap-4">
                   <Card className="z-30">
                     <PokemonHeader />
                     <PokemonMovesSection />

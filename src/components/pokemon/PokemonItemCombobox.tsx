@@ -40,11 +40,11 @@ export function PokemonItemCombobox({ valueIdName, onChange, disabled = false, t
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [side, setSide] = React.useState<'top' | 'bottom'>('top')
 
-  const availableIds = useSaveFileStore(s => s.parser?.getAvailableItemIds())
-  const ITEMS = React.useMemo(
-    () => (availableIds ? ALL_ITEMS.filter(i => availableIds.has(i.id)) : ALL_ITEMS),
-    [availableIds],
-  )
+  const parser = useSaveFileStore(s => s.parser)
+  const ITEMS = React.useMemo(() => {
+    const availableIds = parser?.getAvailableItemIds()
+    return availableIds ? ALL_ITEMS.filter(i => availableIds.has(i.id)) : ALL_ITEMS
+  }, [parser])
 
   function decideSideFromEl(el: HTMLElement | null) {
     if (!el) return

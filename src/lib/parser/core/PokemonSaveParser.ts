@@ -343,7 +343,13 @@ export class PokemonSaveParser {
         const bytes = storage.slice(offset, offset + 80)
         if (bytes.every(byte => byte === 0)) return null
         const mon = new PokemonBase(bytes, this.config!, true)
-        return mon.speciesId === 0 ? null : mon
+        const species = mon.speciesId
+        const flags = bytes[0x13]! & 3 // Unencrypted isBadEgg / hasSpecies bits.
+        if (species === 0 && flags === 0) return null
+        if (species === 0 || !mon.hasValidEncryptionChecksum || (flags & 1) !== 0) {
+          throw new Error(`Box ${boxIndex + 1}, slot ${slot + 1} has a damaged Pokémon record. PC editing is disabled to preserve its data; party editing is available.`)
+        }
+        return mon
       })
       return { name, pokemon }
     })

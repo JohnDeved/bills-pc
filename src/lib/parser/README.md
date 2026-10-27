@@ -68,6 +68,12 @@ box objects. The optional second argument makes box persistence explicit.
 `box_error` explains unavailable box support without preventing party editing;
 unrecognized PC bytes remain untouched. Memory-mode parses omit boxes.
 
+Emerald nature changes select a personality value that preserves gender,
+shininess, Unown's form, and Wurmple's evolution branch. Check
+`natureEditDisabledReason` before offering nature edits: Emerald Spinda is blocked
+to preserve its personality-dependent spot pattern. Invalid Emerald PC Pokémon
+checksums or Bad Egg flags produce `box_error`; their original bytes are preserved.
+
 ## Adding Game Support
 
 The parser uses a flexible GameConfig system for adding support for new Pokemon games:

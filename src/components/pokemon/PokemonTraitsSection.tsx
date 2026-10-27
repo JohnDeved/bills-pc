@@ -15,7 +15,7 @@ export const PokemonTraitsSection: React.FC = () => {
           <div className="flex-shrink-0">
             <div className="w-full border-b border-border/60">
               <div className="px-4">
-                <TabsList className="px-0">
+                <TabsList className="flex-wrap px-0">
                   <TabsTrigger value="nature" className="font-pixel text-xs">
                     Nature
                   </TabsTrigger>

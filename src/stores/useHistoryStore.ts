@@ -80,7 +80,10 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
   queueSnapshot: (delayMs = 350, idsBySlotOverride?: number[]) => {
     const state = get()
     if (state.isApplying) return
-    const snap = getCurrentSnapshot(idsBySlotOverride)
+    // Keep the state before the first edit for the whole debounced gesture.
+    // Later slider events only extend the timer; replacing this would lose
+    // the original Undo target and retain an intermediate edited value.
+    const snap = state.queuedSnapshot ?? getCurrentSnapshot(idsBySlotOverride)
     if (!snap) return
     if (state.queueTimer) {
       clearTimeout(state.queueTimer)
@@ -105,12 +108,8 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
       })
     }, delayMs)
 
-    if (state.queuedSnapshot && areSnapshotsEqual(state.queuedSnapshot, snap)) {
-      set({ queueTimer: timer })
-      return
-    }
-
-    set({ queuedSnapshot: snap, queueTimer: timer })
+    // A new edit invalidates Redo immediately, before the debounce expires.
+    set({ queuedSnapshot: snap, queueTimer: timer, future: [] })
   },
 
   initFromCurrent: () => {
@@ -220,7 +219,7 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
 }))
 
 export function canUndoSelector(s: HistoryStore): boolean {
-  return s.past.length > 0 && !s.isApplying
+  return (s.past.length > 0 || s.queuedSnapshot !== null) && !s.isApplying
 }
 
 export function canRedoSelector(s: HistoryStore): boolean {
@@ -228,5 +227,5 @@ export function canRedoSelector(s: HistoryStore): boolean {
 }
 
 export function hasEditsSelector(s: HistoryStore): boolean {
-  return s.past.length > 0 && !s.isApplying
+  return canUndoSelector(s)
 }

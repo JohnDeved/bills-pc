@@ -10,7 +10,7 @@ import { useHistorySync } from '@/hooks/useHistorySync'
 import { usePokemonData } from '@/hooks/usePokemonData'
 import { PokemonSaveParser } from '@/lib/parser/core/PokemonSaveParser'
 import { selectActivePokemon, usePokemonStore } from '@/stores/usePokemonStore'
-import { useHistoryStore } from '@/stores/useHistoryStore'
+import { canRedoSelector, canUndoSelector, hasEditsSelector, useHistoryStore } from '@/stores/useHistoryStore'
 import { useSaveFileStore } from '@/stores/useSaveFileStore'
 
 vi.mock('file-saver', () => ({ saveAs: vi.fn() }))
@@ -38,6 +38,11 @@ async function readBlob(blob: Blob): Promise<ArrayBuffer> {
     reader.addEventListener('error', () => reject(reader.error))
     reader.readAsArrayBuffer(blob)
   })
+}
+
+function currentSaveBytes(): Uint8Array {
+  const { parser, saveData } = useSaveFileStore.getState()
+  return parser!.reconstructSaveFile(saveData!.party_pokemon, saveData!.boxes)
 }
 
 describe('boxed Pokémon editing with real save fixtures', () => {
@@ -140,6 +145,49 @@ describe('boxed Pokémon editing with real save fixtures', () => {
       expect(state.activePokemonId).toBe(target.id)
       expect(state.partyList.map(pokemon => pokemon.id)).toEqual(partyIds)
     }
+  })
+
+  it.each([
+    ['emerald', false],
+    ['emerald', true],
+    ['quetzal', false],
+    ['quetzal', true],
+  ] as const)('%s: rapid boxed EV changes undo as one gesture (debounce flushed: %s)', async (game, flushDebounce) => {
+    await openSave(game)
+    const target = await selectBoxPokemon(0, 0)
+    const before = currentSaveBytes()
+
+    act(() => {
+      const store = usePokemonStore.getState()
+      for (const ev of [4, 8, 12]) store.setEvIndex(target.id, 0, ev)
+    })
+    const edited = currentSaveBytes()
+    expect(selectActivePokemon(usePokemonStore.getState())?.data.evs[0]).toBe(12)
+    expect(edited).not.toEqual(before)
+    expect(useHistoryStore.getState().queuedSnapshot?.bytes).toEqual(before)
+    expect(canUndoSelector(useHistoryStore.getState())).toBe(true)
+    expect(hasEditsSelector(useHistoryStore.getState())).toBe(true)
+    if (flushDebounce) await waitFor(() => expect(useHistoryStore.getState().queuedSnapshot).toBeNull())
+
+    await act(async () => useHistoryStore.getState().undo())
+    expect(currentSaveBytes()).toEqual(before)
+    expect(canRedoSelector(useHistoryStore.getState())).toBe(true)
+    await act(async () => useHistoryStore.getState().redo())
+    expect(currentSaveBytes()).toEqual(edited)
+    expect(usePokemonStore.getState().activePokemonId).toBe(target.id)
+
+    // A new edit after Undo immediately starts a new timeline, even while its
+    // first snapshot is still queued. Redo must never overwrite this new edit.
+    await act(async () => useHistoryStore.getState().undo())
+    expect(currentSaveBytes()).toEqual(before)
+    const originalItem = selectActivePokemon(usePokemonStore.getState())!.data.item
+    act(() => usePokemonStore.getState().setItemId(target.id, originalItem === 17 ? 18 : 17))
+    expect(useHistoryStore.getState().queuedSnapshot).not.toBeNull()
+    expect(useHistoryStore.getState().future).toHaveLength(0)
+    expect(canRedoSelector(useHistoryStore.getState())).toBe(false)
+    expect(canUndoSelector(useHistoryStore.getState())).toBe(true)
+    await act(async () => useHistoryStore.getState().undo())
+    expect(currentSaveBytes()).toEqual(before)
   })
 
   it('clears boxed selections and details when another save is opened', async () => {

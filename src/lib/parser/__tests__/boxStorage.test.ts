@@ -179,6 +179,44 @@ describe('PC box save storage', () => {
     await expect(new PokemonSaveParser(2).parse(bufferOf(bytes))).rejects.toThrow('incomplete')
   })
 
+  it.each(['invalid inner checksum', 'Bad Egg flag', 'zero species with occupancy flag'] as const)('preserves the entire PC when an occupied Emerald record has an %s', async damage => {
+    const bytes = populatedEmerald()
+    const map = sectionMap(bytes, 14, 14)
+    if (damage === 'zero species with occupancy flag') {
+      const offset = storageByteOffset(map, 4)
+      const view = new DataView(bytes.buffer)
+      const key = view.getUint32(offset, true) ^ view.getUint32(offset + 4, true)
+      // A zero species with a valid inner checksum must still be rejected when
+      // the unencrypted occupancy flag says that a Pokémon belongs here.
+      for (let word = 32; word < 80; word += 4) view.setUint32(offset + word, key, true)
+      view.setUint16(offset + 28, 0, true)
+      bytes[offset + 0x13]! |= 2
+    } else {
+      const offset = storageByteOffset(map, 4 + (damage === 'Bad Egg flag' ? 0x13 : 56))
+      bytes[offset]! ^= 1
+    }
+    // The containing save sector is intact; it is the individual Pokémon whose
+    // damage must not be silently legitimized by recalculating its checksum.
+    updateEmeraldChecksum(bytes, map.get(5)!, 5)
+    const parser = new PokemonSaveParser()
+    const save = await parser.parse(bufferOf(bytes))
+    expect(save.active_slot).toBe(14)
+    expect(save.boxes).toBeUndefined()
+    expect(save.box_error).toContain('Box 1, slot 1')
+    expect(parser.reconstructSaveFile(save.party_pokemon, save.boxes)).toEqual(bytes)
+
+    save.party_pokemon[0]!.setItem(17)
+    const output = parser.reconstructSaveFile(save.party_pokemon, save.boxes)
+    const reparsed = await new PokemonSaveParser().parse(bufferOf(output))
+    expect(reparsed.party_pokemon[0]!.item).toBe(17)
+    expect(reparsed.boxes).toBeUndefined()
+    expect(reparsed.box_error).toBe(save.box_error)
+    for (let section = 5; section <= 13; section++) {
+      const physicalStart = map.get(section)! * 0x1000
+      expect(output.slice(physicalStart, physicalStart + 0x1000)).toEqual(bytes.slice(physicalStart, physicalStart + 0x1000))
+    }
+  })
+
   it.each(['emerald', 'quetzal'] as const)('handles a wrapped %s save counter without selecting stale data', async game => {
     const bytes = fixture(game)
     const count = game === 'emerald' ? 14 : 16

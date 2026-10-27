@@ -12,6 +12,7 @@ export const NatureTab: React.FC = () => {
   const setNature = usePokemonStore(s => s.setNature)
   const saveSessionId = useSaveFileStore(s => s.saveSessionId)
   const natureName = pokemon?.data.nature ?? 'Unknown'
+  const natureEditDisabledReason = pokemon?.data.natureEditDisabledReason
   const natureMods = pokemon?.data.natureModifiers
   const incIndex = natureMods?.increased ?? -1
   const decIndex = natureMods?.decreased ?? -1
@@ -26,7 +27,7 @@ export const NatureTab: React.FC = () => {
   }, [activePokemonId, saveSessionId])
 
   function handleSelectCounterpart(index: number) {
-    if (!pokemon || !natureMods) return
+    if (!pokemon || !natureMods || natureEditDisabledReason) return
     if (index === 0) return // HP unaffected by nature
     if (chooseMode === 'raise') {
       const newNature = findNatureForEffects(index, decIndex >= 0 ? decIndex : 1)
@@ -86,13 +87,23 @@ export const NatureTab: React.FC = () => {
         <ScrollableContainer className="absolute inset-0 px-4 pt-3 pb-4 overflow-y-auto custom-scrollbar">
           <div className="flex flex-col gap-3">
             <div className="text-foreground">
-              {pokemon ? <PokemonNatureCombobox value={pokemon.data.nature} onChange={nature => setNature(pokemon.id, nature)} asText triggerClassName="font-pixel text-xl text-foreground" /> : <Skeleton.Text className="font-pixel text-xl">{natureName}</Skeleton.Text>}
+              {pokemon ? (
+                <PokemonNatureCombobox value={pokemon.data.nature} onChange={nature => setNature(pokemon.id, nature)} disabled={!!natureEditDisabledReason} asText triggerClassName="font-pixel text-xl text-foreground disabled:cursor-default" />
+              ) : (
+                <Skeleton.Text className="font-pixel text-xl">{natureName}</Skeleton.Text>
+              )}
             </div>
+            {natureEditDisabledReason && (
+              <p className="text-xs leading-relaxed text-muted-foreground" role="note">
+                {natureEditDisabledReason}
+              </p>
+            )}
 
             <div className="flex flex-wrap items-center gap-2">
               {incIndex >= 0 && (
                 <button
                   type="button"
+                  disabled={!!natureEditDisabledReason}
                   onClick={() => setChooseMode(prev => (prev === 'raise' ? null : 'raise'))}
                   title="Click to change raised stat"
                   aria-pressed={chooseMode === 'raise'}
@@ -107,6 +118,7 @@ export const NatureTab: React.FC = () => {
               {decIndex >= 0 && (
                 <button
                   type="button"
+                  disabled={!!natureEditDisabledReason}
                   onClick={() => setChooseMode(prev => (prev === 'lower' ? null : 'lower'))}
                   title="Click to change lowered stat"
                   aria-pressed={chooseMode === 'lower'}
@@ -138,8 +150,8 @@ export const NatureTab: React.FC = () => {
                   else if (isDown) color = 'dark:bg-rose-900/30 bg-rose-100 dark:border-rose-700/60 border-rose-300 dark:text-rose-300 text-rose-800'
 
                   let interactive = false
-                  if (chooseMode === 'raise') interactive = i !== 0 && i !== decIndex
-                  if (chooseMode === 'lower') interactive = i !== 0 && i !== incIndex
+                  if (chooseMode === 'raise') interactive = !natureEditDisabledReason && i !== 0 && i !== decIndex
+                  if (chooseMode === 'lower') interactive = !natureEditDisabledReason && i !== 0 && i !== incIndex
 
                   let ringColor = 'hover:ring-ring/30'
                   if (chooseMode === 'raise') ringColor = 'hover:ring-emerald-300/40'

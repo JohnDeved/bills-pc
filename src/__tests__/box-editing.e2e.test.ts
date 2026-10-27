@@ -12,7 +12,7 @@ async function inspectSave(page: Page, bytes: Uint8Array) {
       return {
         boxCount: save.boxes.length as number,
         lastSlotName: save.boxes[save.boxes.length - 1].pokemon[29]?.nickname ?? 'Empty',
-        target: { nickname: target.nickname as string, iv: target.ivs[0] as number, nature: target.nature as string },
+        target: { nickname: target.nickname as string, iv: target.ivs[0] as number, nature: target.nature as string, itemIdName: target.itemIdName as string },
         party: save.party_pokemon.map((pokemon: { rawBytes: Uint8Array }) => [...pokemon.rawBytes]) as number[][],
       }
     },
@@ -67,6 +67,13 @@ for (const game of ['emerald', 'quetzal'] as const satisfies readonly BoxGame[])
     await page.getByRole('combobox', { name: 'Edit nature', exact: true }).click()
     await page.getByRole('option', { name: new RegExp(`^${nature}`) }).click()
     await expect(page.getByRole('combobox', { name: 'Edit nature', exact: true })).toContainText(nature)
+    await page.getByRole('tab', { name: 'Held Item', exact: true }).click()
+    await page.getByRole('combobox', { name: 'Edit held item', exact: true }).click()
+    await page.getByPlaceholder('Search item...', { exact: true }).fill('Oran Berry')
+    await page.getByRole('option', { name: 'Oran Berry', exact: true }).click()
+    await expect(page.getByRole('combobox', { name: 'Edit held item', exact: true })).toContainText('Oran Berry')
+    expect(errors, 'Opening the Held Item tab must not trigger a render loop').toEqual([])
+    await page.getByRole('tab', { name: 'Nature', exact: true }).click()
     await page.screenshot({ path: testInfo.outputPath(`${game}-pc-editor.png`), fullPage: true })
 
     await page.getByRole('menuitem', { name: 'File', exact: true }).click()
@@ -80,6 +87,7 @@ for (const game of ['emerald', 'quetzal'] as const satisfies readonly BoxGame[])
     const restored = await inspectSave(page, downloaded)
     expect(restored.target.iv).toBe(editedIv)
     expect(restored.target.nature).toBe(nature)
+    expect(restored.target.itemIdName).toBe('oran-berry')
     expect(restored.party).toEqual(original.party)
 
     await page.locator('input[type=file]').setInputFiles(downloadedPath)
@@ -88,6 +96,8 @@ for (const game of ['emerald', 'quetzal'] as const satisfies readonly BoxGame[])
     await selectedSlot.click()
     await expect(page.getByRole('combobox', { name: 'Edit nature', exact: true })).toContainText(nature)
     await expect(page.getByRole('button', { name: `Set HP IV to ${editedIv === 31 ? 0 : 31}`, exact: true })).toHaveText(String(editedIv))
+    await page.getByRole('tab', { name: 'Held Item', exact: true }).click()
+    await expect(page.getByRole('combobox', { name: 'Edit held item', exact: true })).toContainText('Oran Berry')
 
     const lastBoxIndex = original.boxCount - 1
     await page.getByRole('combobox', { name: 'PC box', exact: true }).selectOption(String(lastBoxIndex))

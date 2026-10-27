@@ -28,6 +28,12 @@ multiples of four; the controls use that increment. Layouts without saved PP sho
 that box editing is unavailable and preserves the original PC data when saving
 party changes. Live emulator connections currently expose the party only.
 
+Emerald nature edits preserve gender, shiny status, Unown's letter, and Wurmple's
+evolution branch. Spinda's nature control is disabled because Emerald stores its
+nature and spot pattern in the same personality value; changing one would change
+the other. Damaged Emerald PC records (invalid Pokémon checksum or Bad Egg flag)
+also disable PC editing while preserving the original PC bytes.
+
 This edits Pokémon already in a save. Moving Pokémon between saves or games is
 not included.
 
@@ -49,7 +55,8 @@ section checksums, preservation of other Pokémon and save data, save-slot
 selection, file switching, undo/redo, and browser download/reopen workflows.
 
 To run the browser workflow against another populated Emerald save, set
-`BILLS_PC_EMERALD_SAVE` to its absolute path:
+`BILLS_PC_EMERALD_SAVE` to its absolute path. The workflow expects an occupied
+first slot in the first box:
 
 ```bash
 BILLS_PC_EMERALD_SAVE=/path/to/emerald.sav npx playwright test src/__tests__/box-editing.e2e.test.ts --project=chromium --project='Mobile Chrome'

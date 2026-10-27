@@ -5,6 +5,7 @@
 
 import { VANILLA_POKEMON_OFFSETS, VANILLA_SAVE_LAYOUT, type GameConfig, type MoveData, type PokemonMoves } from './types'
 import { bytesToGbaString, natureEffects, natures, statStrings } from './utils'
+import { personalityForNature } from './personality'
 
 /**
  * Pokemon data class with vanilla Pokemon Emerald as the baseline
@@ -208,6 +209,15 @@ export class PokemonBase {
    * The checksum is the sum of all 16-bit words in the decrypted substruct data (48 bytes).
    */
   protected recalculateChecksum(): void {
+    this.view.setUint16(0x1c, this.calculateEncryptionChecksum(), true)
+  }
+
+  /** The inner checksum for vanilla Gen 3 encrypted Pokémon records. */
+  get hasValidEncryptionChecksum(): boolean {
+    return this.view.getUint16(0x1c, true) === this.calculateEncryptionChecksum()
+  }
+
+  private calculateEncryptionChecksum(): number {
     let sum = 0
     for (let i = 0; i < 4; i++) {
       const substruct = this.getDecryptedSubstruct(this.data, i)
@@ -216,8 +226,7 @@ export class PokemonBase {
         sum = (sum + subView.getUint16(j, true)) & 0xffff
       }
     }
-    const view = new DataView(this.data.buffer, this.data.byteOffset, this.data.byteLength)
-    view.setUint16(0x1c, sum, true)
+    return sum
   }
 
   protected getDecryptedSubstruct(data: Uint8Array, substructIndex: number): Uint8Array {
@@ -594,10 +603,21 @@ export class PokemonBase {
     return natures.indexOf(nature)
   }
 
+  get natureEditDisabledReason(): string | undefined {
+    if (!this.config.setNature && this.speciesId === 327) {
+      return 'Emerald ties Spinda’s nature to its spot pattern. Changing its nature would change its spots.'
+    }
+    return undefined
+  }
+
   set natureRaw(value: number) {
-    if (value < 0 || value >= 25) {
+    if (!Number.isInteger(value) || value < 0 || value >= 25) {
       throw new Error(`Nature value must be between 0 and 24, got ${value}`)
     }
+
+    if (this.natureRaw === value) return
+    const disabledReason = this.natureEditDisabledReason
+    if (disabledReason) throw new Error(disabledReason)
 
     if (this.config.setNature) {
       this.config.setNature(this.data, this.view, value)
@@ -606,18 +626,15 @@ export class PokemonBase {
       // For encrypted Pokemon data, we need to preserve all encrypted data
       // when changing the personality value, since it affects the encryption key
 
-      // Calculate the current nature and return early if already correct
-      const currentNature = this.personality % 25
-      if (currentNature === value) return
+      // Select a safe uint32 PID before changing any bytes. Gender, shininess,
+      // Unown's letter and Wurmple's evolution must survive a nature edit.
+      const newPersonality = personalityForNature(this.personality, this.otId, this.speciesId, value)
 
       // First, decrypt all substructs with the current key
       const substruct0 = this.getDecryptedSubstruct(this.data, 0)
       const substruct1 = this.getDecryptedSubstruct(this.data, 1)
       const substruct2 = this.getDecryptedSubstruct(this.data, 2)
       const substruct3 = this.getDecryptedSubstruct(this.data, 3)
-
-      // Calculate new personality: preserve quotient, set remainder to desired nature
-      const newPersonality = this.personality - currentNature + value
 
       // Update the personality value in the data
       this.view.setUint32(this.offsets.personality, newPersonality >>> 0, true)

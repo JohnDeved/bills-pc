@@ -226,7 +226,7 @@ export const usePokemonStore = create<PokemonStore>((set, get) => ({
     set(state =>
       updatePokemon(state, pokemonId, p => {
         const natureValue = natures.indexOf(nature)
-        if (p.id !== pokemonId || !p.details) return p
+        if (p.id !== pokemonId || !p.details || p.data.natureEditDisabledReason) return p
         // Only update if the value actually changed
         if (p.data.natureRaw === natureValue) return p
         useHistoryStore.getState().queueSnapshot()

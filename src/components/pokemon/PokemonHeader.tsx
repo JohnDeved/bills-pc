@@ -73,7 +73,7 @@ export const PokemonHeader: React.FC = () => {
                     onClick={() => !statsLoading && setMegaPreviewEnabled(!megaPreviewEnabled)}
                     disabled={statsLoading}
                   >
-                    <img src="/mega.svg" alt="Mega Evolution" className={`w-4 h-4 transition-all ${megaPreviewEnabled ? '' : 'filter grayscale contrast-75 brightness-90 opacity-70'}`} draggable={false} />
+                    <img src="/mega.svg" alt="Mega Evolution" className={`w-4 h-4 transition-[filter,opacity] ${megaPreviewEnabled ? '' : 'filter grayscale contrast-75 brightness-90 opacity-70'}`} draggable={false} />
                   </Button>
                 ) : (
                   <span className="inline-block size-7 rounded-full opacity-0" aria-hidden />

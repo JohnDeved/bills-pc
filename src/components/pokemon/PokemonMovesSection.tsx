@@ -45,7 +45,7 @@ export const PokemonMovesSection: React.FC = () => {
           return (
             <div key={i} className="@container/move group min-w-0">
               {isLoading ? (
-                <div className="h-full w-full text-left p-3 rounded-lg bg-card/50 group-hover:bg-card/70 backdrop-blur-sm border shadow-lg transition-all duration-200">
+                <div className="h-full w-full text-left p-3 rounded-lg bg-card/50 group-hover:bg-card/70 backdrop-blur-sm border shadow-lg transition-colors duration-200">
                   <PokemonMoveSummary name="Move Name" type="UNKNOWN" pp="25/25" loading />
                 </div>
               ) : (

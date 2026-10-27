@@ -14,6 +14,38 @@ The correction was checked with both real saves at 1440×1080, 1440×720, 393×8
 
 Production build, TypeScript, lint and formatting passed. The [centering verification record](validation/storage-centering.json) contains the tested App source hash, margins and transition results. The desktop screenshots below show the restored centered layout; the broader measurements below document the preceding stability work.
 
+## Immediate tab visibility
+
+A follow-up fixes outgoing UI briefly showing through the incoming panel's blur. The hidden panel itself was already invisible, but its cards, HP bars and buttons used `transition-all`. That also transitions inherited `visibility`, keeping those descendants painted briefly after switching. The original geometry checks did not inspect descendant visibility.
+
+Transitions now name their intended properties: card colors and shadows, HP width, button colors/shadows/opacity, move colors, the Mega icon's filter/opacity, and Nature controls' padding/colors/shadows. Visibility changes immediately. Empty party placeholders have no unnecessary transition. The same correction covers the mounted editor when opening an empty box. Both panels still reserve their natural height, and centering, blur and spacing retain their existing values.
+
+The baseline browser capture reproduced seven Party → PC frames with visible inactive content (up to 72 descendants), and two PC → Party frames (up to six descendants). The fix was verified by inspecting every inactive descendant on each sampled animation frame, with normal animations enabled:
+
+| Verification | Cases | Traces | Sampled frames | Visible inactive content | Layout/scroll movement |
+| --- | --- | --- | --- | --- | --- |
+| Emerald and Quetzal, desktop and mobile | 4 | 24 | 1,112 | 0 frames | 0px |
+| Final Nature transition cleanup, desktop Quetzal | 1 | 7 | 256 | 0 frames | 0px |
+
+The matrix uses 1440×1080 and 393×852 viewports and includes repeated switches, rapid eight-switch sequences, and populated/empty editor transitions on desktop. The focused final run repeats those desktop checks after consolidating Nature's transition declarations and confirms all six stat pills retain their padding and shadow transitions. All tested source hashes stayed unchanged during their respective runs.
+
+The blur remains `blur(16px)`; desktop top and bottom margins remain 113.5px. Both complete reconstructed save files and their original inputs retain their SHA-256 hashes. Production build, TypeScript, lint and formatting passed, with no browser page or resource errors. The [verification record](validation/storage-ghosting.json) includes source hashes, per-trace results, save hashes and the separate matrix/final-check attribution.
+
+These are unmodified browser screencast frames captured during switching, with animations enabled. They illustrate the outgoing party glow and HP bars disappearing; they are not synchronized pixel comparisons.
+
+<details>
+<summary>Before and after transition captures</summary>
+
+Before: party content remains visible underneath the PC panel.
+
+![Outgoing party UI visible through the PC blur](screenshots/pc-switch-ghosting-before.png)
+
+After: the inactive party is hidden while the PC panel keeps its normal blur.
+
+![PC panel without outgoing party UI in its blur](screenshots/pc-switch-ghosting-after.png)
+
+</details>
+
 ## Measured result
 
 Real Emerald and Quetzal saves were checked at six viewport sizes each:

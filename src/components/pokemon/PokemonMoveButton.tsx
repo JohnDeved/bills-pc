@@ -71,7 +71,7 @@ export const PokemonMoveButton: React.FC<MoveButtonProps> = ({ move, isExpanded,
 
   return (
     <div ref={rootRef} className="relative h-full" onWheel={onWheel}>
-      <div className={cn('h-full w-full text-left p-3 rounded-lg bg-card/50 group-hover:bg-card/70 border shadow-lg transition-all duration-200 cursor-pointer select-none')} onClick={onClick} onMouseEnter={onHoverStart} onMouseLeave={onHoverEnd} role="button" tabIndex={0}>
+      <div className={cn('h-full w-full text-left p-3 rounded-lg bg-card/50 group-hover:bg-card/70 border shadow-lg transition-colors duration-200 cursor-pointer select-none')} onClick={onClick} onMouseEnter={onHoverStart} onMouseLeave={onHoverEnd} role="button" tabIndex={0}>
         <PokemonMoveSummary name={move.name} type={move.type} pp={activePokemon?.data.hasStoredPP === false ? 'PP —' : `${move.pp}/--`} ppTitle={activePokemon?.data.hasStoredPP === false ? 'Current PP is not stored for this boxed Pokémon.' : undefined} />
         {/* Hint rendered outside this block to ensure correct absolute positioning */}
       </div>

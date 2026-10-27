@@ -1,0 +1,580 @@
+{
+  "title": "Party/PC inherited visibility transition verification",
+  "baselineCommit": "3de7619f4f8385ccad0682e3543539aff908d4d3",
+  "method": [
+    "Real Quetzal and Emerald saves loaded through the browser file input, with genuine cached fonts, sprites and Pokemon API responses.",
+    "Real tab clicks; requestAnimationFrame reads computed visibility of every descendant inside the inactive storage panel and hidden editor, plus live CSS visibility transitions. No reduced-motion setting or animation disabling.",
+    "Geometry tracks main, tablist and editor x/y/width/height, scroll position, document height and width. Tests include both directions, rapid eight-switch sequences, and populated/empty desktop editor states.",
+    "The matrix covers both games at 1440x1080 and 393x852 before a final Nature transition-property precedence cleanup. The focused final run repeats desktop Quetzal switches, empty editor, and checks all six Nature pills on the exact committed source.",
+    "Full reconstructed save bytes and input-file SHA256 values are compared before and after navigation; no save edits are made.",
+    "Images are unmodified Chromium DevTools screencast frames from the before and matrix runs. They are examples during switching, not captures synchronized to identical elapsed timestamps."
+  ],
+  "baseline": {
+    "sourceSha256": {
+      "src/App.tsx": "7d8e55af5f766e02b31806bffc2235fe4995b556e582df7c048f0e37f9e34d31",
+      "src/components/pokemon/PokemonStorage.tsx": "85679c00e6f22444197905fbae25ddec69ec9a508d392bed9ce533078254a819",
+      "src/components/pokemon/PokemonStatus.tsx": "a466a826f5303ee2c6ef80c9e750adf8657bea73205cdeb92d2b9dbf8f316a0a",
+      "src/components/pokemon/PokemonStatusPlaceholder.tsx": "612b08d4bd580790976f139088b5df36e54985aa0f91d1c1c1d97885fd7526f4"
+    },
+    "sourceFrozen": true,
+    "traces": [
+      {
+        "label": "quetzal/desktop/party-to-pc/0",
+        "frameCount": 16,
+        "leakingFrames": 7,
+        "maxVisibleDescendants": 72,
+        "lastLeakTime": 663.2999999970198,
+        "visibilityTransitionFrames": 7
+      },
+      {
+        "label": "quetzal/desktop/pc-to-party/0",
+        "frameCount": 30,
+        "leakingFrames": 2,
+        "maxVisibleDescendants": 6,
+        "lastLeakTime": 160.5,
+        "visibilityTransitionFrames": 2
+      }
+    ]
+  },
+  "matrix": {
+    "sourceSha256": {
+      "src/App.tsx": "7d8e55af5f766e02b31806bffc2235fe4995b556e582df7c048f0e37f9e34d31",
+      "src/components/pokemon/PokemonStorage.tsx": "85679c00e6f22444197905fbae25ddec69ec9a508d392bed9ce533078254a819",
+      "src/components/pokemon/PokemonStatus.tsx": "3416d335776c952a98be513e4b7bb213fe28e2b62b187f60d3900ac4457ec0a0",
+      "src/components/pokemon/PokemonStatusPlaceholder.tsx": "be13272a751e49182539a36ca528f1f093ad249f927fb759afcbbc43b665f1c4",
+      "src/components/ui/button.tsx": "3f585b62f7c547c5e930b1901aea29ed0f7407f0dac0e0a71c9bbde762cc2e45",
+      "src/components/pokemon/PokemonMoveButton.tsx": "ae860c95002880c94c797c83da9fecfa54595a94867141c9189c983f2b51dc72",
+      "src/components/pokemon/PokemonMovesSection.tsx": "a55a3e961b5ccc49fbc370a87e5d36c7b47828283be8c9a546e670df3262fa15",
+      "src/components/pokemon/PokemonHeader.tsx": "a7f21465b56cc2cfa834bcba84ffd8cb8569fab090ee1be442b7feaa88f5ec86",
+      "src/components/pokemon/traits/NatureTab.tsx": "4f8acb5205ed87c6c3497ded12f70a614b0a4c1e01a9912154bc589e6814a3fd"
+    },
+    "sourceFrozen": true,
+    "cases": [
+      {
+        "game": "quetzal",
+        "viewport": "desktop",
+        "measurements": {
+          "width": 1440,
+          "height": 1080,
+          "main": {
+            "x": 144,
+            "y": 113.5,
+            "width": 1152,
+            "height": 853,
+            "bottom": 966.5
+          },
+          "topMargin": 113.5,
+          "bottomMargin": 113.5,
+          "align": "center",
+          "blur": "blur(16px)",
+          "scrollWidth": 1440,
+          "inactiveInert": true
+        },
+        "screencastFrames": 105
+      },
+      {
+        "game": "quetzal",
+        "viewport": "mobile",
+        "measurements": {
+          "width": 393,
+          "height": 852,
+          "main": {
+            "x": 12,
+            "y": 12,
+            "width": 369,
+            "height": 1732,
+            "bottom": 1744
+          },
+          "topMargin": 12,
+          "bottomMargin": -892,
+          "align": "center",
+          "blur": "blur(16px)",
+          "scrollWidth": 393,
+          "inactiveInert": true
+        },
+        "screencastFrames": 0
+      },
+      {
+        "game": "emerald",
+        "viewport": "desktop",
+        "measurements": {
+          "width": 1440,
+          "height": 1080,
+          "main": {
+            "x": 144,
+            "y": 113.5,
+            "width": 1152,
+            "height": 853,
+            "bottom": 966.5
+          },
+          "topMargin": 113.5,
+          "bottomMargin": 113.5,
+          "align": "center",
+          "blur": "blur(16px)",
+          "scrollWidth": 1440,
+          "inactiveInert": true
+        },
+        "screencastFrames": 0
+      },
+      {
+        "game": "emerald",
+        "viewport": "mobile",
+        "measurements": {
+          "width": 393,
+          "height": 852,
+          "main": {
+            "x": 12,
+            "y": 12,
+            "width": 369,
+            "height": 1732,
+            "bottom": 1744
+          },
+          "topMargin": 12,
+          "bottomMargin": -892,
+          "align": "center",
+          "blur": "blur(16px)",
+          "scrollWidth": 393,
+          "inactiveInert": true
+        },
+        "screencastFrames": 0
+      }
+    ],
+    "traces": [
+      {
+        "label": "quetzal/desktop/party-to-pc/0",
+        "frameCount": 33,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "quetzal/desktop/pc-to-party/0",
+        "frameCount": 30,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "quetzal/desktop/party-to-pc/1",
+        "frameCount": 33,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "quetzal/desktop/pc-to-party/1",
+        "frameCount": 31,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "quetzal/desktop/rapid-roundtrips",
+        "frameCount": 60,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "quetzal/desktop/populated-to-empty-editor",
+        "frameCount": 37,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "quetzal/desktop/empty-to-populated-editor",
+        "frameCount": 32,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "quetzal/mobile/party-to-pc/0",
+        "frameCount": 47,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "quetzal/mobile/pc-to-party/0",
+        "frameCount": 51,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "quetzal/mobile/party-to-pc/1",
+        "frameCount": 49,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "quetzal/mobile/pc-to-party/1",
+        "frameCount": 50,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "quetzal/mobile/rapid-roundtrips",
+        "frameCount": 95,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "emerald/desktop/party-to-pc/0",
+        "frameCount": 37,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "emerald/desktop/pc-to-party/0",
+        "frameCount": 34,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "emerald/desktop/party-to-pc/1",
+        "frameCount": 37,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "emerald/desktop/pc-to-party/1",
+        "frameCount": 37,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "emerald/desktop/rapid-roundtrips",
+        "frameCount": 65,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "emerald/desktop/populated-to-empty-editor",
+        "frameCount": 36,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "emerald/desktop/empty-to-populated-editor",
+        "frameCount": 28,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "emerald/mobile/party-to-pc/0",
+        "frameCount": 48,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "emerald/mobile/pc-to-party/0",
+        "frameCount": 50,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "emerald/mobile/party-to-pc/1",
+        "frameCount": 47,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "emerald/mobile/pc-to-party/1",
+        "frameCount": 48,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "emerald/mobile/rapid-roundtrips",
+        "frameCount": 97,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      }
+    ],
+    "sampledFrames": 1112,
+    "saveIntegrity": [
+      {
+        "game": "quetzal",
+        "beforeSave": {
+          "bytes": 131088,
+          "sha256": "f35c85108a9dd9e4ec4d8f713f5764c492096be73a5ee948b839cc2d347e44d9"
+        },
+        "afterSave": {
+          "bytes": 131088,
+          "sha256": "f35c85108a9dd9e4ec4d8f713f5764c492096be73a5ee948b839cc2d347e44d9"
+        },
+        "sourceBefore": "f35c85108a9dd9e4ec4d8f713f5764c492096be73a5ee948b839cc2d347e44d9",
+        "sourceAfter": "f35c85108a9dd9e4ec4d8f713f5764c492096be73a5ee948b839cc2d347e44d9",
+        "unchanged": true
+      },
+      {
+        "game": "emerald",
+        "beforeSave": {
+          "bytes": 131072,
+          "sha256": "d883d62a7fe6f7404083dd02c0252516519ada231bce1b62800c0b843868fa31"
+        },
+        "afterSave": {
+          "bytes": 131072,
+          "sha256": "d883d62a7fe6f7404083dd02c0252516519ada231bce1b62800c0b843868fa31"
+        },
+        "sourceBefore": "d883d62a7fe6f7404083dd02c0252516519ada231bce1b62800c0b843868fa31",
+        "sourceAfter": "d883d62a7fe6f7404083dd02c0252516519ada231bce1b62800c0b843868fa31",
+        "unchanged": true
+      }
+    ],
+    "pageErrors": [],
+    "resourceErrors": [],
+    "noGhosting": true,
+    "stableLayout": true,
+    "passed": true
+  },
+  "focusedFinal": {
+    "sourceSha256": {
+      "src/App.tsx": "7d8e55af5f766e02b31806bffc2235fe4995b556e582df7c048f0e37f9e34d31",
+      "src/components/pokemon/PokemonStorage.tsx": "85679c00e6f22444197905fbae25ddec69ec9a508d392bed9ce533078254a819",
+      "src/components/pokemon/PokemonStatus.tsx": "3416d335776c952a98be513e4b7bb213fe28e2b62b187f60d3900ac4457ec0a0",
+      "src/components/pokemon/PokemonStatusPlaceholder.tsx": "be13272a751e49182539a36ca528f1f093ad249f927fb759afcbbc43b665f1c4",
+      "src/components/ui/button.tsx": "b5c3cf7e473f1fad8c5120af88b628fe2a0e7a97a65f5277681945fe52d65e9e",
+      "src/components/pokemon/PokemonMoveButton.tsx": "ae860c95002880c94c797c83da9fecfa54595a94867141c9189c983f2b51dc72",
+      "src/components/pokemon/PokemonMovesSection.tsx": "a55a3e961b5ccc49fbc370a87e5d36c7b47828283be8c9a546e670df3262fa15",
+      "src/components/pokemon/PokemonHeader.tsx": "a7f21465b56cc2cfa834bcba84ffd8cb8569fab090ee1be442b7feaa88f5ec86",
+      "src/components/pokemon/traits/NatureTab.tsx": "9a9f006c87c56058ca49c364d852d4a75b2bc25fc4c67766e444df29112a1e4f"
+    },
+    "sourceFrozen": true,
+    "cases": [
+      {
+        "game": "quetzal",
+        "viewport": "desktop",
+        "measurements": {
+          "width": 1440,
+          "height": 1080,
+          "main": {
+            "x": 144,
+            "y": 113.5,
+            "width": 1152,
+            "height": 853,
+            "bottom": 966.5
+          },
+          "topMargin": 113.5,
+          "bottomMargin": 113.5,
+          "align": "center",
+          "blur": "blur(16px)",
+          "scrollWidth": 1440,
+          "inactiveInert": true
+        },
+        "screencastFrames": 105
+      }
+    ],
+    "traces": [
+      {
+        "label": "quetzal/desktop/party-to-pc/0",
+        "frameCount": 34,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "quetzal/desktop/pc-to-party/0",
+        "frameCount": 30,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "quetzal/desktop/party-to-pc/1",
+        "frameCount": 33,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "quetzal/desktop/pc-to-party/1",
+        "frameCount": 28,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "quetzal/desktop/rapid-roundtrips",
+        "frameCount": 61,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "quetzal/desktop/populated-to-empty-editor",
+        "frameCount": 37,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      },
+      {
+        "label": "quetzal/desktop/empty-to-populated-editor",
+        "frameCount": 33,
+        "leakingFrames": 0,
+        "maxVisibleDescendants": 0,
+        "lastLeakTime": null,
+        "visibilityTransitionFrames": 0,
+        "maxGeometryOrScrollChangePx": 0
+      }
+    ],
+    "sampledFrames": 256,
+    "saveIntegrity": [
+      {
+        "game": "quetzal",
+        "beforeSave": {
+          "bytes": 131088,
+          "sha256": "f35c85108a9dd9e4ec4d8f713f5764c492096be73a5ee948b839cc2d347e44d9"
+        },
+        "afterSave": {
+          "bytes": 131088,
+          "sha256": "f35c85108a9dd9e4ec4d8f713f5764c492096be73a5ee948b839cc2d347e44d9"
+        },
+        "sourceBefore": "f35c85108a9dd9e4ec4d8f713f5764c492096be73a5ee948b839cc2d347e44d9",
+        "sourceAfter": "f35c85108a9dd9e4ec4d8f713f5764c492096be73a5ee948b839cc2d347e44d9",
+        "unchanged": true
+      }
+    ],
+    "pageErrors": [],
+    "resourceErrors": [],
+    "noGhosting": true,
+    "stableLayout": true,
+    "passed": true,
+    "natureTransitionProperties": [
+      {
+        "text": "HP",
+        "transitionProperty": "padding, color, background-color, border-color, box-shadow, opacity",
+        "transitionDuration": "0.2s"
+      },
+      {
+        "text": "Atk",
+        "transitionProperty": "padding, color, background-color, border-color, box-shadow, opacity",
+        "transitionDuration": "0.2s"
+      },
+      {
+        "text": "Def",
+        "transitionProperty": "padding, color, background-color, border-color, box-shadow, opacity",
+        "transitionDuration": "0.2s"
+      },
+      {
+        "text": "Spe",
+        "transitionProperty": "padding, color, background-color, border-color, box-shadow, opacity",
+        "transitionDuration": "0.2s"
+      },
+      {
+        "text": "SpA",
+        "transitionProperty": "padding, color, background-color, border-color, box-shadow, opacity",
+        "transitionDuration": "0.2s"
+      },
+      {
+        "text": "SpD",
+        "transitionProperty": "padding, color, background-color, border-color, box-shadow, opacity",
+        "transitionDuration": "0.2s"
+      }
+    ]
+  },
+  "staticChecks": {
+    "productionBuild": "passed",
+    "typescript": "passed",
+    "oxlint": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "changedFileFormatting": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "images": [
+    {
+      "path": "docs/screenshots/pc-switch-ghosting-before.png",
+      "phase": "baseline",
+      "frame": "0005.png",
+      "sha256": "fddcbfe209b9b52823d6a53f0ed1f22b9ddb76faebdf6f61d423496dbabb74cf",
+      "bytes": 349111
+    },
+    {
+      "path": "docs/screenshots/pc-switch-ghosting-after.png",
+      "phase": "matrix",
+      "frame": "0009.png",
+      "sha256": "a1c1764b38c6f9210d9151d8be34bb01219d956c7eee84e61e1a4ca882cb3867",
+      "bytes": 227009
+    }
+  ]
+}

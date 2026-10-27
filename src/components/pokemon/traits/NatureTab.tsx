@@ -107,7 +107,7 @@ export const NatureTab: React.FC = () => {
                   onClick={() => setChooseMode(prev => (prev === 'raise' ? null : 'raise'))}
                   title="Click to change raised stat"
                   aria-pressed={chooseMode === 'raise'}
-                  className={`inline-flex items-center gap-1 rounded-md border dark:border-emerald-700/60 border-emerald-300 dark:bg-emerald-900/30 bg-emerald-100 dark:text-emerald-300 text-emerald-800 px-2 py-1 text-xs transition-all duration-150 ease-out cursor-pointer hover:ring-1 hover:dark:ring-emerald-300/40 hover:ring-emerald-400/40 ${
+                  className={`inline-flex items-center gap-1 rounded-md border dark:border-emerald-700/60 border-emerald-300 dark:bg-emerald-900/30 bg-emerald-100 dark:text-emerald-300 text-emerald-800 px-2 py-1 text-xs transition-[color,background-color,border-color,box-shadow] duration-150 ease-out cursor-pointer hover:ring-1 hover:dark:ring-emerald-300/40 hover:ring-emerald-400/40 ${
                     chooseMode === 'raise' ? 'ring-2 ring-emerald-400/60 hover:ring-2 hover:ring-emerald-400/60 animate-glow-emerald' : ''
                   }`}
                 >
@@ -122,7 +122,7 @@ export const NatureTab: React.FC = () => {
                   onClick={() => setChooseMode(prev => (prev === 'lower' ? null : 'lower'))}
                   title="Click to change lowered stat"
                   aria-pressed={chooseMode === 'lower'}
-                  className={`inline-flex items-center gap-1 rounded-md border dark:border-rose-700/60 border-rose-300 dark:bg-rose-900/30 bg-rose-100 dark:text-rose-300 text-rose-800 px-2 py-1 text-xs transition-all duration-150 ease-out cursor-pointer hover:ring-1 hover:dark:ring-rose-300/40 hover:ring-rose-400/40 ${
+                  className={`inline-flex items-center gap-1 rounded-md border dark:border-rose-700/60 border-rose-300 dark:bg-rose-900/30 bg-rose-100 dark:text-rose-300 text-rose-800 px-2 py-1 text-xs transition-[color,background-color,border-color,box-shadow] duration-150 ease-out cursor-pointer hover:ring-1 hover:dark:ring-rose-300/40 hover:ring-rose-400/40 ${
                     chooseMode === 'lower' ? 'ring-2 ring-rose-400/60 hover:ring-2 hover:ring-rose-400/60 animate-glow-rose' : ''
                   }`}
                 >
@@ -144,7 +144,7 @@ export const NatureTab: React.FC = () => {
                 {statAbbreviations.map((abbr, i) => {
                   const isUp = incIndex === i
                   const isDown = decIndex === i
-                  const base = 'relative px-2 py-1 rounded-md border text-xs leading-none transition-[padding] duration-200 ease-out'
+                  const base = 'relative px-2 py-1 rounded-md border text-xs leading-none transition-[padding,color,background-color,border-color,box-shadow,opacity] duration-200 ease-out'
                   let color = 'bg-card/50 border text-muted-foreground'
                   if (isUp) color = 'dark:bg-emerald-900/30 bg-emerald-100 dark:border-emerald-700/60 border-emerald-300 dark:text-emerald-300 text-emerald-800'
                   else if (isDown) color = 'dark:bg-rose-900/30 bg-rose-100 dark:border-rose-700/60 border-rose-300 dark:text-rose-300 text-rose-800'
@@ -157,9 +157,9 @@ export const NatureTab: React.FC = () => {
                   if (chooseMode === 'raise') ringColor = 'hover:ring-emerald-300/40'
                   else if (chooseMode === 'lower') ringColor = 'hover:ring-rose-300/40'
 
-                  let interactiveCls = 'transition-all duration-150 ease-out'
+                  let interactiveCls = 'duration-150 ease-out'
                   if (chooseMode) {
-                    interactiveCls = interactive ? `cursor-pointer hover:ring-1 ${ringColor} transition-all duration-150 ease-out` : 'opacity-40 cursor-not-allowed'
+                    interactiveCls = interactive ? `cursor-pointer hover:ring-1 ${ringColor} duration-150 ease-out` : 'opacity-40 cursor-not-allowed'
                   }
 
                   const preview = hoveredStat === i ? getPreviewDelta(i) : null

@@ -56,7 +56,7 @@ export const App: React.FC = () => {
         </Suspense>
       )}
       <Toaster richColors position="bottom-center" />
-      <div className="min-h-screen flex items-center justify-center p-4 font-pixel text-foreground">
+      <div className="min-h-screen flex items-center justify-center p-3 sm:p-4 font-pixel text-foreground">
         <SaveFileDropzone
           onFileLoad={parse}
           error={error}
@@ -67,7 +67,7 @@ export const App: React.FC = () => {
         />
         {hasSaveData && (
           <main className="w-full max-w-6xl mx-auto z-10 gap-4 flex flex-col">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 z-10">
               <div className="min-w-0 flex flex-col gap-4">
                 <AppMenubar
                   onRequestOpenFile={() => {
@@ -79,7 +79,7 @@ export const App: React.FC = () => {
                 <PokemonStorage onPokemonHover={preloadPokemonDetails} />
               </div>
               {activePokemon ? (
-                <div className="min-w-0 grid grid-cols-1 grid-rows-[auto_auto_1fr] gap-4">
+                <section id="pokemon-editor" tabIndex={-1} aria-label="Pokémon editor" className="min-w-0 grid grid-cols-1 grid-rows-[auto_auto_1fr] gap-4 scroll-mt-4 outline-none">
                   <Card className="z-30">
                     <PokemonHeader />
                     <PokemonMovesSection />
@@ -90,7 +90,7 @@ export const App: React.FC = () => {
                   <Card className="z-10 min-h-64">
                     <PokemonTraitsSection />
                   </Card>
-                </div>
+                </section>
               ) : (
                 <Card className="min-h-64 p-6 flex flex-col items-center justify-center text-center gap-3">
                   <h2 className="text-lg">Select a Pokémon to edit</h2>

@@ -13,6 +13,7 @@ https://github.com/user-attachments/assets/c0cf27de-2d38-4185-9356-a7cc493a5d53
 - **Cross-Platform**: Web, CLI, and library usage
 - **Mega Stats Preview**: Preview stats if a Mega Evolution exists (gated by game config)
 - **PC Box Editing**: Browse named boxes and edit stored Pokémon's IVs, EVs, nature, ability, and held item in Emerald and Quetzal
+- **Emerald → Quetzal Transfers**: Copy party and boxed Pokémon into empty Quetzal slots with a guided preview, format review and separate save download
 
 ### Editing Pokémon in the PC
 
@@ -34,17 +35,37 @@ nature and spot pattern in the same personality value; changing one would change
 the other. Damaged Emerald PC records (invalid Pokémon checksum or Bad Egg flag)
 also disable PC editing while preserving the original PC bytes.
 
-This edits Pokémon already in a save. Moving Pokémon between saves or games is
-not included.
+### Transferring an Emerald team to Quetzal
 
-### Box editing tests
+Select **Transfer Pokémon** on the landing screen or above the party/PC tabs.
+Choose an Emerald source save and a Quetzal destination save, select Pokémon from
+the source party or PC, and choose a destination box. The preview reserves empty
+slots without replacing existing Pokémon. Review the locations and conversion
+changes, acknowledge them, and download the new Quetzal save.
+
+Both originals remain unchanged. An open editor file is captured with its current
+edits; opening a transfer result first downloads a backup of that initial editor
+snapshot. The transfer never writes through the original file's save handle.
+
+Quetzal's compact format cannot retain every Emerald field. Level, nature,
+gender, shininess and IVs are preserved for supported Pokémon; XP/EV precision,
+nickname support and identity metadata have explicit format-specific reviews.
+Eggs, damaged records, unsupported mappings, personality-dependent special cases
+and incompatible held items are blocked. The copied record is not a lossless
+Emerald clone; the source save retains the complete original Pokémon.
+
+See the [complete user flow and screenshots](docs/pokemon-transfer-flow.md),
+[conversion and compatibility reference](src/lib/parser/transfer/README.md), and
+[independent save-integrity evidence](docs/transfer-validation.md).
+
+### Box editing and transfer tests
 
 ```bash
 npm ci
 npm test
 npm run build
 npx playwright install chromium
-npx playwright test src/__tests__/box-editing.e2e.test.ts --project=chromium
+npx playwright test src/__tests__/box-editing.e2e.test.ts src/__tests__/pokemon-transfer.e2e.test.ts --project=chromium --project='Mobile Chrome'
 ```
 
 The tests use the checked-in Emerald and Quetzal saves. Quetzal already contains

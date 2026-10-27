@@ -32,6 +32,14 @@ export interface SaveFileActions {
 
 export type SaveFileStore = SaveFileState & SaveFileActions
 
+// File reads may finish out of order (polling, file pickers, history or an
+// exported transfer). Only the newest request may replace the active editor.
+let parseRequestVersion = 0
+
+function cancelledParse(): DOMException {
+  return new DOMException('This save read was replaced by a newer request', 'AbortError')
+}
+
 export const useSaveFileStore = create<SaveFileStore>((set, get) => ({
   // Initial state
   saveData: null,
@@ -45,6 +53,7 @@ export const useSaveFileStore = create<SaveFileStore>((set, get) => ({
 
   // Actions
   parse: async (input: File | ArrayBuffer | FileSystemFileHandle | MgbaWebSocketClient, options?: { transient?: boolean }) => {
+    const requestVersion = ++parseRequestVersion
     const transient = Boolean(options?.transient)
     if (!transient) {
       set({
@@ -62,6 +71,7 @@ export const useSaveFileStore = create<SaveFileStore>((set, get) => ({
       const parser = transient ? (get().parser ?? new PokemonSaveParser()) : new PokemonSaveParser()
 
       const saveData = await parser.parse(input)
+      if (requestVersion !== parseRequestVersion) throw cancelledParse()
       if (!transient) {
         usePokemonStore.getState().clearPokemonDetails()
         usePokemonStore.getState().resetUiIdentities()
@@ -89,8 +99,10 @@ export const useSaveFileStore = create<SaveFileStore>((set, get) => ({
           }
         } catch {}
       }
+      if (requestVersion !== parseRequestVersion) throw cancelledParse()
       return saveData
     } catch (error) {
+      if (requestVersion !== parseRequestVersion) throw cancelledParse()
       const errorMessage = error instanceof Error ? error.message : 'Failed to parse save file'
       set({
         isLoading: false,
@@ -102,6 +114,7 @@ export const useSaveFileStore = create<SaveFileStore>((set, get) => ({
   },
 
   clearSaveFile: () => {
+    parseRequestVersion++
     try {
       usePokemonStore.getState().resetUiIdentities()
     } catch {}

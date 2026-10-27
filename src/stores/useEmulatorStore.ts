@@ -80,7 +80,9 @@ export const useEmulatorStore = create<EmulatorStore>((set, get) => ({
             if (isEmulatorWritePending()) return
             // Update saveData in the store to trigger reactive UI updates
             useSaveFileStore.setState(state => {
-              if (!state.saveData) return state
+              // A newly opened save (including a transferred copy) must never
+              // receive updates from the previous emulator session.
+              if (!state.saveData || state.parser !== parser) return state
               return {
                 saveData: { ...state.saveData, party_pokemon: partyPokemon },
                 lastUpdateTransient: true,
@@ -106,14 +108,15 @@ export const useEmulatorStore = create<EmulatorStore>((set, get) => ({
 
   disconnect: () => {
     const { client } = get()
+    const { parser } = useSaveFileStore.getState()
+    const ownsCurrentSave = Boolean(client && parser?.getWebSocketClient() === client)
     if (client) {
-      const { parser } = useSaveFileStore.getState()
-      if (parser?.isWatching()) {
+      if (ownsCurrentSave && parser?.isWatching()) {
         parser.stopWatching().catch(console.error)
       }
       client.disconnect()
     }
-    useSaveFileStore.getState().clearSaveFile()
+    if (ownsCurrentSave) useSaveFileStore.getState().clearSaveFile()
     set({ status: 'disconnected', error: null, client: null, gameTitle: null })
   },
 }))

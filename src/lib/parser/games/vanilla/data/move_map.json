@@ -674,6 +674,11 @@
     "id_name": "soft-boiled",
     "id": 135
   },
+  "136": {
+    "name": "High Jump Kick",
+    "id_name": "high-jump-kick",
+    "id": 136
+  },
   "137": {
     "name": "Glare",
     "id_name": "glare",
@@ -913,6 +918,11 @@
     "name": "Scary Face",
     "id_name": "scary-face",
     "id": 184
+  },
+  "185": {
+    "name": "Feint Attack",
+    "id_name": "feint-attack",
+    "id": 185
   },
   "186": {
     "name": "Sweet Kiss",
@@ -1308,6 +1318,11 @@
     "name": "Focus Punch",
     "id_name": "focus-punch",
     "id": 264
+  },
+  "265": {
+    "name": "Smelling Salts",
+    "id_name": "smelling-salts",
+    "id": 265
   },
   "266": {
     "name": "Follow Me",

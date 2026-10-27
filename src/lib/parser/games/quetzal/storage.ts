@@ -15,6 +15,60 @@ const FORMATS = [
 ] as const
 type StorageFormat = (typeof FORMATS)[number]
 
+/** Explicit raw fields for a new compact record. Callers must map game IDs first. */
+export interface QuetzalBoxRecordFields {
+  readonly species: number
+  readonly item: number
+  readonly experience: number
+  readonly ball: number
+  readonly shiny: boolean
+  readonly female: boolean
+  readonly moves: readonly number[]
+  readonly evs: readonly number[]
+  readonly ivs: readonly number[]
+  readonly nature: number
+  readonly ability: number
+  readonly nickname: Uint8Array
+  readonly pp: readonly number[]
+  readonly currentHp: number
+}
+
+/** Build a record only after the transfer layer has reviewed format losses. */
+export function createQuetzalBoxPokemon(fields: QuetzalBoxRecordFields, config: GameConfig, recordSize: number): QuetzalBoxPokemon {
+  const format = FORMATS.find(candidate => candidate.size === recordSize)
+  if (!format) throw new Error('Unsupported Quetzal box record size')
+  if (fields.species < 1 || fields.species > 1528 || fields.experience > 1059860 || fields.experience % 10 !== 0 || fields.nature > 24 || fields.ability > 2) {
+    throw new Error('Invalid Quetzal transfer fields')
+  }
+  if (fields.moves.length !== 4 || fields.pp.length !== 4 || fields.evs.length !== 6 || fields.ivs.length !== 6 || fields.nickname.length !== 10) {
+    throw new Error('Invalid Quetzal transfer field dimensions')
+  }
+  const record = new Uint8Array(format.size)
+  writeField(record, 0, 11, fields.species)
+  writeField(record, 11, 10, fields.item)
+  writeField(record, 21, 17, fields.experience / 10)
+  writeField(record, 38, 6, fields.ball)
+  writeField(record, 44, 1, Number(fields.shiny))
+  fields.moves.forEach((move, index) => {
+    if (move > 848) throw new Error('Unsupported Quetzal move')
+    writeField(record, 48 + index * 10, 10, move)
+  })
+  fields.evs.forEach((ev, index) => {
+    if (ev % 4 !== 0) throw new Error('Quetzal box EVs must be multiples of four')
+    writeField(record, 88 + index * 6, 6, ev / 4)
+  })
+  fields.ivs.forEach((iv, index) => writeField(record, 124 + index * 5, 5, iv))
+  writeField(record, 160, 1, Number(fields.female))
+  writeField(record, 161, 5, fields.nature)
+  writeField(record, 166, 2, fields.ability)
+  if (format.nicknameOffset !== null) record.set(fields.nickname, format.nicknameOffset)
+  if (format.ppOffset !== null) {
+    fields.pp.forEach((pp, index) => writeField(record, (format.ppOffset! + index) * 8, 8, pp))
+    writeField(record, 168, 16, fields.currentHp)
+  }
+  return new QuetzalBoxPokemon(record, config, format)
+}
+
 function readText(bytes: Uint8Array): string {
   const terminator = bytes.indexOf(0xff)
   return bytesToGbaString(terminator === -1 ? bytes : bytes.subarray(0, terminator))

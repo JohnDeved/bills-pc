@@ -5,10 +5,12 @@ type UndoRedo = () => Promise<void> | void
 interface UseUndoRedoShortcutsOptions {
   undo: UndoRedo
   redo: UndoRedo
+  enabled?: boolean
 }
 
-export function useUndoRedoShortcuts({ undo, redo }: UseUndoRedoShortcutsOptions) {
+export function useUndoRedoShortcuts({ undo, redo, enabled = true }: UseUndoRedoShortcutsOptions) {
   useEffect(() => {
+    if (!enabled) return
     const onKeyDown = (e: KeyboardEvent) => {
       const mod = e.metaKey || e.ctrlKey
       if (!mod) return
@@ -25,5 +27,5 @@ export function useUndoRedoShortcuts({ undo, redo }: UseUndoRedoShortcutsOptions
 
     document.addEventListener('keydown', onKeyDown)
     return () => document.removeEventListener('keydown', onKeyDown)
-  }, [undo, redo])
+  }, [undo, redo, enabled])
 }

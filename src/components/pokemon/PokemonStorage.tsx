@@ -5,9 +5,11 @@ import { PokemonPartyList } from './PokemonPartyList'
 
 interface PokemonStorageProps {
   onPokemonHover?: (id: number) => void
+  onTransfer?: () => void
+  transferDisabled?: boolean
 }
 
-export const PokemonStorage: React.FC<PokemonStorageProps> = ({ onPokemonHover }) => {
+export const PokemonStorage: React.FC<PokemonStorageProps> = ({ onPokemonHover, onTransfer, transferDisabled = false }) => {
   const storageView = usePokemonStore(s => s.storageView)
   const setStorageView = usePokemonStore(s => s.setStorageView)
   const hasBoxes = usePokemonStore(s => s.boxList.length > 0)
@@ -17,6 +19,15 @@ export const PokemonStorage: React.FC<PokemonStorageProps> = ({ onPokemonHover }
 
   return (
     <Tabs value={storageView} onValueChange={value => setStorageView(value as 'party' | 'boxes')} className="gap-3">
+      {onTransfer && (
+        <div className="geist-font flex flex-wrap items-center justify-between gap-2 px-1">
+          <span className="text-xs text-muted-foreground">Bring your Emerald team to Quetzal</span>
+          <Button type="button" variant="outline" onClick={onTransfer} disabled={transferDisabled} className="min-h-10 gap-2 rounded-lg border-cyan-600/25 px-3 text-xs text-cyan-800 dark:text-cyan-200">
+            <ArrowRightLeft className="size-3.5" aria-hidden />
+            Transfer Pokémon
+          </Button>
+        </div>
+      )}
       <TabsList aria-label="Pokémon location" className="grid grid-cols-2 gap-1 rounded-xl border border-border/60 bg-card/40 p-1">
         <TabsTrigger value="party" className="-mb-0 min-h-11 min-w-0 justify-center gap-2 rounded-lg border-0 px-2 py-2 text-[10px] sm:text-xs data-[state=active]:bg-background/80 data-[state=active]:shadow-sm focus-visible:outline-2 focus-visible:outline-cyan-500">
           Party
@@ -49,3 +60,5 @@ export const PokemonStorage: React.FC<PokemonStorageProps> = ({ onPokemonHover }
     </Tabs>
   )
 }
+import { ArrowRightLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button'

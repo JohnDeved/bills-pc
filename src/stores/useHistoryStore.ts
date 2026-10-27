@@ -153,6 +153,11 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
         usePokemonStore.getState().setPendingIdsBySlot(previous.idsBySlot)
       } catch {}
       await parse(previous.bytes.buffer.slice(previous.bytes.byteOffset, previous.bytes.byteOffset + previous.bytes.byteLength), { transient: true })
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === 'AbortError')) throw error
+      // A newer file won the parse race. History must follow that file, not
+      // retain snapshots which could later restore the previous save into it.
+      get().initFromCurrent()
     } finally {
       set({ isApplying: false })
     }
@@ -184,6 +189,9 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
         usePokemonStore.getState().setPendingIdsBySlot(next.idsBySlot)
       } catch {}
       await parse(next.bytes.buffer.slice(next.bytes.byteOffset, next.bytes.byteOffset + next.bytes.byteLength), { transient: true })
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === 'AbortError')) throw error
+      get().initFromCurrent()
     } finally {
       set({ isApplying: false })
     }
@@ -212,6 +220,9 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
       await parse(initial.bytes.buffer.slice(initial.bytes.byteOffset, initial.bytes.byteOffset + initial.bytes.byteLength), { transient: true })
       // After reset, clear history to reflect fresh baseline
       set(() => ({ past: [], future: [] }))
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === 'AbortError')) throw error
+      get().initFromCurrent()
     } finally {
       set({ isApplying: false })
     }

@@ -20,7 +20,8 @@ function syncPokemonToEmulator(pokemon: PokemonBase, partyList: UIPokemonData[])
   if (!client || (status !== 'connected' && status !== 'watching')) return
 
   const { parser } = useSaveFileStore.getState()
-  const layout = parser?.getMemoryLayout()
+  if (!parser?.isInMemoryMode() || parser.getWebSocketClient() !== client) return
+  const layout = parser.getMemoryLayout()
   if (!layout) return
 
   const slotIndex = partyList.findIndex(p => p.data === pokemon)
@@ -45,7 +46,8 @@ function syncFullPartyToEmulator(partyList: UIPokemonData[]): void {
   if (!client || (status !== 'connected' && status !== 'watching')) return
 
   const { parser } = useSaveFileStore.getState()
-  const layout = parser?.getMemoryLayout()
+  if (!parser?.isInMemoryMode() || parser.getWebSocketClient() !== client) return
+  const layout = parser.getMemoryLayout()
   if (!layout) return
 
   const fullBuffer = new Uint8Array(partyList.length * layout.pokemonSize)

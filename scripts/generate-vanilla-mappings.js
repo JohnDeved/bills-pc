@@ -195,6 +195,8 @@ function createPokemonMapping(pokeemeraldSpecies, pokeapiPokemon) {
  */
 function createMoveMapping(pokeemeraldMoves, pokeapiMoves) {
   const mapping = {}
+  // Names renamed after Gen 3 must still map to the same move by meaning.
+  const renamedMoves = { HI_JUMP_KICK: 'high-jump-kick', FAINT_ATTACK: 'feint-attack', SMELLING_SALT: 'smelling-salts' }
 
   // Create lookup map for PokeAPI moves by name
   const apiLookup = new Map()
@@ -205,7 +207,7 @@ function createMoveMapping(pokeemeraldMoves, pokeapiMoves) {
 
   // Map pokeemerald moves to PokeAPI
   for (const [internalId, move] of pokeemeraldMoves) {
-    const normalizedName = normalizeName(move.name)
+    const normalizedName = normalizeName(renamedMoves[move.name] ?? move.name)
     const apiMove = apiLookup.get(normalizedName)
 
     if (apiMove) {

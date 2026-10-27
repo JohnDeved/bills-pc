@@ -29,18 +29,19 @@ The close action returns to Bill's PC with its previous editor intact. Selection
 
 ## Layout and centering
 
-The transfer workbench uses the editor's vertical centering. Every step has equal space above and below when it fits the window. Longer steps grow the document and retain normal scrolling, with 24px mobile / 40px larger-screen vertical padding. Step-heading focus and scrolling remain unchanged.
+The transfer workbench uses the editor's vertical centering and padding. Every step has equal space above and below when it fits the window. Longer steps grow the document and retain normal scrolling, with 12px mobile / 16px larger-screen padding. Step-heading focus and scrolling remain unchanged.
 
-The centering correction passed 20 browser measurements across all four steps at 1440×1080, 1440×720 and 393×852, with additional tall-window checks at 1440×1440. Fitting examples:
+The remaining transfer-specific spacing has been removed: its 40px desktop top/bottom padding forced otherwise fitting screens to scroll. The latest check records geometry immediately after navigation, without resetting scroll before measurements. Fitting examples:
 
 | Step | Viewport | Top and bottom margins |
 | --- | --- | --- |
-| Saves | 1440×1080 | 186.5px each |
-| Pokémon selection | 1440×1440 | 204px each |
-| Review | 1440×1440 | 98.5px each |
-| Download | 1440×1080 | 126px each |
+| Saves | 1366×768 | 30.5px each |
+| Pokémon selection | 1440×1080 | 24px each |
+| Saves on a taller screen | 1440×1080 | 186.5px each |
 
-The check includes switching from a long review to the shorter completion screen and reopening transfer from a scrolled mobile editor. All content remained reachable, with no horizontal overflow. Each of the three complete browser flows produced the same SHA-256 as the previously verified four-Pokémon transfer; existing destination records, unrelated bytes, original inputs and Emerald backups passed preservation checks. Build, TypeScript, lint and formatting passed. The [centering verification record](validation/transfer-centering.json) includes source hashes, measurements and download audits.
+All 32 navigation/layout observations passed, including returning from Review and reopening transfer from a scrolled editor. Fitting steps retain zero document scroll. Longer review screens keep all content reachable with the shared padding; no horizontal overflow or browser errors occurred. Build, TypeScript, lint and formatting passed. The [padding verification record](validation/transfer-padding.json) includes source hashes, before/after measurements and overflow checks.
+
+The preceding [full-flow centering record](validation/transfer-centering.json) documents all four steps at desktop, short-desktop and mobile sizes, including the long-review → shorter-completion transition. Each of its three complete browser flows produced the same SHA-256 as the previously verified four-Pokémon transfer; existing destination records, unrelated bytes, original inputs and Emerald backups passed preservation checks.
 
 ## Screens
 
@@ -68,6 +69,13 @@ The Party/PC switch uses the same blurred surface as the editor cards. Switching
 ### Choose the saves
 
 ![Emerald and Quetzal saves loaded](screenshots/transfer-saves.png)
+
+<details>
+<summary>Centered on a 1366×768 laptop viewport</summary>
+
+![Transfer saves with equal top and bottom margins on a laptop](screenshots/transfer-saves-laptop.png)
+
+</details>
 
 ### Select Pokémon and preview their destination
 

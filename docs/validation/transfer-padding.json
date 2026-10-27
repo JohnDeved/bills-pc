@@ -1,0 +1,1034 @@
+{
+  "title": "Transfer centering with shared editor padding",
+  "baselineCommit": "bdd340bba2db22b0c7f818d9d12cdb2436493d35",
+  "sourceSha256": {
+    "src/App.tsx": "e1c95aa43c80e153245776877ad75f2acafd107bf3e18aadeed6cbcb35e4da5a",
+    "src/components/transfer/TransferWorkbench.tsx": "fbb8939d8b48740714acdb5d0b14b83f293a6cf8c2de09df85c5b09ff009f775"
+  },
+  "sourceFrozen": true,
+  "method": [
+    "Load the real Emerald and Quetzal saves through the browser file inputs, with genuine cached sprites and fonts.",
+    "Measure actual viewport geometry after navigation without resetting page scroll for the measurements or desktop screenshots. Include entering transfer, returning from review, and reopening from a scrolled editor.",
+    "The former transfer-only 40px desktop vertical padding caused avoidable document overflow for 707px Saves at 1366x768 and 1032px selection at 1440x1080. Use the shared editor 12px mobile/16px desktop minimum padding.",
+    "Require equal top/bottom margins, zero scrollY and zero document overflow whenever the content and shared padding fit. Inspect overflow paths separately by scrolling to both ends only after recording the raw navigation state.",
+    "Keep the documented four-Pokemon scenario: Aggron, Blaziken, Lotad and Marill into box 8 slots 24, 27, 28, 29.",
+    "This run validates layout only. The earlier actual download and binary-preservation checks remain documented in transfer-centering.json; parser, conversion and save-writing code are unchanged."
+  ],
+  "baseline": {
+    "sourceSha256": {
+      "src/App.tsx": "a77b907a49a7e8d7f0540e2a6d74ea71042fe8cf7f270ed435b4add4df85a9be",
+      "src/components/transfer/TransferWorkbench.tsx": "fbb8939d8b48740714acdb5d0b14b83f293a6cf8c2de09df85c5b09ff009f775"
+    },
+    "cases": [
+      {
+        "label": "1366x768/loaded-saves",
+        "viewport": {
+          "width": 1366,
+          "height": 768
+        },
+        "main": {
+          "x": 107,
+          "y": 40,
+          "bottom": 747,
+          "width": 1152,
+          "height": 707,
+          "documentY": 40
+        },
+        "padding": {
+          "top": 40,
+          "bottom": 40
+        },
+        "scrollY": 0,
+        "pageHeight": 787,
+        "scrollWidth": 1366,
+        "topMargin": 40,
+        "bottomMargin": 21,
+        "fitsWithPadding": false,
+        "centered": false,
+        "overflow": 19
+      },
+      {
+        "label": "1366x768/return-saves",
+        "viewport": {
+          "width": 1366,
+          "height": 768
+        },
+        "main": {
+          "x": 107,
+          "y": 21,
+          "bottom": 728,
+          "width": 1152,
+          "height": 707,
+          "documentY": 40
+        },
+        "padding": {
+          "top": 40,
+          "bottom": 40
+        },
+        "scrollY": 19,
+        "pageHeight": 787,
+        "scrollWidth": 1366,
+        "topMargin": 21,
+        "bottomMargin": 40,
+        "fitsWithPadding": false,
+        "centered": false,
+        "overflow": 19
+      },
+      {
+        "label": "1440x1080/four-pokemon-selection",
+        "viewport": {
+          "width": 1440,
+          "height": 1080
+        },
+        "main": {
+          "x": 144,
+          "y": 16,
+          "bottom": 1048,
+          "width": 1152,
+          "height": 1032,
+          "documentY": 40
+        },
+        "padding": {
+          "top": 40,
+          "bottom": 40
+        },
+        "scrollY": 24,
+        "pageHeight": 1112,
+        "scrollWidth": 1440,
+        "topMargin": 16,
+        "bottomMargin": 32,
+        "fitsWithPadding": false,
+        "centered": false,
+        "overflow": 32
+      }
+    ]
+  },
+  "navigationCases": [
+    {
+      "label": "1366x768/empty-saves",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "main": {
+        "x": 107,
+        "y": 30.5,
+        "bottom": 737.5,
+        "width": 1152,
+        "height": 707,
+        "documentY": 30.5
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 0,
+      "pageHeight": 768,
+      "scrollWidth": 1366,
+      "topMargin": 30.5,
+      "bottomMargin": 30.5,
+      "fitsWithPadding": true,
+      "centered": true,
+      "overflow": 0
+    },
+    {
+      "label": "1366x768/loaded-saves",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "main": {
+        "x": 107,
+        "y": 30.5,
+        "bottom": 737.5,
+        "width": 1152,
+        "height": 707,
+        "documentY": 30.5
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 0,
+      "pageHeight": 768,
+      "scrollWidth": 1366,
+      "topMargin": 30.5,
+      "bottomMargin": 30.5,
+      "fitsWithPadding": true,
+      "centered": true,
+      "overflow": 0
+    },
+    {
+      "label": "1366x768/choose-initial",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "main": {
+        "x": 107,
+        "y": -138,
+        "bottom": 894,
+        "width": 1152,
+        "height": 1032,
+        "documentY": 16
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 154,
+      "pageHeight": 1064,
+      "scrollWidth": 1366,
+      "topMargin": -138,
+      "bottomMargin": -126,
+      "fitsWithPadding": false,
+      "centered": false,
+      "overflow": 296
+    },
+    {
+      "label": "1366x768/review-initial",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "main": {
+        "x": 107,
+        "y": -138,
+        "bottom": 1004,
+        "width": 1152,
+        "height": 1142,
+        "documentY": 16
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 154,
+      "pageHeight": 1174,
+      "scrollWidth": 1366,
+      "topMargin": -138,
+      "bottomMargin": -236,
+      "fitsWithPadding": false,
+      "centered": false,
+      "overflow": 406
+    },
+    {
+      "label": "1366x768/return-saves",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "main": {
+        "x": 107,
+        "y": 30.5,
+        "bottom": 737.5,
+        "width": 1152,
+        "height": 707,
+        "documentY": 30.5
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 0,
+      "pageHeight": 768,
+      "scrollWidth": 1366,
+      "topMargin": 30.5,
+      "bottomMargin": 30.5,
+      "fitsWithPadding": true,
+      "centered": true,
+      "overflow": 0
+    },
+    {
+      "label": "1366x768/editor-scrolled",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "main": {
+        "x": 107,
+        "y": -101,
+        "bottom": 752,
+        "width": 1152,
+        "height": 853,
+        "documentY": 16
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 117,
+      "pageHeight": 885,
+      "scrollWidth": 1366,
+      "topMargin": -101,
+      "bottomMargin": 16,
+      "fitsWithPadding": false,
+      "centered": false,
+      "overflow": 117
+    },
+    {
+      "label": "1366x768/reentry-from-editor",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "main": {
+        "x": 107,
+        "y": 30.5,
+        "bottom": 737.5,
+        "width": 1152,
+        "height": 707,
+        "documentY": 30.5
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 0,
+      "pageHeight": 768,
+      "scrollWidth": 1366,
+      "topMargin": 30.5,
+      "bottomMargin": 30.5,
+      "fitsWithPadding": true,
+      "centered": true,
+      "overflow": 0
+    },
+    {
+      "label": "1440x1080/empty-saves",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "main": {
+        "x": 144,
+        "y": 186.5,
+        "bottom": 893.5,
+        "width": 1152,
+        "height": 707,
+        "documentY": 186.5
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 0,
+      "pageHeight": 1080,
+      "scrollWidth": 1440,
+      "topMargin": 186.5,
+      "bottomMargin": 186.5,
+      "fitsWithPadding": true,
+      "centered": true,
+      "overflow": 0
+    },
+    {
+      "label": "1440x1080/loaded-saves",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "main": {
+        "x": 144,
+        "y": 186.5,
+        "bottom": 893.5,
+        "width": 1152,
+        "height": 707,
+        "documentY": 186.5
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 0,
+      "pageHeight": 1080,
+      "scrollWidth": 1440,
+      "topMargin": 186.5,
+      "bottomMargin": 186.5,
+      "fitsWithPadding": true,
+      "centered": true,
+      "overflow": 0
+    },
+    {
+      "label": "1440x1080/choose-initial",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "main": {
+        "x": 144,
+        "y": 24,
+        "bottom": 1056,
+        "width": 1152,
+        "height": 1032,
+        "documentY": 24
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 0,
+      "pageHeight": 1080,
+      "scrollWidth": 1440,
+      "topMargin": 24,
+      "bottomMargin": 24,
+      "fitsWithPadding": true,
+      "centered": true,
+      "overflow": 0
+    },
+    {
+      "label": "1440x1080/review-initial",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "main": {
+        "x": 144,
+        "y": -78,
+        "bottom": 1064,
+        "width": 1152,
+        "height": 1142,
+        "documentY": 16
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 94,
+      "pageHeight": 1174,
+      "scrollWidth": 1440,
+      "topMargin": -78,
+      "bottomMargin": 16,
+      "fitsWithPadding": false,
+      "centered": false,
+      "overflow": 94
+    },
+    {
+      "label": "1440x1080/return-saves",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "main": {
+        "x": 144,
+        "y": 186.5,
+        "bottom": 893.5,
+        "width": 1152,
+        "height": 707,
+        "documentY": 186.5
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 0,
+      "pageHeight": 1080,
+      "scrollWidth": 1440,
+      "topMargin": 186.5,
+      "bottomMargin": 186.5,
+      "fitsWithPadding": true,
+      "centered": true,
+      "overflow": 0
+    },
+    {
+      "label": "1440x1080/editor-scrolled",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "main": {
+        "x": 144,
+        "y": 113.5,
+        "bottom": 966.5,
+        "width": 1152,
+        "height": 853,
+        "documentY": 113.5
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 0,
+      "pageHeight": 1080,
+      "scrollWidth": 1440,
+      "topMargin": 113.5,
+      "bottomMargin": 113.5,
+      "fitsWithPadding": true,
+      "centered": true,
+      "overflow": 0
+    },
+    {
+      "label": "1440x1080/reentry-from-editor",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "main": {
+        "x": 144,
+        "y": 186.5,
+        "bottom": 893.5,
+        "width": 1152,
+        "height": 707,
+        "documentY": 186.5
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 0,
+      "pageHeight": 1080,
+      "scrollWidth": 1440,
+      "topMargin": 186.5,
+      "bottomMargin": 186.5,
+      "fitsWithPadding": true,
+      "centered": true,
+      "overflow": 0
+    }
+  ],
+  "fourPokemonCases": [
+    {
+      "label": "1440x1080/empty-saves",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "main": {
+        "x": 144,
+        "y": 186.5,
+        "bottom": 893.5,
+        "width": 1152,
+        "height": 707,
+        "documentY": 186.5
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 0,
+      "pageHeight": 1080,
+      "scrollWidth": 1440,
+      "topMargin": 186.5,
+      "bottomMargin": 186.5,
+      "fitsWithPadding": true,
+      "centered": true,
+      "overflow": 0
+    },
+    {
+      "label": "1440x1080/loaded-saves",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "main": {
+        "x": 144,
+        "y": 186.5,
+        "bottom": 893.5,
+        "width": 1152,
+        "height": 707,
+        "documentY": 186.5
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 0,
+      "pageHeight": 1080,
+      "scrollWidth": 1440,
+      "topMargin": 186.5,
+      "bottomMargin": 186.5,
+      "fitsWithPadding": true,
+      "centered": true,
+      "overflow": 0
+    },
+    {
+      "label": "1440x1080/choose-initial",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "main": {
+        "x": 144,
+        "y": 24,
+        "bottom": 1056,
+        "width": 1152,
+        "height": 1032,
+        "documentY": 24
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 0,
+      "pageHeight": 1080,
+      "scrollWidth": 1440,
+      "topMargin": 24,
+      "bottomMargin": 24,
+      "fitsWithPadding": true,
+      "centered": true,
+      "overflow": 0
+    },
+    {
+      "label": "1440x1080/four-pokemon-selection",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "main": {
+        "x": 144,
+        "y": 24,
+        "bottom": 1056,
+        "width": 1152,
+        "height": 1032,
+        "documentY": 24
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 0,
+      "pageHeight": 1080,
+      "scrollWidth": 1440,
+      "topMargin": 24,
+      "bottomMargin": 24,
+      "fitsWithPadding": true,
+      "centered": true,
+      "overflow": 0
+    },
+    {
+      "label": "1440x1080/four-pokemon-review-as-opened",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "main": {
+        "x": 144,
+        "y": -138,
+        "bottom": 1105,
+        "width": 1152,
+        "height": 1243,
+        "documentY": 16
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 154,
+      "pageHeight": 1275,
+      "scrollWidth": 1440,
+      "topMargin": -138,
+      "bottomMargin": -25,
+      "fitsWithPadding": false,
+      "centered": false,
+      "overflow": 195
+    },
+    {
+      "label": "1440x1080/return-saves-after-long-review",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "main": {
+        "x": 144,
+        "y": 186.5,
+        "bottom": 893.5,
+        "width": 1152,
+        "height": 707,
+        "documentY": 186.5
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 0,
+      "pageHeight": 1080,
+      "scrollWidth": 1440,
+      "topMargin": 186.5,
+      "bottomMargin": 186.5,
+      "fitsWithPadding": true,
+      "centered": true,
+      "overflow": 0
+    },
+    {
+      "label": "1440x720/empty-saves",
+      "viewport": {
+        "width": 1440,
+        "height": 720
+      },
+      "main": {
+        "x": 144,
+        "y": 16,
+        "bottom": 723,
+        "width": 1152,
+        "height": 707,
+        "documentY": 16
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 0,
+      "pageHeight": 739,
+      "scrollWidth": 1440,
+      "topMargin": 16,
+      "bottomMargin": -3,
+      "fitsWithPadding": false,
+      "centered": false,
+      "overflow": 19
+    },
+    {
+      "label": "1440x720/loaded-saves",
+      "viewport": {
+        "width": 1440,
+        "height": 720
+      },
+      "main": {
+        "x": 144,
+        "y": 16,
+        "bottom": 723,
+        "width": 1152,
+        "height": 707,
+        "documentY": 16
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 0,
+      "pageHeight": 739,
+      "scrollWidth": 1440,
+      "topMargin": 16,
+      "bottomMargin": -3,
+      "fitsWithPadding": false,
+      "centered": false,
+      "overflow": 19
+    },
+    {
+      "label": "1440x720/choose-initial",
+      "viewport": {
+        "width": 1440,
+        "height": 720
+      },
+      "main": {
+        "x": 144,
+        "y": -138,
+        "bottom": 894,
+        "width": 1152,
+        "height": 1032,
+        "documentY": 16
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 154,
+      "pageHeight": 1064,
+      "scrollWidth": 1440,
+      "topMargin": -138,
+      "bottomMargin": -174,
+      "fitsWithPadding": false,
+      "centered": false,
+      "overflow": 344
+    },
+    {
+      "label": "1440x720/four-pokemon-selection",
+      "viewport": {
+        "width": 1440,
+        "height": 720
+      },
+      "main": {
+        "x": 144,
+        "y": -138,
+        "bottom": 894,
+        "width": 1152,
+        "height": 1032,
+        "documentY": 16
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 154,
+      "pageHeight": 1064,
+      "scrollWidth": 1440,
+      "topMargin": -138,
+      "bottomMargin": -174,
+      "fitsWithPadding": false,
+      "centered": false,
+      "overflow": 344
+    },
+    {
+      "label": "1440x720/four-pokemon-review-as-opened",
+      "viewport": {
+        "width": 1440,
+        "height": 720
+      },
+      "main": {
+        "x": 144,
+        "y": -138,
+        "bottom": 1105,
+        "width": 1152,
+        "height": 1243,
+        "documentY": 16
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 154,
+      "pageHeight": 1275,
+      "scrollWidth": 1440,
+      "topMargin": -138,
+      "bottomMargin": -385,
+      "fitsWithPadding": false,
+      "centered": false,
+      "overflow": 555
+    },
+    {
+      "label": "1440x720/return-saves-after-long-review",
+      "viewport": {
+        "width": 1440,
+        "height": 720
+      },
+      "main": {
+        "x": 144,
+        "y": -3,
+        "bottom": 704,
+        "width": 1152,
+        "height": 707,
+        "documentY": 16
+      },
+      "padding": {
+        "top": 16,
+        "bottom": 16
+      },
+      "scrollY": 19,
+      "pageHeight": 739,
+      "scrollWidth": 1440,
+      "topMargin": -3,
+      "bottomMargin": 16,
+      "fitsWithPadding": false,
+      "centered": false,
+      "overflow": 19
+    },
+    {
+      "label": "393x852/empty-saves",
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "main": {
+        "x": 12,
+        "y": 12,
+        "bottom": 1198.5,
+        "width": 369,
+        "height": 1186.5,
+        "documentY": 12
+      },
+      "padding": {
+        "top": 12,
+        "bottom": 12
+      },
+      "scrollY": 0,
+      "pageHeight": 1211,
+      "scrollWidth": 393,
+      "topMargin": 12,
+      "bottomMargin": -346.5,
+      "fitsWithPadding": false,
+      "centered": false,
+      "overflow": 359
+    },
+    {
+      "label": "393x852/loaded-saves",
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "main": {
+        "x": 12,
+        "y": 12,
+        "bottom": 1198.5,
+        "width": 369,
+        "height": 1186.5,
+        "documentY": 12
+      },
+      "padding": {
+        "top": 12,
+        "bottom": 12
+      },
+      "scrollY": 0,
+      "pageHeight": 1211,
+      "scrollWidth": 393,
+      "topMargin": 12,
+      "bottomMargin": -346.5,
+      "fitsWithPadding": false,
+      "centered": false,
+      "overflow": 359
+    },
+    {
+      "label": "393x852/choose-initial",
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "main": {
+        "x": 12,
+        "y": -203,
+        "bottom": 1701.5,
+        "width": 369,
+        "height": 1904.5,
+        "documentY": 12
+      },
+      "padding": {
+        "top": 12,
+        "bottom": 12
+      },
+      "scrollY": 215,
+      "pageHeight": 1929,
+      "scrollWidth": 393,
+      "topMargin": -203,
+      "bottomMargin": -849.5,
+      "fitsWithPadding": false,
+      "centered": false,
+      "overflow": 1077
+    },
+    {
+      "label": "393x852/four-pokemon-selection",
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "main": {
+        "x": 12,
+        "y": -359,
+        "bottom": 1545.5,
+        "width": 369,
+        "height": 1904.5,
+        "documentY": 12
+      },
+      "padding": {
+        "top": 12,
+        "bottom": 12
+      },
+      "scrollY": 371,
+      "pageHeight": 1929,
+      "scrollWidth": 393,
+      "topMargin": -359,
+      "bottomMargin": -693.5,
+      "fitsWithPadding": false,
+      "centered": false,
+      "overflow": 1077
+    },
+    {
+      "label": "393x852/four-pokemon-review-as-opened",
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "main": {
+        "x": 12,
+        "y": -203,
+        "bottom": 2690.5,
+        "width": 369,
+        "height": 2893.5,
+        "documentY": 12
+      },
+      "padding": {
+        "top": 12,
+        "bottom": 12
+      },
+      "scrollY": 215,
+      "pageHeight": 2918,
+      "scrollWidth": 393,
+      "topMargin": -203,
+      "bottomMargin": -1838.5,
+      "fitsWithPadding": false,
+      "centered": false,
+      "overflow": 2066
+    },
+    {
+      "label": "393x852/return-saves-after-long-review",
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "main": {
+        "x": 12,
+        "y": -203,
+        "bottom": 983.5,
+        "width": 369,
+        "height": 1186.5,
+        "documentY": 12
+      },
+      "padding": {
+        "top": 12,
+        "bottom": 12
+      },
+      "scrollY": 215,
+      "pageHeight": 1211,
+      "scrollWidth": 393,
+      "topMargin": -203,
+      "bottomMargin": -131.5,
+      "fitsWithPadding": false,
+      "centered": false,
+      "overflow": 359
+    }
+  ],
+  "overflowChecks": [
+    {
+      "viewport": "1440x1080",
+      "topPadding": 16,
+      "bottomPadding": 16,
+      "topReachable": true,
+      "bottomReachable": true
+    },
+    {
+      "viewport": "1440x720",
+      "topPadding": 16,
+      "bottomPadding": 16,
+      "topReachable": true,
+      "bottomReachable": true
+    },
+    {
+      "viewport": "393x852",
+      "topPadding": 12,
+      "bottomPadding": 12.5,
+      "topReachable": true,
+      "bottomReachable": true
+    }
+  ],
+  "caseCount": 32,
+  "pageErrors": [],
+  "resourceErrors": [],
+  "staticChecks": {
+    "productionBuild": "passed",
+    "typescript": "passed",
+    "oxlint": {
+      "warnings": 0,
+      "errors": 0
+    },
+    "formatting": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "images": [
+    {
+      "path": "docs/screenshots/transfer-saves-laptop.png",
+      "width": 1366,
+      "height": 768,
+      "bytes": 83042,
+      "sha256": "01d19ebd7021f33c9d0fcf18778ece25f97c57f76bf25f8744d9320f93434467"
+    },
+    {
+      "path": "docs/screenshots/transfer-selection.png",
+      "width": 1440,
+      "height": 1080,
+      "bytes": 206161,
+      "sha256": "5e797fed06794841b4210ad10e1becc9f60da222e8d855d1bd176435575852d4"
+    },
+    {
+      "path": "docs/screenshots/transfer-mobile-review.png",
+      "width": 393,
+      "height": 852,
+      "bytes": 69385,
+      "sha256": "b6012240dc4bd971ddcc5c5b9209a81fcaf392efddde6a2382a7a8c249e8c813"
+    }
+  ],
+  "passed": true
+}

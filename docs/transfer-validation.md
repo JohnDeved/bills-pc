@@ -6,7 +6,9 @@ The transfer feature copies selected Emerald party or PC Pokémon into reviewed 
 
 The full independent verification completed **27 passing cases, 13,670 passing checks and 537 transferred-record comparisons**, with no failures. A separate check of the **actual browser download** completed **337 passing checks** for four copied Pokémon. Every original save retained its SHA-256 hash.
 
-These measurements were taken before the implementation commit. Each report records the application HEAD, working-tree state, verifier hash and individual parser-source hashes; the HEAD alone does not identify the tested working tree. Use the reproducible commands below to bind a new report to the exact revision being reviewed.
+Both checks were rerun against the clean implementation commit [`7c5b9fea595dfe6dc0298bf6f0e6b345ef894f4b`](https://github.com/JohnDeved/bills-pc/commit/7c5b9fea595dfe6dc0298bf6f0e6b345ef894f4b), tree `f2da772d12eeadc7d17e828a7802477fb13f2c2a`. The repository remained unchanged until both runs finished. Their reports contain an empty working-tree status and identical hashes for all 40 parser source files.
+
+The checked-in [machine-readable proof](validation/emerald-quetzal-transfer.json) binds these results to that exact code commit, the verifier, independent reader, input fixtures and final browser download.
 
 | Real Emerald source | Original PC | Original party | Accepted copies per destination layout | Intentionally blocked | Real Quetzal PC after copying |
 | --- | ---: | ---: | ---: | --- | ---: |
@@ -82,18 +84,9 @@ The verifier requires the two external repositories at the commits above and rej
 | `src/data/species.json` | `e5c4e26c0977f76610c26e2b3e1629f9ce19de1211cccf0bf72646ee80828c6e` |
 | `src/data/balls.json` | `4740bf032ec49ea46a74c253f1aa6705d8e5a9e1811b5275643717ea6de89866` |
 
-The historical full-matrix report (`candidate-3`) has SHA-256 `914adc53a22472d14256f4eaf4f3a7f63dc8663db5a5f2208a6863d37ab3a202`. The historical browser report (`browser-1`) has SHA-256 `bce82f09f3a9b4c8307976f0ef6c44660f9ce74c617f94b1d6e7ff27abe69b2b`. Both retain the complete application-source hash map. Selected bindings are reproduced here so the reported measurements are not attached only to an uncommitted branch name:
+The [committed-code proof](validation/emerald-quetzal-transfer.json) retains the full `application.sources` hash map, implementation commit/tree, clean working-tree status, script and independent-reader hashes, input/final fixture hashes, every case/check/record count, compatibility decisions, export hashes and browser placements. It also records hashes of the complete underlying matrix and browser reports. No raw saves are included.
 
-| Application source | Historical SHA-256 |
-| --- | --- |
-| `transfer/convert.ts` | `9b90d1fffd93833f2ce8f8e5d9c21d22237c1a679f5e49a421e6ab322ca31b78` |
-| `transfer/emerald.ts` | `2956b4a63ffc4f1225eb9768240144a2b0d89c9c4d50e82593f9c519b10e5160` |
-| `transfer/experience.ts` | `3782e8be330121cd860cc21828cc458b0191bf2c7ebd6ec4f6eaa4d384dea4b9` |
-| `transfer/metadata.json` | `b1281b0da3e86dbe487e851046bbc3c7de3c23332dc52ceeb6d28cd5854a5b3d` |
-| `transfer/index.ts`, matrix run | `e2510f98dcfa181106530dc71f50caa98ad27772b6e1dafc991639a0538be688` |
-| `transfer/index.ts`, browser run | `f22684e436314539810dfead25521a941bf0ecc0188de2fa07b7b4a02398c9fe` |
-
-Application paths in this table are relative to `src/lib/parser`. A new run generates new bindings automatically. Preserve the `application.sources`, `application.commit`, working-tree state, script hash, reader provenance and fixture hashes when reducing a full report for review.
+Both runs used the portable verifier at commit `7c5b9fea595dfe6dc0298bf6f0e6b345ef894f4b`, SHA-256 `0488a446bc9c5e8c4fbea76515ab512d2d0a73397aee678121dc56c9227e9080`. The final browser capture was `run-2026-10-27T01-00-38-306Z`; its downloaded export and `emerald-backup.sav` were checked directly. A new run generates its own bindings automatically, so later implementation changes should be validated against their own source hashes.
 
 ## Reproduce the complete matrix
 

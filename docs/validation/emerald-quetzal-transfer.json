@@ -1,0 +1,596 @@
+{
+  "schema": 1,
+  "description": "Independent Emerald to Quetzal transfer verification of a clean committed implementation and the final actual browser download. Raw saves are not included.",
+  "hashAlgorithm": "SHA-256",
+  "application": {
+    "repository": "https://github.com/JohnDeved/bills-pc",
+    "commit": "7c5b9fea595dfe6dc0298bf6f0e6b345ef894f4b",
+    "tree": "f2da772d12eeadc7d17e828a7802477fb13f2c2a",
+    "workingTree": "",
+    "cleanForBothRuns": true,
+    "parserDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sourceFileCount": 40,
+    "sources": {
+      "src/lib/parser/__tests__/boxStorage.test.ts": "95b9dea806a3d1820286ad6d7a7e4b4d6c30096a9868e1421e5716786d33e31f",
+      "src/lib/parser/__tests__/cli-event-driven.test.ts": "4825402953cba8745855ad432caef73a7aa7411cf33832daf1eaf79e3de4d79a",
+      "src/lib/parser/__tests__/cli.test.ts": "ddc9e2db79dd21eae63b806863ee6b4be32e61832c981acb5afa5104376d58f2",
+      "src/lib/parser/__tests__/natureEditing.test.ts": "936b8c76a19e9668e3265e9b4259391b00a3f0163ec5de643ebece4f229e0d35",
+      "src/lib/parser/__tests__/pokemonSaveParser.unit.test.ts": "1e1b71a7d7d1170af759d998dcb74ed81b92b484fa158e3e76708d4683229c32",
+      "src/lib/parser/__tests__/pokemonTransfer.test.ts": "b001cdab68ac512c6607ba096d8041af97b354e7ae87b4f353ac421cf95b2198",
+      "src/lib/parser/__tests__/quetzal.test.ts": "8ff9e3d81ff842c26d37f595ccff969b53a5fb3f92afd1553d826d0c0c0c0203",
+      "src/lib/parser/__tests__/quetzalStorage.test.ts": "51daf402a5bb97b0085d2ff63fa57fd500f1d0d45a9919fdf0c5d7f1ebc5bf5c",
+      "src/lib/parser/__tests__/test_data/base_stats_cache.json": "ab8c1f534f953721b217b3e30c7232522faab971cdf945623d14decb3d169373",
+      "src/lib/parser/__tests__/test_data/emerald_ground_truth.json": "abf2410e8bbf03125f5136429e4aeccc8c3f9123dca1cb0b128d848355e8b416",
+      "src/lib/parser/__tests__/test_data/quetzal_ground_truth.json": "9506bbc3363ca6f54c3d41143d9ea8d482202387c3f0bdd1275c6daedef32dae",
+      "src/lib/parser/__tests__/valueIsolation.test.ts": "e296e40322fbceb97d35012cd61dfdbd52b6f9d754070a7f4673401fe96c64d6",
+      "src/lib/parser/__tests__/vanilla.test.ts": "cc6fd688f8a9f128f3c5226e3a487db1339b5d9de2c9a9388f5de984581c188e",
+      "src/lib/parser/__tests__/vanillaEmerald.test.ts": "5bbf9f6bd52bfd848168c7a39848420c0d9745276f01418882ce3dda89fea4d4",
+      "src/lib/parser/__tests__/websocket-watch.test.ts": "a01b383fdf99d734d12deb7345dc151756e1d78c9b7bd6fea815454e304b9571",
+      "src/lib/parser/cli.ts": "26d213ae6f7235ba7d905685147d0ad1304ea564fe66b2b7cbe4bdb116304261",
+      "src/lib/parser/core/GameConfigBase.ts": "5bd4f53f4d5871c5f5d2252a59e5bf7f0d235a8f402f2f988577e7afe58ce434",
+      "src/lib/parser/core/GameConfigRegistry.ts": "23b6722fb1c42daba111d2dc97a0554562ef9a9d1c494dac8ec2f9ae4c525dd2",
+      "src/lib/parser/core/PokemonBase.ts": "aa090ce016a458acc67e711634411633aa756a2b0c3edad608115ac669bf40e3",
+      "src/lib/parser/core/PokemonSaveParser.ts": "2f148a9f46a13de9466c7821a6cc637b72156026bc7e912d290911b2de388ef7",
+      "src/lib/parser/core/personality.ts": "bd986d731b7f1cf2190ce7ac2498a0b3ab42543caa4652f0df2e81b4cdeae9ce",
+      "src/lib/parser/core/types.ts": "27aa9ca9d32c614fb4bf8e4e6cd26952f3a5d91d46f1bcae2d3818c353b1a35b",
+      "src/lib/parser/core/utils.ts": "09cf47d6e865c6a6b4b742d057287bc8c747cec712630fdee1580c2e5e89c4e2",
+      "src/lib/parser/data/pokemon_charmap.json": "84eb8173a9c62feb99370af387bf0f7c88d747cfc4626b211b62d1f9902a589b",
+      "src/lib/parser/games/index.ts": "a409c9fb9a9eb3f3e403d7b55d6928c48ebeb1fa77d701511ba841ad06dc89fe",
+      "src/lib/parser/games/quetzal/config.ts": "5d2917f45b6cbc7ad837bb60137b0a3634762071f0c0761a04b045f3f45b8a93",
+      "src/lib/parser/games/quetzal/data/item_map.json": "722eb5a14adfbc19ab712ead668d267eb35cba935b3c734ed3870c54b92505ec",
+      "src/lib/parser/games/quetzal/data/move_map.json": "0e53538f25134e83f8ee6946b3c47ad46e3a14c5c31cff39d5f299807fae1eda",
+      "src/lib/parser/games/quetzal/data/pokemon_map.json": "f34bbcefb5a1a2439c84fc20a6fad2f45cb2c333ffe059cb7ab11dce42b8f0b1",
+      "src/lib/parser/games/quetzal/storage.ts": "dba279a4102c96dea87acab97523fe6382583b117e91cd7a98bd9ab34017bf86",
+      "src/lib/parser/games/vanilla/config.ts": "7fb38114d814b558ad3050965f6239546c64ab291c9080144ce7175a67ab5cfc",
+      "src/lib/parser/games/vanilla/data/item_map.json": "0c7747faa371da496cb936806adb359153bb3dfe81b5c0f1f99479a1fbf6b828",
+      "src/lib/parser/games/vanilla/data/move_map.json": "c9d6fe565a05779c485eceed0658e800b82b8888d6eee9f0361519a729063519",
+      "src/lib/parser/games/vanilla/data/pokemon_map.json": "ae6b90998f5bf6e026fd6a56a325533bf5320ec6d4f34483798964226bdb02eb",
+      "src/lib/parser/transfer/convert.ts": "9b90d1fffd93833f2ce8f8e5d9c21d22237c1a679f5e49a421e6ab322ca31b78",
+      "src/lib/parser/transfer/emerald.ts": "2956b4a63ffc4f1225eb9768240144a2b0d89c9c4d50e82593f9c519b10e5160",
+      "src/lib/parser/transfer/experience.ts": "3782e8be330121cd860cc21828cc458b0191bf2c7ebd6ec4f6eaa4d384dea4b9",
+      "src/lib/parser/transfer/index.ts": "f22684e436314539810dfead25521a941bf0ecc0188de2fa07b7b4a02398c9fe",
+      "src/lib/parser/transfer/metadata.json": "b1281b0da3e86dbe487e851046bbc3c7de3c23332dc52ceeb6d28cd5854a5b3d",
+      "src/lib/parser/transfer/types.ts": "50ac7506bbec232f2562fbe1683efc32a2b3c4b57b7020813e399ae716612e26"
+    }
+  },
+  "verifier": {
+    "path": "scripts/verify-pokemon-transfer.mjs",
+    "sha256": "0488a446bc9c5e8c4fbea76515ab512d2d0a73397aee678121dc56c9227e9080",
+    "commit": "7c5b9fea595dfe6dc0298bf6f0e6b345ef894f4b"
+  },
+  "independentReader": {
+    "url": "https://github.com/LirouVictor/savDex.git",
+    "commit": "8fbec28ffb0e508051a3d4557f19ab86da2010cc",
+    "workingTree": "",
+    "sources": {
+      "src/parser/gen3.js": "ae4f900ff15ef19dfdc668941b62bb96233a02335daabf57f062e7112a3946a1",
+      "src/parser/save.js": "dba729c8d5b5c35a90680415ce62734b5526eb35aaada771ffc0cec99cc39446",
+      "src/data/gen3.json": "2c339920f2eea7e9159ba499b0bfd334a73e8fe604f1d05fea6349c512d5edb0",
+      "src/data/quetzal.json": "28c14a9b67541d3df532a6a704865e9e6d612e55d588cb4366f350ddad776b89",
+      "src/data/species.json": "e5c4e26c0977f76610c26e2b3e1629f9ce19de1211cccf0bf72646ee80828c6e",
+      "src/data/balls.json": "4740bf032ec49ea46a74c253f1aa6705d8e5a9e1811b5275643717ea6de89866"
+    }
+  },
+  "sourceSaveRepository": {
+    "url": "https://github.com/VitHuang/PokemonBoxSaveEditor.git",
+    "commit": "054e9878a89fb385e9b8aaf72256107a4f758981",
+    "workingTree": ""
+  },
+  "fixtures": [
+    {
+      "id": "emerald-83",
+      "repository": "VitHuang/PokemonBoxSaveEditor",
+      "path": "emerald.sav",
+      "bytes": 131072,
+      "sha256": "d883d62a7fe6f7404083dd02c0252516519ada231bce1b62800c0b843868fa31",
+      "finalSha256": "d883d62a7fe6f7404083dd02c0252516519ada231bce1b62800c0b843868fa31",
+      "unchanged": true
+    },
+    {
+      "id": "emerald-89",
+      "repository": "VitHuang/PokemonBoxSaveEditor",
+      "path": "emeraldtest.sav",
+      "bytes": 131072,
+      "sha256": "8ea7d22e9de169a16b5aacbb8156cf15a4317cf9ab631dfa00d311543587c0ff",
+      "finalSha256": "8ea7d22e9de169a16b5aacbb8156cf15a4317cf9ab631dfa00d311543587c0ff",
+      "unchanged": true
+    },
+    {
+      "id": "quetzal-232",
+      "repository": "JohnDeved/bills-pc",
+      "path": "src/lib/parser/__tests__/test_data/quetzal.sav",
+      "bytes": 131088,
+      "sha256": "f35c85108a9dd9e4ec4d8f713f5764c492096be73a5ee948b839cc2d347e44d9",
+      "finalSha256": "f35c85108a9dd9e4ec4d8f713f5764c492096be73a5ee948b839cc2d347e44d9",
+      "unchanged": true
+    }
+  ],
+  "matrix": {
+    "run": {
+      "label": "commit-7c5b9fea-matrix",
+      "startedAt": "2026-10-27T01:26:36.915Z",
+      "completedAt": "2026-10-27T01:26:39.074Z",
+      "fullReportSha256": "e717b23f59cf25092c6b065f604fdb940d76ca4afaa98d0cd55cb4aacdbd43b7"
+    },
+    "summary": {
+      "cases": 27,
+      "casesPassed": 27,
+      "casesFailed": 0,
+      "checksPassed": 13670,
+      "checksFailed": 0,
+      "transferredRecordsChecked": 537,
+      "originalsUnchanged": true
+    },
+    "compatibility": [
+      {
+        "fixture": "emerald-83",
+        "originalBoxed": 83,
+        "originalParty": 6,
+        "acceptedPerLayout": 87,
+        "blocked": [
+          {
+            "id": "box:0:0",
+            "nickname": "WURMPLE",
+            "speciesId": 265,
+            "reason": "Wurmple evolution depends on personality in Emerald and gender in Quetzal; its evolution branch cannot be guaranteed"
+          },
+          {
+            "id": "box:0:19",
+            "nickname": "SPINDA",
+            "speciesId": 327,
+            "reason": "Spinda spot patterns depend on personality, which Quetzal compact boxes do not store"
+          }
+        ],
+        "realDestinationBoxedAfter": 319
+      },
+      {
+        "fixture": "emerald-89",
+        "originalBoxed": 89,
+        "originalParty": 6,
+        "acceptedPerLayout": 92,
+        "blocked": [
+          {
+            "id": "box:0:0",
+            "nickname": "WURMPLE",
+            "speciesId": 265,
+            "reason": "Wurmple evolution depends on personality in Emerald and gender in Quetzal; its evolution branch cannot be guaranteed"
+          },
+          {
+            "id": "box:0:19",
+            "nickname": "SPINDA",
+            "speciesId": 327,
+            "reason": "Spinda spot patterns depend on personality, which Quetzal compact boxes do not store"
+          },
+          {
+            "id": "box:13:0",
+            "nickname": "Phantasm",
+            "speciesId": 92,
+            "reason": "Tm10 cannot be transferred: the move taught by that TM/HM is not verified across these games. Remove it in Emerald first"
+          }
+        ],
+        "realDestinationBoxedAfter": 324
+      }
+    ],
+    "cases": [
+      {
+        "name": "emerald-83-31-compatibility",
+        "sourceId": "emerald-83",
+        "recordSize": 31,
+        "checksPassed": 4,
+        "checksFailed": 0
+      },
+      {
+        "name": "emerald-83-31-batch-1",
+        "sourceId": "emerald-83",
+        "recordSize": 31,
+        "checksPassed": 831,
+        "checksFailed": 0,
+        "selectedCount": 30,
+        "changedBytes": 705,
+        "allowedBytes": 932,
+        "outputSha256": "5c409d726e00c84f1df28999f7da38a98e9a1573423ad18050f72d99dee72952"
+      },
+      {
+        "name": "emerald-83-31-batch-2",
+        "sourceId": "emerald-83",
+        "recordSize": 31,
+        "checksPassed": 861,
+        "checksFailed": 0,
+        "selectedCount": 30,
+        "changedBytes": 725,
+        "allowedBytes": 932,
+        "outputSha256": "bffea77e0ebdde5376a1aeaa51e8fe7f5d227917dce1d4632b4e072e1d53d565"
+      },
+      {
+        "name": "emerald-83-31-batch-3",
+        "sourceId": "emerald-83",
+        "recordSize": 31,
+        "checksPassed": 834,
+        "checksFailed": 0,
+        "selectedCount": 27,
+        "changedBytes": 657,
+        "allowedBytes": 839,
+        "outputSha256": "22623da33bc7db34f02bccb40500840f33bd76132f3d29758c7c5d8707df12ae"
+      },
+      {
+        "name": "emerald-83-21-compatibility",
+        "sourceId": "emerald-83",
+        "recordSize": 21,
+        "checksPassed": 4,
+        "checksFailed": 0
+      },
+      {
+        "name": "emerald-83-21-batch-1",
+        "sourceId": "emerald-83",
+        "recordSize": 21,
+        "checksPassed": 572,
+        "checksFailed": 0,
+        "selectedCount": 30,
+        "changedBytes": 436,
+        "allowedBytes": 632,
+        "outputSha256": "8b228f3cb09c9a05de542cd33fa301378d4d4c9a315fee96294339e91a4c397c"
+      },
+      {
+        "name": "emerald-83-21-batch-2",
+        "sourceId": "emerald-83",
+        "recordSize": 21,
+        "checksPassed": 602,
+        "checksFailed": 0,
+        "selectedCount": 30,
+        "changedBytes": 458,
+        "allowedBytes": 632,
+        "outputSha256": "5edb0887aa2c3a678e5d0857f884f5117bc53477ec1042d1bcab8ecdf4634dd6"
+      },
+      {
+        "name": "emerald-83-21-batch-3",
+        "sourceId": "emerald-83",
+        "recordSize": 21,
+        "checksPassed": 578,
+        "checksFailed": 0,
+        "selectedCount": 27,
+        "changedBytes": 403,
+        "allowedBytes": 569,
+        "outputSha256": "2001e38fa3dbba14dd9686390b17d77f913d266fb8d57f9488c36e7146c8d2da"
+      },
+      {
+        "name": "emerald-83-38-compatibility",
+        "sourceId": "emerald-83",
+        "recordSize": 38,
+        "checksPassed": 4,
+        "checksFailed": 0
+      },
+      {
+        "name": "emerald-83-38-batch-1",
+        "sourceId": "emerald-83",
+        "recordSize": 38,
+        "checksPassed": 692,
+        "checksFailed": 0,
+        "selectedCount": 30,
+        "changedBytes": 825,
+        "allowedBytes": 1142,
+        "outputSha256": "f8d3a5ff6fc8ed935b9f041a30ae65b9c12966ee4316a540005f4421875d6483"
+      },
+      {
+        "name": "emerald-83-38-batch-2",
+        "sourceId": "emerald-83",
+        "recordSize": 38,
+        "checksPassed": 722,
+        "checksFailed": 0,
+        "selectedCount": 30,
+        "changedBytes": 872,
+        "allowedBytes": 1142,
+        "outputSha256": "4f593dcf1aed67de7140b6dd4210ed48518e726a7eb290584d3d0f2d8bf6a929"
+      },
+      {
+        "name": "emerald-83-38-batch-3",
+        "sourceId": "emerald-83",
+        "recordSize": 38,
+        "checksPassed": 686,
+        "checksFailed": 0,
+        "selectedCount": 27,
+        "changedBytes": 780,
+        "allowedBytes": 1028,
+        "outputSha256": "6a88c86c4811988981fb4e045dd709940bb3f1ce0ac127f27b9c41222a106072"
+      },
+      {
+        "name": "emerald-89-31-compatibility",
+        "sourceId": "emerald-89",
+        "recordSize": 31,
+        "checksPassed": 4,
+        "checksFailed": 0
+      },
+      {
+        "name": "emerald-89-31-batch-1",
+        "sourceId": "emerald-89",
+        "recordSize": 31,
+        "checksPassed": 831,
+        "checksFailed": 0,
+        "selectedCount": 30,
+        "changedBytes": 705,
+        "allowedBytes": 932,
+        "outputSha256": "5c409d726e00c84f1df28999f7da38a98e9a1573423ad18050f72d99dee72952"
+      },
+      {
+        "name": "emerald-89-31-batch-2",
+        "sourceId": "emerald-89",
+        "recordSize": 31,
+        "checksPassed": 861,
+        "checksFailed": 0,
+        "selectedCount": 30,
+        "changedBytes": 725,
+        "allowedBytes": 932,
+        "outputSha256": "bffea77e0ebdde5376a1aeaa51e8fe7f5d227917dce1d4632b4e072e1d53d565"
+      },
+      {
+        "name": "emerald-89-31-batch-3",
+        "sourceId": "emerald-89",
+        "recordSize": 31,
+        "checksPassed": 891,
+        "checksFailed": 0,
+        "selectedCount": 30,
+        "changedBytes": 735,
+        "allowedBytes": 932,
+        "outputSha256": "718c62a86ac51e449b363a388d21b5588b9f6ad5dd8d990d7e09da2097ce4270"
+      },
+      {
+        "name": "emerald-89-31-batch-4",
+        "sourceId": "emerald-89",
+        "recordSize": 31,
+        "checksPassed": 389,
+        "checksFailed": 0,
+        "selectedCount": 2,
+        "changedBytes": 59,
+        "allowedBytes": 64,
+        "outputSha256": "78e67bbf84da7f0218f007229cca918562920b3eec98ef7a79e2f771c487d62e"
+      },
+      {
+        "name": "emerald-89-21-compatibility",
+        "sourceId": "emerald-89",
+        "recordSize": 21,
+        "checksPassed": 4,
+        "checksFailed": 0
+      },
+      {
+        "name": "emerald-89-21-batch-1",
+        "sourceId": "emerald-89",
+        "recordSize": 21,
+        "checksPassed": 572,
+        "checksFailed": 0,
+        "selectedCount": 30,
+        "changedBytes": 436,
+        "allowedBytes": 632,
+        "outputSha256": "8b228f3cb09c9a05de542cd33fa301378d4d4c9a315fee96294339e91a4c397c"
+      },
+      {
+        "name": "emerald-89-21-batch-2",
+        "sourceId": "emerald-89",
+        "recordSize": 21,
+        "checksPassed": 602,
+        "checksFailed": 0,
+        "selectedCount": 30,
+        "changedBytes": 458,
+        "allowedBytes": 632,
+        "outputSha256": "5edb0887aa2c3a678e5d0857f884f5117bc53477ec1042d1bcab8ecdf4634dd6"
+      },
+      {
+        "name": "emerald-89-21-batch-3",
+        "sourceId": "emerald-89",
+        "recordSize": 21,
+        "checksPassed": 632,
+        "checksFailed": 0,
+        "selectedCount": 30,
+        "changedBytes": 451,
+        "allowedBytes": 632,
+        "outputSha256": "14306b1135a4d768a2b6892fa6b379eb691ac6f1075211183d144ed216a8ea49"
+      },
+      {
+        "name": "emerald-89-21-batch-4",
+        "sourceId": "emerald-89",
+        "recordSize": 21,
+        "checksPassed": 158,
+        "checksFailed": 0,
+        "selectedCount": 2,
+        "changedBytes": 39,
+        "allowedBytes": 44,
+        "outputSha256": "60a1d8b7fcb23efd8f7abd72a112211b52056e0fa0fdaac8cd1c29c067830b3b"
+      },
+      {
+        "name": "emerald-89-38-compatibility",
+        "sourceId": "emerald-89",
+        "recordSize": 38,
+        "checksPassed": 4,
+        "checksFailed": 0
+      },
+      {
+        "name": "emerald-89-38-batch-1",
+        "sourceId": "emerald-89",
+        "recordSize": 38,
+        "checksPassed": 692,
+        "checksFailed": 0,
+        "selectedCount": 30,
+        "changedBytes": 825,
+        "allowedBytes": 1142,
+        "outputSha256": "f8d3a5ff6fc8ed935b9f041a30ae65b9c12966ee4316a540005f4421875d6483"
+      },
+      {
+        "name": "emerald-89-38-batch-2",
+        "sourceId": "emerald-89",
+        "recordSize": 38,
+        "checksPassed": 722,
+        "checksFailed": 0,
+        "selectedCount": 30,
+        "changedBytes": 872,
+        "allowedBytes": 1142,
+        "outputSha256": "4f593dcf1aed67de7140b6dd4210ed48518e726a7eb290584d3d0f2d8bf6a929"
+      },
+      {
+        "name": "emerald-89-38-batch-3",
+        "sourceId": "emerald-89",
+        "recordSize": 38,
+        "checksPassed": 752,
+        "checksFailed": 0,
+        "selectedCount": 30,
+        "changedBytes": 873,
+        "allowedBytes": 1142,
+        "outputSha256": "fafa716c9cd6a5ca561b842feec1fbec6ae18346df0f111e0ac394583e0e2a77"
+      },
+      {
+        "name": "emerald-89-38-batch-4",
+        "sourceId": "emerald-89",
+        "recordSize": 38,
+        "checksPassed": 166,
+        "checksFailed": 0,
+        "selectedCount": 2,
+        "changedBytes": 70,
+        "allowedBytes": 78,
+        "outputSha256": "30a7e14ddd23c565cd70dab24c2434a29fa5287114012319b7c0bdda362b74f2"
+      }
+    ],
+    "outputs": [
+      {
+        "source": "emerald-83",
+        "recordSize": 31,
+        "fixtureKind": "real",
+        "filename": "emerald-83-to-quetzal-31.sav",
+        "sha256": "22623da33bc7db34f02bccb40500840f33bd76132f3d29758c7c5d8707df12ae",
+        "independentBoxedCount": 319
+      },
+      {
+        "source": "emerald-83",
+        "recordSize": 21,
+        "fixtureKind": "derived",
+        "filename": "emerald-83-to-quetzal-21.sav",
+        "sha256": "2001e38fa3dbba14dd9686390b17d77f913d266fb8d57f9488c36e7146c8d2da",
+        "independentBoxedCount": 90
+      },
+      {
+        "source": "emerald-83",
+        "recordSize": 38,
+        "fixtureKind": "derived",
+        "filename": "emerald-83-to-quetzal-38.sav",
+        "sha256": "6a88c86c4811988981fb4e045dd709940bb3f1ce0ac127f27b9c41222a106072",
+        "independentBoxedCount": 90
+      },
+      {
+        "source": "emerald-89",
+        "recordSize": 31,
+        "fixtureKind": "real",
+        "filename": "emerald-89-to-quetzal-31.sav",
+        "sha256": "78e67bbf84da7f0218f007229cca918562920b3eec98ef7a79e2f771c487d62e",
+        "independentBoxedCount": 324
+      },
+      {
+        "source": "emerald-89",
+        "recordSize": 21,
+        "fixtureKind": "derived",
+        "filename": "emerald-89-to-quetzal-21.sav",
+        "sha256": "60a1d8b7fcb23efd8f7abd72a112211b52056e0fa0fdaac8cd1c29c067830b3b",
+        "independentBoxedCount": 95
+      },
+      {
+        "source": "emerald-89",
+        "recordSize": 38,
+        "fixtureKind": "derived",
+        "filename": "emerald-89-to-quetzal-38.sav",
+        "sha256": "30a7e14ddd23c565cd70dab24c2434a29fa5287114012319b7c0bdda362b74f2",
+        "independentBoxedCount": 95
+      }
+    ]
+  },
+  "browser": {
+    "run": {
+      "label": "commit-7c5b9fea-browser",
+      "startedAt": "2026-10-27T01:26:43.486Z",
+      "completedAt": "2026-10-27T01:26:43.719Z",
+      "fullReportSha256": "1bc7da5a796a644f00f474a486d2feb6e0477fbb09713035a5594efcb7126267"
+    },
+    "captureRun": "run-2026-10-27T01-00-38-306Z",
+    "summary": {
+      "cases": 1,
+      "casesPassed": 1,
+      "casesFailed": 0,
+      "checksPassed": 337,
+      "checksFailed": 0,
+      "transferredRecordsChecked": 4,
+      "originalsUnchanged": true
+    },
+    "sourceFixture": "emerald-83",
+    "destinationFixture": "quetzal-232",
+    "selectedIds": ["party:0", "party:1", "box:0:1", "box:0:3"],
+    "placements": [
+      {
+        "sourceId": "party:0",
+        "boxIndex": 7,
+        "slotIndex": 23,
+        "level": 53
+      },
+      {
+        "sourceId": "party:1",
+        "boxIndex": 7,
+        "slotIndex": 26,
+        "level": 54
+      },
+      {
+        "sourceId": "box:0:1",
+        "boxIndex": 7,
+        "slotIndex": 27,
+        "level": 3
+      },
+      {
+        "sourceId": "box:0:3",
+        "boxIndex": 7,
+        "slotIndex": 28,
+        "level": 5
+      }
+    ],
+    "originalBoxedCount": 232,
+    "outputBoxedCount": 236,
+    "outputFilename": "quetzal-with-emerald-pokemon.sav",
+    "outputSha256": "b2830e167072a5e52078f55486b815cac5565a1ac862e06a4992371ab2d02c29",
+    "sourceBackupFilename": "emerald-backup.sav",
+    "sourceBackupSha256": "d883d62a7fe6f7404083dd02c0252516519ada231bce1b62800c0b843868fa31",
+    "sourceBackupMatchesOriginal": true,
+    "matchesSeparateApiExport": true,
+    "changedBytes": 96,
+    "allowedBytes": 126,
+    "warningCodes": [
+      "compact-metadata",
+      "experience",
+      "ev-rounding",
+      "pp-ups",
+      "compact-battle-state"
+    ]
+  },
+  "scope": {
+    "realInputs": [
+      "Emerald save with 83 boxed Pokémon and 6 party Pokémon",
+      "Emerald save with 89 boxed Pokémon and 6 party Pokémon",
+      "Quetzal save with 232 boxed Pokémon, 31-byte layout"
+    ],
+    "derivedInputs": [
+      "21-byte and 38-byte Quetzal layouts made from the real captured record; not additional in-game captures"
+    ],
+    "emulatorExecuted": false,
+    "independentChecks": [
+      "selected species, held item meaning, move IDs, level, nature, ability meaning, gender, shiny status, ball meaning, IVs, EV quantization, representable nickname and PP",
+      "original source/input buffers and on-disk save hashes",
+      "every existing destination party/PC record",
+      "entire output file byte allowlist: new empty records and affected sector checksums only",
+      "all active destination sector checksums"
+    ],
+    "allOriginalFilesPreserved": true,
+    "allExistingDestinationPokemonPreserved": true,
+    "bytesOutsideSelectedEmptyRecordsAndAffectedChecksumsPreserved": true,
+    "limits": [
+      "Quetzal compact storage does not retain Emerald OT/PID/met/friendship/ribbon/contest identity fields; warnings must be acknowledged",
+      "PP Ups are absent from packed storage; current PP is absent in 21/31-byte layouts",
+      "21-byte storage cannot retain nicknames",
+      "Quetzal uses medium-slow XP in increments of 10 and EVs in increments of 4",
+      "Independent baseline-species ability labels are Savdex/PokeAPI metadata; 38-byte HP is compared against the same independent species metadata, not a running game",
+      "No emulator play-through was performed. The 21/38-byte fixtures are derived, not additional in-game captures.",
+      "The converter and verifier share historical factual metadata sources; decoding and file-byte boundary calculations are separate implementations.",
+      "An Emerald source remains complete; the compact destination copy is not a lossless PK3 clone. Unsupported personality-dependent forms, eggs, damaged data and unverified mappings are blocked.",
+      "Support is limited to the documented Quetzal format and metadata; arbitrary modified ROMs may use different gameplay tables."
+    ]
+  }
+}

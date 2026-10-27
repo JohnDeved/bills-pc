@@ -1,0 +1,963 @@
+{
+  "task": "Stable Party/PC navigation and consistent glass surfaces",
+  "base_commit": "d0de5854ffaf415d766b60111ca66149f3516968",
+  "source_sha256": {
+    "src/App.tsx": "dfa25abb701dd7965547be513109b34cb03a95396a880efbf88ea77dfb9236e6",
+    "src/components/pokemon/PokemonBoxList.tsx": "e43fcaf1c3a221adb221d2a8a2a47a792e5a258095c6311190ce74358fe5a3af",
+    "src/components/pokemon/PokemonHeader.tsx": "93a48fc261fdcea7b46312898e6e846fbd55b354f822f64281e884c819753bf6",
+    "src/components/pokemon/PokemonMoveButton.tsx": "f273b996f15b6f3116ddf012222bd1ddce55f68924f8307622f767e27de33581",
+    "src/components/pokemon/PokemonMovePlaceholder.tsx": "cdba61d9d772abf44d366e25aad7bb51c528a3d39490c2ce724617c8aa5b6082",
+    "src/components/pokemon/PokemonMoveSummary.tsx": "1ac19162ebe0f6fb3473a646bace87e455a3f97f591812f2e6ce9f62cc9ac83b",
+    "src/components/pokemon/PokemonMovesSection.tsx": "5339dfb7e1ffca505dc46db8b837547237b663550c862081494c1421f5167edb",
+    "src/components/pokemon/PokemonStatus.tsx": "a466a826f5303ee2c6ef80c9e750adf8657bea73205cdeb92d2b9dbf8f316a0a",
+    "src/components/pokemon/PokemonStatusPlaceholder.tsx": "612b08d4bd580790976f139088b5df36e54985aa0f91d1c1c1d97885fd7526f4",
+    "src/components/pokemon/PokemonStorage.tsx": "85679c00e6f22444197905fbae25ddec69ec9a508d392bed9ce533078254a819"
+  },
+  "method": {
+    "browser": "Playwright Chromium, desktop and mobile viewports",
+    "assets": "Genuine cached PokeAPI responses, fonts and sprites; real Emerald and repository Quetzal saves",
+    "measurement": "DOM bounding rectangles before/after switching and requestAnimationFrame sampling during transitions; includes recent-input movement rather than relying only on CLS",
+    "tracked": [
+      "main",
+      "menubar",
+      "location tabs",
+      "storage area",
+      "editor",
+      "all three editor cards",
+      "page height",
+      "document width",
+      "scroll position"
+    ],
+    "matrix_final_correction": "The full matrix found one additional 4px change when the real Charizard multi-form selector appeared. Its primitive default height overrode h-7. The final source uses size=sm (32px); the focused final report below verifies that correction. Ordinary matrix cases never render that multi-form selector and all had zero movement.",
+    "focused_scroll_note": "The Mega X dropdown trace includes Playwright scrolling its trigger into view. Document coordinates and every panel dimension remain unchanged; the recorded viewport y changes equal the scroll change. The actual Party/PC and corrected Charizard-header traces have zero changes in both viewport and document coordinates."
+  },
+  "geometry_cases": [
+    {
+      "game": "quetzal",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "baseline_party_to_pc_px": {
+        "menubar_top": -3.5,
+        "tablist_top": -3.5,
+        "editor_top": -3.5,
+        "page_height": 0
+      },
+      "final_maximum_coordinate_size_scroll_delta_px": 0,
+      "switch_backdrop_filter": "blur(16px)",
+      "switch_surface_padding": {
+        "top": "4px",
+        "right": "4px",
+        "bottom": "4px",
+        "left": "4px"
+      },
+      "outer_padding": {
+        "top": "16px",
+        "right": "16px",
+        "bottom": "16px",
+        "left": "16px"
+      },
+      "storage_panel_heights": [731, 731]
+    },
+    {
+      "game": "quetzal",
+      "viewport": {
+        "width": 1440,
+        "height": 720
+      },
+      "baseline_party_to_pc_px": {
+        "menubar_top": 0,
+        "tablist_top": 0,
+        "editor_top": 0,
+        "page_height": 7
+      },
+      "final_maximum_coordinate_size_scroll_delta_px": 0,
+      "switch_backdrop_filter": "blur(16px)",
+      "switch_surface_padding": {
+        "top": "4px",
+        "right": "4px",
+        "bottom": "4px",
+        "left": "4px"
+      },
+      "outer_padding": {
+        "top": "16px",
+        "right": "16px",
+        "bottom": "16px",
+        "left": "16px"
+      },
+      "storage_panel_heights": [731, 731]
+    },
+    {
+      "game": "quetzal",
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "baseline_party_to_pc_px": {
+        "menubar_top": 0,
+        "tablist_top": 0,
+        "editor_top": -95,
+        "page_height": -51
+      },
+      "final_maximum_coordinate_size_scroll_delta_px": 0,
+      "switch_backdrop_filter": "blur(16px)",
+      "switch_surface_padding": {
+        "top": "4px",
+        "right": "4px",
+        "bottom": "4px",
+        "left": "4px"
+      },
+      "outer_padding": {
+        "top": "12px",
+        "right": "12px",
+        "bottom": "12px",
+        "left": "12px"
+      },
+      "storage_panel_heights": [716, 716]
+    },
+    {
+      "game": "quetzal",
+      "viewport": {
+        "width": 393,
+        "height": 600
+      },
+      "baseline_party_to_pc_px": {
+        "menubar_top": 0,
+        "tablist_top": 0,
+        "editor_top": -95,
+        "page_height": -51
+      },
+      "final_maximum_coordinate_size_scroll_delta_px": 0,
+      "switch_backdrop_filter": "blur(16px)",
+      "switch_surface_padding": {
+        "top": "4px",
+        "right": "4px",
+        "bottom": "4px",
+        "left": "4px"
+      },
+      "outer_padding": {
+        "top": "12px",
+        "right": "12px",
+        "bottom": "12px",
+        "left": "12px"
+      },
+      "storage_panel_heights": [716, 716]
+    },
+    {
+      "game": "quetzal",
+      "viewport": {
+        "width": 320,
+        "height": 800
+      },
+      "baseline_party_to_pc_px": {
+        "menubar_top": 0,
+        "tablist_top": 0,
+        "editor_top": -95,
+        "page_height": -51
+      },
+      "final_maximum_coordinate_size_scroll_delta_px": 0,
+      "switch_backdrop_filter": "blur(16px)",
+      "switch_surface_padding": {
+        "top": "4px",
+        "right": "4px",
+        "bottom": "4px",
+        "left": "4px"
+      },
+      "outer_padding": {
+        "top": "12px",
+        "right": "12px",
+        "bottom": "12px",
+        "left": "12px"
+      },
+      "storage_panel_heights": [716, 716]
+    },
+    {
+      "game": "quetzal",
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "baseline_party_to_pc_px": {
+        "menubar_top": 0,
+        "tablist_top": 0,
+        "editor_top": -95,
+        "page_height": -51
+      },
+      "final_maximum_coordinate_size_scroll_delta_px": 0,
+      "switch_backdrop_filter": "blur(16px)",
+      "switch_surface_padding": {
+        "top": "4px",
+        "right": "4px",
+        "bottom": "4px",
+        "left": "4px"
+      },
+      "outer_padding": {
+        "top": "12px",
+        "right": "12px",
+        "bottom": "12px",
+        "left": "12px"
+      },
+      "storage_panel_heights": [716, 716]
+    },
+    {
+      "game": "emerald",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "baseline_party_to_pc_px": {
+        "menubar_top": -3.5,
+        "tablist_top": -3.5,
+        "editor_top": -3.5,
+        "page_height": 0
+      },
+      "final_maximum_coordinate_size_scroll_delta_px": 0,
+      "switch_backdrop_filter": "blur(16px)",
+      "switch_surface_padding": {
+        "top": "4px",
+        "right": "4px",
+        "bottom": "4px",
+        "left": "4px"
+      },
+      "outer_padding": {
+        "top": "16px",
+        "right": "16px",
+        "bottom": "16px",
+        "left": "16px"
+      },
+      "storage_panel_heights": [731, 731]
+    },
+    {
+      "game": "emerald",
+      "viewport": {
+        "width": 1440,
+        "height": 720
+      },
+      "baseline_party_to_pc_px": {
+        "menubar_top": 0,
+        "tablist_top": 0,
+        "editor_top": 0,
+        "page_height": 7
+      },
+      "final_maximum_coordinate_size_scroll_delta_px": 0,
+      "switch_backdrop_filter": "blur(16px)",
+      "switch_surface_padding": {
+        "top": "4px",
+        "right": "4px",
+        "bottom": "4px",
+        "left": "4px"
+      },
+      "outer_padding": {
+        "top": "16px",
+        "right": "16px",
+        "bottom": "16px",
+        "left": "16px"
+      },
+      "storage_panel_heights": [731, 731]
+    },
+    {
+      "game": "emerald",
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "baseline_party_to_pc_px": {
+        "menubar_top": 0,
+        "tablist_top": 0,
+        "editor_top": -103,
+        "page_height": -59
+      },
+      "final_maximum_coordinate_size_scroll_delta_px": 0,
+      "switch_backdrop_filter": "blur(16px)",
+      "switch_surface_padding": {
+        "top": "4px",
+        "right": "4px",
+        "bottom": "4px",
+        "left": "4px"
+      },
+      "outer_padding": {
+        "top": "12px",
+        "right": "12px",
+        "bottom": "12px",
+        "left": "12px"
+      },
+      "storage_panel_heights": [716, 716]
+    },
+    {
+      "game": "emerald",
+      "viewport": {
+        "width": 393,
+        "height": 600
+      },
+      "baseline_party_to_pc_px": {
+        "menubar_top": 0,
+        "tablist_top": 0,
+        "editor_top": -103,
+        "page_height": -59
+      },
+      "final_maximum_coordinate_size_scroll_delta_px": 0,
+      "switch_backdrop_filter": "blur(16px)",
+      "switch_surface_padding": {
+        "top": "4px",
+        "right": "4px",
+        "bottom": "4px",
+        "left": "4px"
+      },
+      "outer_padding": {
+        "top": "12px",
+        "right": "12px",
+        "bottom": "12px",
+        "left": "12px"
+      },
+      "storage_panel_heights": [716, 716]
+    },
+    {
+      "game": "emerald",
+      "viewport": {
+        "width": 320,
+        "height": 800
+      },
+      "baseline_party_to_pc_px": {
+        "menubar_top": 0,
+        "tablist_top": 0,
+        "editor_top": -103,
+        "page_height": -59
+      },
+      "final_maximum_coordinate_size_scroll_delta_px": 0,
+      "switch_backdrop_filter": "blur(16px)",
+      "switch_surface_padding": {
+        "top": "4px",
+        "right": "4px",
+        "bottom": "4px",
+        "left": "4px"
+      },
+      "outer_padding": {
+        "top": "12px",
+        "right": "12px",
+        "bottom": "12px",
+        "left": "12px"
+      },
+      "storage_panel_heights": [716, 716]
+    },
+    {
+      "game": "emerald",
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "baseline_party_to_pc_px": {
+        "menubar_top": 0,
+        "tablist_top": 0,
+        "editor_top": -103,
+        "page_height": -59
+      },
+      "final_maximum_coordinate_size_scroll_delta_px": 0,
+      "switch_backdrop_filter": "blur(16px)",
+      "switch_surface_padding": {
+        "top": "4px",
+        "right": "4px",
+        "bottom": "4px",
+        "left": "4px"
+      },
+      "outer_padding": {
+        "top": "12px",
+        "right": "12px",
+        "bottom": "12px",
+        "left": "12px"
+      },
+      "storage_panel_heights": [716, 716]
+    }
+  ],
+  "animation_frame_checks": {
+    "unchanged_passing_matrix_traces": 63,
+    "sampled_frames": 1772,
+    "maximum_delta_px": 0,
+    "initial_corrected_finding": {
+      "label": "quetzal/320/real-charizard-header",
+      "frames": 83,
+      "maximum_document_coordinate_size_delta_px": 4,
+      "maximum_viewport_position_delta_px": 4,
+      "scroll_y_range_px": 0,
+      "page_height_range_px": 4,
+      "document_width_range_px": 0
+    },
+    "focused_final_traces": [
+      {
+        "label": "final-selector-source/desktop-party-to-pc",
+        "frames": 20,
+        "maximum_document_coordinate_size_delta_px": 0,
+        "maximum_viewport_position_delta_px": 0,
+        "scroll_y_range_px": 0,
+        "page_height_range_px": 0,
+        "document_width_range_px": 0
+      },
+      {
+        "label": "final-selector-source/320/real-charizard-header",
+        "frames": 63,
+        "maximum_document_coordinate_size_delta_px": 0,
+        "maximum_viewport_position_delta_px": 0,
+        "scroll_y_range_px": 0,
+        "page_height_range_px": 0,
+        "document_width_range_px": 0
+      },
+      {
+        "label": "final-selector-source/320/enable-mega-preview",
+        "frames": 31,
+        "maximum_document_coordinate_size_delta_px": 0,
+        "maximum_viewport_position_delta_px": 0,
+        "scroll_y_range_px": 0,
+        "page_height_range_px": 0,
+        "document_width_range_px": 0
+      },
+      {
+        "label": "final-selector-source/320/select-charizard-mega-x",
+        "frames": 108,
+        "maximum_document_coordinate_size_delta_px": 0,
+        "maximum_viewport_position_delta_px": 418,
+        "scroll_y_range_px": 418,
+        "page_height_range_px": 0,
+        "document_width_range_px": 0
+      },
+      {
+        "label": "final-selector-source/320/select-charizard-mega-y",
+        "frames": 105,
+        "maximum_document_coordinate_size_delta_px": 0,
+        "maximum_viewport_position_delta_px": 0,
+        "scroll_y_range_px": 0,
+        "page_height_range_px": 0,
+        "document_width_range_px": 0
+      },
+      {
+        "label": "final-selector-source/320/disable-mega-preview",
+        "frames": 31,
+        "maximum_document_coordinate_size_delta_px": 0,
+        "maximum_viewport_position_delta_px": 0,
+        "scroll_y_range_px": 0,
+        "page_height_range_px": 0,
+        "document_width_range_px": 0
+      }
+    ]
+  },
+  "keyboard_empty_box_and_theme_checks": [
+    {
+      "game": "quetzal",
+      "viewport": "desktop-tall",
+      "name": "Arrow keys switch tabs; only active panel is exposed and keyboard reachable",
+      "passed": true,
+      "tab_stops_checked": 7,
+      "hidden_panel_focus_targets": 0
+    },
+    {
+      "game": "quetzal",
+      "viewport": "desktop-tall",
+      "name": "Populated → empty → populated box",
+      "emptyDelta_maximum_px": 0,
+      "restoredDelta_maximum_px": 0
+    },
+    {
+      "game": "quetzal",
+      "viewport": "mobile-tall",
+      "name": "Arrow keys switch tabs; only active panel is exposed and keyboard reachable",
+      "passed": true,
+      "tab_stops_checked": 7,
+      "hidden_panel_focus_targets": 0
+    },
+    {
+      "game": "quetzal",
+      "viewport": "mobile-tall",
+      "name": "Populated → empty → populated box",
+      "emptyDelta_maximum_px": 0,
+      "restoredDelta_maximum_px": 0
+    },
+    {
+      "game": "quetzal",
+      "viewport": "narrow-short",
+      "name": "Arrow keys switch tabs; only active panel is exposed and keyboard reachable",
+      "passed": true,
+      "tab_stops_checked": 7,
+      "hidden_panel_focus_targets": 0
+    },
+    {
+      "game": "quetzal",
+      "viewport": "narrow-short",
+      "name": "Populated → empty → populated box",
+      "emptyDelta_maximum_px": 0,
+      "restoredDelta_maximum_px": 0
+    },
+    {
+      "game": "quetzal",
+      "name": "light theme blur and padding",
+      "passed": true
+    },
+    {
+      "game": "quetzal",
+      "name": "slate theme blur and padding",
+      "passed": true
+    },
+    {
+      "game": "emerald",
+      "viewport": "desktop-tall",
+      "name": "Arrow keys switch tabs; only active panel is exposed and keyboard reachable",
+      "passed": true,
+      "tab_stops_checked": 7,
+      "hidden_panel_focus_targets": 0
+    },
+    {
+      "game": "emerald",
+      "viewport": "desktop-tall",
+      "name": "Populated → empty → populated box",
+      "emptyDelta_maximum_px": 0,
+      "restoredDelta_maximum_px": 0
+    },
+    {
+      "game": "emerald",
+      "viewport": "mobile-tall",
+      "name": "Arrow keys switch tabs; only active panel is exposed and keyboard reachable",
+      "passed": true,
+      "tab_stops_checked": 7,
+      "hidden_panel_focus_targets": 0
+    },
+    {
+      "game": "emerald",
+      "viewport": "mobile-tall",
+      "name": "Populated → empty → populated box",
+      "emptyDelta_maximum_px": 0,
+      "restoredDelta_maximum_px": 0
+    },
+    {
+      "game": "emerald",
+      "viewport": "narrow-short",
+      "name": "Arrow keys switch tabs; only active panel is exposed and keyboard reachable",
+      "passed": true,
+      "tab_stops_checked": 7,
+      "hidden_panel_focus_targets": 0
+    },
+    {
+      "game": "emerald",
+      "viewport": "narrow-short",
+      "name": "Populated → empty → populated box",
+      "emptyDelta_maximum_px": 0,
+      "restoredDelta_maximum_px": 0
+    }
+  ],
+  "delayed_metadata_checks": [
+    {
+      "game": "quetzal",
+      "pc_maximum_delta_px": 0,
+      "party_maximum_delta_px": 0
+    },
+    {
+      "game": "emerald",
+      "pc_maximum_delta_px": 0,
+      "party_maximum_delta_px": 0
+    }
+  ],
+  "focused_final_checks": [
+    {
+      "name": "Shader behind tab switch uses shared 16px Card backdrop blur",
+      "passed": true
+    },
+    {
+      "name": "Visible party drag/reorder then Undo restores identity, order and every save byte",
+      "passed": true,
+      "before": {
+        "byteLength": 131088,
+        "ids": [1, 2, 3, 4, 5, 6],
+        "names": [
+          "Steelix",
+          "Breloom",
+          "Snorlax",
+          "Ludicolo",
+          "Rayquaza",
+          "Sigilyph"
+        ],
+        "species": [208, 286, 143, 272, 6, 561],
+        "active": 1,
+        "session": 1,
+        "undoCount": 0,
+        "redoCount": 0,
+        "sha256": "f35c85108a9dd9e4ec4d8f713f5764c492096be73a5ee948b839cc2d347e44d9"
+      },
+      "reordered": {
+        "byteLength": 131088,
+        "ids": [2, 1, 3, 4, 5, 6],
+        "names": [
+          "Breloom",
+          "Steelix",
+          "Snorlax",
+          "Ludicolo",
+          "Rayquaza",
+          "Sigilyph"
+        ],
+        "species": [286, 208, 143, 272, 6, 561],
+        "active": 1,
+        "session": 1,
+        "undoCount": 1,
+        "redoCount": 0,
+        "sha256": "a68b3cd550ae2e940d4b8a6cf2986a7ce61536bb46872b0340b8ba916e269c2b"
+      },
+      "afterUndo": {
+        "byteLength": 131088,
+        "ids": [1, 2, 3, 4, 5, 6],
+        "names": [
+          "Steelix",
+          "Breloom",
+          "Snorlax",
+          "Ludicolo",
+          "Rayquaza",
+          "Sigilyph"
+        ],
+        "species": [208, 286, 143, 272, 6, 561],
+        "active": 1,
+        "session": 1,
+        "undoCount": 0,
+        "redoCount": 1,
+        "sha256": "f35c85108a9dd9e4ec4d8f713f5764c492096be73a5ee948b839cc2d347e44d9"
+      }
+    },
+    {
+      "name": "Real Charizard Mega X/Y preview changes visible stats and returns to base without editing save bytes",
+      "passed": true,
+      "defaultState": {
+        "selected": "Rayquaza",
+        "preview": null,
+        "header": "Party · Slot 5FormBack to partyRayquaza006FIREFLYING",
+        "stats": "STATEVIVBASETOTALHP483078132Atk120118490Def112177887Spe1561810099SpA4823109108SpD24208593"
+      },
+      "forms": [
+        {
+          "label": "Mega X",
+          "slug": "charizard-mega-x",
+          "trace": {
+            "main": {
+              "x": 0,
+              "y": 418,
+              "documentY": 0,
+              "width": 0,
+              "height": 0
+            },
+            "menubar": {
+              "x": 0,
+              "y": 418,
+              "documentY": 0,
+              "width": 0,
+              "height": 0
+            },
+            "tablist": {
+              "x": 0,
+              "y": 418,
+              "documentY": 0,
+              "width": 0,
+              "height": 0
+            },
+            "editor": {
+              "x": 0,
+              "y": 418,
+              "documentY": 0,
+              "width": 0,
+              "height": 0
+            },
+            "firstCard": {
+              "x": 0,
+              "y": 418,
+              "documentY": 0,
+              "width": 0,
+              "height": 0
+            },
+            "secondCard": {
+              "x": 0,
+              "y": 418,
+              "documentY": 0,
+              "width": 0,
+              "height": 0
+            },
+            "thirdCard": {
+              "x": 0,
+              "y": 418,
+              "documentY": 0,
+              "width": 0,
+              "height": 0
+            },
+            "scrollY": 418,
+            "pageHeight": 0,
+            "scrollWidth": 0
+          },
+          "state": {
+            "selected": "Rayquaza",
+            "preview": {
+              "enabled": true,
+              "form": "charizard-mega-x"
+            },
+            "header": "Party · Slot 5Mega XBack to partyRayquaza006FIREDRAGON",
+            "stats": "STATEVIVBASETOTALHP483078132Atk12011130128Def11217111114Spe1561810099SpA4823130125SpD24208593"
+          }
+        },
+        {
+          "label": "Mega Y",
+          "slug": "charizard-mega-y",
+          "trace": {
+            "main": {
+              "x": 0,
+              "y": 0,
+              "documentY": 0,
+              "width": 0,
+              "height": 0
+            },
+            "menubar": {
+              "x": 0,
+              "y": 0,
+              "documentY": 0,
+              "width": 0,
+              "height": 0
+            },
+            "tablist": {
+              "x": 0,
+              "y": 0,
+              "documentY": 0,
+              "width": 0,
+              "height": 0
+            },
+            "editor": {
+              "x": 0,
+              "y": 0,
+              "documentY": 0,
+              "width": 0,
+              "height": 0
+            },
+            "firstCard": {
+              "x": 0,
+              "y": 0,
+              "documentY": 0,
+              "width": 0,
+              "height": 0
+            },
+            "secondCard": {
+              "x": 0,
+              "y": 0,
+              "documentY": 0,
+              "width": 0,
+              "height": 0
+            },
+            "thirdCard": {
+              "x": 0,
+              "y": 0,
+              "documentY": 0,
+              "width": 0,
+              "height": 0
+            },
+            "scrollY": 0,
+            "pageHeight": 0,
+            "scrollWidth": 0
+          },
+          "state": {
+            "selected": "Rayquaza",
+            "preview": {
+              "enabled": true,
+              "form": "charizard-mega-y"
+            },
+            "header": "Party · Slot 5Mega YBack to partyRayquaza006FIREFLYING",
+            "stats": "STATEVIVBASETOTALHP483078132Atk12011104107Def112177887Spe1561810099SpA4823159149SpD2420115119"
+          }
+        }
+      ],
+      "disabledState": {
+        "selected": "Rayquaza",
+        "preview": {
+          "enabled": false,
+          "form": "charizard-mega-y"
+        },
+        "header": "Party · Slot 5Mega YBack to partyRayquazaMega Preview: Off006FIREFLYING",
+        "stats": "STATEVIVBASETOTALHP483078132Atk120118490Def112177887Spe1561810099SpA4823109108SpD24208593"
+      },
+      "before": {
+        "byteLength": 131088,
+        "ids": [1, 2, 3, 4, 5, 6],
+        "names": [
+          "Steelix",
+          "Breloom",
+          "Snorlax",
+          "Ludicolo",
+          "Rayquaza",
+          "Sigilyph"
+        ],
+        "species": [208, 286, 143, 272, 6, 561],
+        "active": 5,
+        "session": 1,
+        "undoCount": 0,
+        "redoCount": 1,
+        "sha256": "f35c85108a9dd9e4ec4d8f713f5764c492096be73a5ee948b839cc2d347e44d9"
+      },
+      "after": {
+        "byteLength": 131088,
+        "ids": [1, 2, 3, 4, 5, 6],
+        "names": [
+          "Steelix",
+          "Breloom",
+          "Snorlax",
+          "Ludicolo",
+          "Rayquaza",
+          "Sigilyph"
+        ],
+        "species": [208, 286, 143, 272, 6, 561],
+        "active": 5,
+        "session": 1,
+        "undoCount": 0,
+        "redoCount": 1,
+        "sha256": "f35c85108a9dd9e4ec4d8f713f5764c492096be73a5ee948b839cc2d347e44d9"
+      }
+    }
+  ],
+  "focused_final_page_errors": [],
+  "focused_final_resource_errors": [],
+  "observed_existing_issue": {
+    "area": "Mega Charizard sprite filenames; unchanged by this layout fix",
+    "detail": "useMegaPreview constructs charizard-megx / charizard-megy instead of charizard-megax / charizard-megay for animated and fallback sprites. A separate visible check observed a pending Mega X image and a failed Mega Y remote response. Form selection, types, stats, layout and save bytes passed; Mega image availability is not claimed by this record."
+  },
+  "e2e": {
+    "passed": true,
+    "cases": [
+      {
+        "title": "emerald: open PC, edit, undo/redo, download and reopen",
+        "file": "box-editing.e2e.test.ts",
+        "project": "chromium",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 11252,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "title": "quetzal: open PC, edit, undo/redo, download and reopen",
+        "file": "box-editing.e2e.test.ts",
+        "project": "chromium",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 11456,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "title": "emerald: open PC, edit, undo/redo, download and reopen",
+        "file": "box-editing.e2e.test.ts",
+        "project": "Mobile Chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 8390,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "title": "quetzal: open PC, edit, undo/redo, download and reopen",
+        "file": "box-editing.e2e.test.ts",
+        "project": "Mobile Chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 8856,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "title": "Emerald → Quetzal: review, download, preserve originals and open the arrival",
+        "file": "pokemon-transfer.e2e.test.ts",
+        "project": "chromium",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 8399,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "title": "opening a result backs up the initial edited save even after replacing the destination",
+        "file": "pokemon-transfer.e2e.test.ts",
+        "project": "chromium",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 4875,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "title": "Emerald → Quetzal: review, download, preserve originals and open the arrival",
+        "file": "pokemon-transfer.e2e.test.ts",
+        "project": "Mobile Chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 6698,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "title": "opening a result backs up the initial edited save even after replacing the destination",
+        "file": "pokemon-transfer.e2e.test.ts",
+        "project": "Mobile Chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 6637,
+            "errors": []
+          }
+        ]
+      }
+    ],
+    "stats": {
+      "startTime": "2026-10-27T09:27:42.351Z",
+      "duration": 69694.56999999999,
+      "expected": 8,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "source_files_compared": 144,
+    "source_hashes_unchanged_during_run": true,
+    "original_input_hashes_unchanged": true,
+    "inputs": {
+      "real-emerald-83": {
+        "bytes": 131072,
+        "sha256": "d883d62a7fe6f7404083dd02c0252516519ada231bce1b62800c0b843868fa31"
+      },
+      "repository-emerald-fixture": {
+        "bytes": 131088,
+        "sha256": "bbbd6224d6cfc552b9b1659013aacfa936bb3a659c98dddfadc291309ca979b4"
+      },
+      "repository-quetzal-fixture": {
+        "bytes": 131088,
+        "sha256": "f35c85108a9dd9e4ec4d8f713f5764c492096be73a5ee948b839cc2d347e44d9"
+      }
+    }
+  },
+  "checks": {
+    "typescript_and_production_build": "passed",
+    "changed_file_oxlint": {
+      "warnings": 0,
+      "errors": 0
+    },
+    "changed_file_formatting": "passed"
+  },
+  "limits": [
+    "Browser verification, not a ROM/emulator play-through.",
+    "Transfer-format compatibility limits remain documented in transfer-validation.md and the PR."
+  ]
+}

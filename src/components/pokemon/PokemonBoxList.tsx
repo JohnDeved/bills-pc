@@ -34,8 +34,8 @@ export const PokemonBoxList: React.FC<PokemonBoxListProps> = ({ onPokemonHover }
   const selectedPokemon = box.pokemon[selectedSlot]
 
   return (
-    <Card id="pc-storage" tabIndex={-1} aria-label="PC storage" className="overflow-hidden scroll-mt-4 outline-none">
-      <div className="space-y-3 border-b border-border/60 p-3 sm:p-4">
+    <Card id="pc-storage" tabIndex={-1} aria-label="PC storage" className="flex h-full flex-col overflow-hidden scroll-mt-4 outline-none">
+      <div className="shrink-0 space-y-3 border-b border-border/60 p-3 sm:p-4">
         <div className="geist-font flex items-center justify-between gap-3 text-xs text-muted-foreground">
           <span className="font-medium tracking-wide">
             Box {activeBoxIndex + 1} of {boxList.length}
@@ -67,7 +67,7 @@ export const PokemonBoxList: React.FC<PokemonBoxListProps> = ({ onPokemonHover }
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-6 gap-1 bg-background/30 p-2 sm:gap-2 sm:p-3" role="group" aria-label={`${box.name} Pokémon`}>
+      <div className="grid flex-1 auto-rows-fr grid-cols-6 gap-1 bg-background/30 p-3 sm:gap-2 sm:p-4" role="group" aria-label={`${box.name} Pokémon`}>
         {box.pokemon.map((pokemon, slot) => {
           const isSelected = !!pokemon && pokemon.id === activePokemonId
           let slotStyle = 'border-dashed border-border/60 bg-transparent'
@@ -100,7 +100,7 @@ export const PokemonBoxList: React.FC<PokemonBoxListProps> = ({ onPokemonHover }
           )
         })}
       </div>
-      <div className="flex min-h-20 items-center justify-between gap-3 border-t border-border/60 bg-card/30 p-3 sm:px-4">
+      <div className="flex min-h-20 shrink-0 items-center justify-between gap-3 border-t border-border/60 bg-card/30 p-3 sm:px-4">
         {selectedPokemon ? (
           <>
             <div className="min-w-0" role="status">

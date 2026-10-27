@@ -35,6 +35,8 @@ These are actual browser captures using a real Emerald save and the repository's
 
 In the editor, choose **File → Transfer Pokémon…**. The Party and PC tabs use the full navigation width. The menu action supports keyboard navigation and stays disabled while a save or history operation is loading. The landing screen retains its secondary text button; both entries open the same guided flow.
 
+The Party/PC switch uses the same blurred surface as the editor cards. Switching preserves the positions of the menu, navigation and editor, including on phones. The box header, grid and footer use matching insets; loading details and empty boxes keep the editor's structure stable. See the [layout measurements and regression results](storage-layout-validation.md).
+
 ![Transfer Pokémon in the File menu](screenshots/pc-transfer-menu.png)
 
 <details>

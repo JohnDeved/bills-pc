@@ -1,0 +1,81 @@
+# Party and PC layout validation
+
+The Party/PC switch now uses the shared Card surface, including its 16px backdrop blur, theme colors, border and shadow. Switching no longer vertically recenters the app or pulls the mobile editor upward.
+
+Both storage panels contribute their natural size to one CSS grid area. The inactive panel is invisible, inert and hidden from accessibility navigation. This keeps the available area stable without guessing a fixed panel height. The PC grid fills the shared area, and the party retains its own drag constraints.
+
+The editor keeps its three-card structure for empty boxes. Party and PC use the same location row in the header; populated, loading and empty move cards share the same responsive layout. Long nicknames stay on one line, and multi-form Mega controls fit within the existing header row.
+
+## Measured result
+
+Real Emerald and Quetzal saves were checked at six viewport sizes each:
+
+| Width | Heights |
+| --- | --- |
+| 1440px | 1080px, 720px |
+| 393px | 852px, 600px |
+| 320px | 800px, 568px |
+
+| Observation | Before | After |
+| --- | --- | --- |
+| Menu, tabs and editor movement at 1440 × 1080 | 3.5px upward | 0px |
+| Quetzal mobile editor movement when opening PC | 95px upward | 0px |
+| Emerald mobile editor movement when opening PC | 103px upward | 0px |
+| Switch backdrop filter | None | `blur(16px)` |
+
+All twelve cases had zero changes in the measured coordinates, sizes, page height, document width and scroll position across Party → PC → Party, both at the top and after scrolling. The check tracked the menu, location tabs, storage area, editor and all three editor cards.
+
+Forty-eight frame-by-frame switching traces and twelve populated/empty-box traces checked intermediate frames, including movement after user input that a normal CLS score can omit. Delayed genuine metadata responses were held and released for both games. The inactive panels were excluded from keyboard focus and accessibility queries, and arrow-key switching remained usable.
+
+The real ten-character Scatterbug nickname and a real Charizard nicknamed Rayquaza provided additional narrow-header checks. The latter exposed a 4px selector-height difference: the shared Select primitive's default size overrode its local height class. Setting its supported small size fixed that difference; the final Charizard selection and visible Mega X/Y control checks recorded zero layout movement. One earlier dropdown trace includes Playwright scrolling the trigger into view; its document coordinates and panel dimensions remained unchanged. The final visible-control check avoided that automation scroll.
+
+## Spacing and appearance
+
+| Element | Spacing |
+| --- | --- |
+| Switch surface inset | 4px, matching the menubar |
+| Switch buttons | 8px padding; at least 44px tall |
+| Menu, switch and storage gaps | 16px |
+| Box header, grid and footer horizontal insets | 12px on phones; 16px from the small breakpoint |
+| Outer page padding | 12px on phones; 16px from the small breakpoint |
+
+Dark, light and slate themes were inspected with genuine fonts and sprites. A separate capture enabled the animated shader behind the panels to verify the shared blur treatment.
+
+![PC view](screenshots/pc-editor-menu-closed.png)
+
+<details>
+<summary>Party, mobile and animated-background captures</summary>
+
+![Party view](screenshots/party-stable-layout.png)
+
+![Mobile PC view](screenshots/pc-stable-layout-mobile.png)
+
+![Animated background behind the blurred panels](screenshots/pc-storage-blur.png)
+
+</details>
+
+## Save and interaction regression checks
+
+All eight existing browser cases passed on desktop Chromium and Mobile Chrome with one worker, no retries, no skips and no flaky cases. They cover Emerald and Quetzal box editing, undo/redo, downloads and reopening, Emerald-to-Quetzal transfer, original preservation, and backing up an edited current save before replacement.
+
+All 144 source/configuration hashes stayed unchanged during the final test run. The three input save hashes also stayed unchanged. A separate real mouse drag reordered the Quetzal party; Edit → Undo restored the original identities, order and all 131,088 save bytes. Mega preview changed display values without changing save bytes.
+
+Production build, TypeScript, changed-file formatting and Oxlint passed. Oxlint reported zero warnings and errors.
+
+Run the existing browser regression cases with an installed Playwright Chromium and a populated Emerald save:
+
+```bash
+BILLS_PC_EMERALD_SAVE=/absolute/path/to/emerald.sav \
+  npx playwright test \
+  src/__tests__/box-editing.e2e.test.ts \
+  src/__tests__/pokemon-transfer.e2e.test.ts \
+  --project=chromium --project="Mobile Chrome" --workers=1
+```
+
+The [machine-readable record](validation/storage-layout.json) includes the tested source SHA-256 hashes, before/after geometry, frame-sampling summaries, final selector correction, interaction checks, input hashes and exact E2E results. Its method notes distinguish the full matrix from the focused final correction.
+
+### Existing issue observed separately
+
+The unchanged Mega sprite helper constructs `charizard-megx` / `charizard-megy` filenames instead of `charizard-megax` / `charizard-megay`. A separate visible check observed an unresolved Mega X image and a failed Mega Y remote response. Form selection, types, stats, layout and byte preservation passed; this record does not claim that those Mega sprite assets render correctly.
+
+These are browser and binary-preservation checks. The existing transfer-format limits and absence of a ROM/emulator play-through remain described in [transfer-validation.md](transfer-validation.md).

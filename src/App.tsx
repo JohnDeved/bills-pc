@@ -87,7 +87,7 @@ export const App: React.FC = () => {
         </Suspense>
       )}
       <Toaster richColors position="bottom-center" />
-      <div className={`min-h-screen flex justify-center p-3 sm:p-4 font-pixel text-foreground ${transferOpen ? 'items-start py-6 sm:py-10' : 'items-center'}`}>
+      <div className={`min-h-screen flex justify-center p-3 sm:p-4 font-pixel text-foreground ${transferOpen || hasSaveData ? 'items-start' : 'items-center'} ${transferOpen ? 'py-6 sm:py-10' : ''}`}>
         {!transferOpen && (
           <SaveFileDropzone
             onFileLoad={parse}
@@ -116,8 +116,8 @@ export const App: React.FC = () => {
                 />
                 <PokemonStorage onPokemonHover={preloadPokemonDetails} />
               </div>
-              {activePokemon ? (
-                <section id="pokemon-editor" tabIndex={-1} aria-label="Pokémon editor" className="min-w-0 grid grid-cols-1 grid-rows-[auto_auto_1fr] gap-4 scroll-mt-4 outline-none">
+              <section id="pokemon-editor" tabIndex={-1} aria-label="Pokémon editor" className="min-w-0 grid scroll-mt-4 outline-none">
+                <div inert={!activePokemon} aria-hidden={!activePokemon} className={`col-start-1 row-start-1 min-w-0 grid grid-cols-1 grid-rows-[auto_auto_1fr] gap-4 ${activePokemon ? '' : 'invisible'}`}>
                   <Card className="z-30">
                     <PokemonHeader />
                     <PokemonMovesSection />
@@ -128,13 +128,14 @@ export const App: React.FC = () => {
                   <Card className="z-10 min-h-64">
                     <PokemonTraitsSection />
                   </Card>
-                </section>
-              ) : (
-                <Card className="min-h-64 p-6 flex flex-col items-center justify-center text-center gap-3">
-                  <h2 className="text-lg">Select a Pokémon to edit</h2>
-                  <p className="text-sm text-muted-foreground">Choose another PC box or return to your party.</p>
-                </Card>
-              )}
+                </div>
+                {!activePokemon && (
+                  <Card className="col-start-1 row-start-1 min-h-64 p-6 flex flex-col items-center justify-center text-center gap-3">
+                    <h2 className="text-lg">Select a Pokémon to edit</h2>
+                    <p className="text-sm text-muted-foreground">Choose another PC box or return to your party.</p>
+                  </Card>
+                )}
+              </section>
             </div>
           </main>
         )}

@@ -81,10 +81,10 @@ export const PokemonStatus: React.FC<PokemonStatusProps> = ({ pokemon, isActive 
           }}
         />
       </PokemonSprite>
-      <div className="flex-grow">
-        <div className="flex justify-between items-center text-sm">
-          <h3 className="text-foreground">{pokemon.data.nickname}</h3>
-          <span className="text-muted-foreground">Lv.{pokemon.data.level}</span>
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap justify-between items-center gap-x-2 gap-y-1 text-[10px] sm:text-sm">
+          <h3 className="min-w-0 break-all text-foreground">{pokemon.data.nickname}</h3>
+          <span className="shrink-0 text-muted-foreground">Lv.{pokemon.data.level}</span>
         </div>
         <div className="w-full bg-background/30 border border-border border-x-2 rounded-sm h-2.5 mt-2 overflow-hidden">
           <div className={cn('bg-gradient-to-r h-full transition-all duration-500', hpColor)} style={{ width: `${hpPercentage}%` }} />

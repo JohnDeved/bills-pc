@@ -4,7 +4,7 @@ import { useRef } from 'react'
 import { selectActivePokemon, usePokemonStore } from '@/stores'
 import { ScrollableContainer } from '@/components/common'
 import { CursorFollowHint } from '@/components/common/CursorFollowHint'
-import { PokemonTypeBadge } from '@/components/pokemon/PokemonTypeBadge'
+import { PokemonMoveSummary } from '@/components/pokemon/PokemonMoveSummary'
 import { useSmoothWheelScroll } from '@/hooks/useSmoothWheelScroll'
 import { useMegaPreview } from '@/hooks'
 import { cn } from '@/lib/utils'
@@ -72,15 +72,7 @@ export const PokemonMoveButton: React.FC<MoveButtonProps> = ({ move, isExpanded,
   return (
     <div ref={rootRef} className="relative h-full" onWheel={onWheel}>
       <div className={cn('h-full w-full text-left p-3 rounded-lg bg-card/50 group-hover:bg-card/70 border shadow-lg transition-all duration-200 cursor-pointer select-none')} onClick={onClick} onMouseEnter={onHoverStart} onMouseLeave={onHoverEnd} role="button" tabIndex={0}>
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-foreground truncate w-full block">{move.name}</span>
-        </div>
-        <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 mt-2 [&>div]:shrink-0">
-          <PokemonTypeBadge type={move.type} />
-          <span className="shrink-0 whitespace-nowrap text-xs text-muted-foreground max-lg:[font-family:Geist,sans-serif] max-lg:antialiased" title={activePokemon?.data.hasStoredPP === false ? 'Current PP is not stored for this boxed Pokémon.' : undefined}>
-            {activePokemon?.data.hasStoredPP === false ? 'PP —' : `${move.pp}/--`}
-          </span>
-        </div>
+        <PokemonMoveSummary name={move.name} type={move.type} pp={activePokemon?.data.hasStoredPP === false ? 'PP —' : `${move.pp}/--`} ppTitle={activePokemon?.data.hasStoredPP === false ? 'Current PP is not stored for this boxed Pokémon.' : undefined} />
         {/* Hint rendered outside this block to ensure correct absolute positioning */}
       </div>
       <CursorFollowHint anchorRef={rootRef} targetRef={scrollRef} enabled={isExpanded} />

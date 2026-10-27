@@ -22,6 +22,7 @@ The same editor used for the party now applies to that Pokémon. **Undo**, **Red
 **Reset**, and the File menu's save/download actions include box edits. Reopen the
 exported `.sav` in your game to use the changes.
 Box sprites animate only while selected, matching the party list; hovering keeps other Pokémon still.
+Party and PC views share a stable layout, with matching blurred panels and consistent spacing on desktop and mobile.
 
 Emerald supports its 14 boxes. Quetzal supports its packed 21-, 31-, and 38-byte
 storage layouts (67, 45, and 37 boxes respectively). Quetzal stores box EVs in

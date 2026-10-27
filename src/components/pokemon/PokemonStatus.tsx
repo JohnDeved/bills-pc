@@ -4,6 +4,7 @@ import { getItemSpriteUrl } from '@/lib/parser/core/utils'
 import { cn } from '@/lib/utils'
 import type { Pokemon } from '@/types'
 import { useMegaPreview } from '@/hooks'
+import { useGifFrame } from '@/hooks/useGifFrame'
 
 // Health percentage thresholds for color coding
 const HP_THRESHOLDS = {
@@ -15,49 +16,6 @@ const HP_THRESHOLDS = {
 export interface PokemonStatusProps {
   pokemon: Pokemon
   isActive: boolean
-}
-
-const useGifFrame = (gifUrl: string) => {
-  const [staticFrameSrc, setStaticFrameSrc] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    // Reset state if the URL changes
-    setIsLoading(true)
-    setStaticFrameSrc(null)
-
-    if (!gifUrl) {
-      setIsLoading(false)
-      return
-    }
-
-    const img = new Image()
-    img.crossOrigin = 'anonymous'
-
-    img.addEventListener('load', () => {
-      const canvas = document.createElement('canvas')
-      canvas.width = img.naturalWidth
-      canvas.height = img.naturalHeight
-      const context = canvas.getContext('2d')
-      if (context) {
-        context.drawImage(img, 0, 0)
-        setStaticFrameSrc(canvas.toDataURL('image/png'))
-      } else {
-        setStaticFrameSrc(gifUrl) // fallback if context is null
-      }
-      setIsLoading(false)
-    })
-
-    img.addEventListener('error', () => {
-      console.error('Failed to load GIF for processing.')
-      setStaticFrameSrc(gifUrl) // Fallback to original on error
-      setIsLoading(false)
-    })
-
-    img.src = gifUrl
-  }, [gifUrl]) // Re-run the effect if the gifUrl changes.
-
-  return { staticFrameSrc, isLoading }
 }
 
 // Sprite display component
@@ -73,7 +31,7 @@ const PokemonSprite: React.FC<{
   // Use the useGifFrame hook only for GIFs
   const { staticFrameSrc } = useGifFrame(isGif ? src : '')
   // If paused and GIF, show static frame; else show src
-  const displaySrc = paused && isGif && staticFrameSrc ? staticFrameSrc : src
+  const displaySrc = paused && isGif ? (staticFrameSrc ?? fallbackSrc) : src
   const [imgSrc, setImgSrc] = useState(displaySrc)
   useEffect(() => setImgSrc(displaySrc), [displaySrc])
   const handleError = () => setImgSrc(fallbackSrc)

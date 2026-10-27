@@ -2,6 +2,7 @@ import { ArrowDownRight, Check, ChevronDown, ChevronLeft, ChevronRight, CircleHe
 import { useState } from 'react'
 import { Card } from '@/components/common'
 import { Button } from '@/components/ui/button'
+import { useGifFrame } from '@/hooks/useGifFrame'
 import { usePokemonStore } from '@/stores'
 import type { UIPokemonData } from '@/types'
 
@@ -9,11 +10,14 @@ interface PokemonBoxListProps {
   onPokemonHover?: (id: number) => void
 }
 
-const PokemonBoxSprite: React.FC<{ pokemon: UIPokemonData }> = ({ pokemon }) => {
-  const [sourceIndex, setSourceIndex] = useState(0)
-  if (sourceIndex >= 2) return <CircleHelp className="size-9 sm:size-11 max-w-full text-muted-foreground/60" strokeWidth={1} aria-hidden />
+const PokemonBoxSprite: React.FC<{ pokemon: UIPokemonData; isSelected: boolean }> = ({ pokemon, isSelected }) => {
+  const { staticFrameSrc } = useGifFrame(pokemon.spriteAniUrl)
+  const [failedSources, setFailedSources] = useState<string[]>([])
+  const preferred = isSelected ? pokemon.spriteAniUrl : staticFrameSrc
+  const source = [preferred, staticFrameSrc, pokemon.spriteUrl].find(src => src && !failedSources.includes(src))
+  if (!source) return <CircleHelp className="size-9 sm:size-11 max-w-full text-muted-foreground/60" strokeWidth={1} aria-hidden />
 
-  return <img src={sourceIndex === 0 ? pokemon.spriteAniUrl : pokemon.spriteUrl} alt="" className="size-9 sm:size-11 max-w-full object-contain image-pixelate" draggable={false} onError={() => setSourceIndex(sourceIndex + 1)} />
+  return <img key={source} src={source} alt="" className="size-9 sm:size-11 max-w-full object-contain image-pixelate" draggable={false} onError={() => setFailedSources(failed => (failed.includes(source) ? failed : [...failed, source]))} />
 }
 
 export const PokemonBoxList: React.FC<PokemonBoxListProps> = ({ onPokemonHover }) => {
@@ -86,7 +90,7 @@ export const PokemonBoxList: React.FC<PokemonBoxListProps> = ({ onPokemonHover }
               {isSelected && <Check className="absolute right-1 top-1 size-3 text-cyan-700 dark:text-cyan-300" strokeWidth={2.5} aria-hidden />}
               {pokemon ? (
                 <>
-                  <PokemonBoxSprite key={pokemon.spriteAniUrl} pokemon={pokemon} />
+                  <PokemonBoxSprite key={pokemon.spriteAniUrl} pokemon={pokemon} isSelected={isSelected} />
                   <span className={`geist-font w-full truncate text-center text-[10px] sm:text-xs font-medium leading-4 ${isSelected ? 'text-cyan-800 dark:text-cyan-100' : 'text-foreground/85'}`}>{pokemon.data.nickname}</span>
                 </>
               ) : (

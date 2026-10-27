@@ -1,0 +1,263 @@
+{
+  "task": "Restore normal-editor vertical centering while preserving stable Party/PC switching",
+  "base_commit": "afc83aca51273082e67a6f25724131aa798a687c",
+  "source_sha256": {
+    "src/App.tsx": "7d8e55af5f766e02b31806bffc2235fe4995b556e582df7c048f0e37f9e34d31"
+  },
+  "browser": "Playwright Chromium with genuine fonts, sprites and real Emerald/Quetzal saves",
+  "source_stayed_unchanged": true,
+  "cases": [
+    {
+      "game": "quetzal",
+      "viewport": "desktop-tall",
+      "margins": {
+        "top": 113.5,
+        "bottom": 113.5,
+        "documentBottom": 113.5,
+        "height": 853,
+        "pageHeight": 1080,
+        "viewportHeight": 1080
+      },
+      "passed": true,
+      "scrollSafe": "fits",
+      "viewport_size": [1440, 1080]
+    },
+    {
+      "game": "quetzal",
+      "viewport": "desktop-short",
+      "margins": {
+        "top": 16,
+        "bottom": -149,
+        "documentBottom": 16,
+        "height": 853,
+        "pageHeight": 885,
+        "viewportHeight": 720
+      },
+      "passed": true,
+      "scrollSafe": true,
+      "viewport_size": [1440, 720]
+    },
+    {
+      "game": "quetzal",
+      "viewport": "mobile-tall",
+      "margins": {
+        "top": 12,
+        "bottom": -892,
+        "documentBottom": 12,
+        "height": 1732,
+        "pageHeight": 1756,
+        "viewportHeight": 852
+      },
+      "passed": true,
+      "scrollSafe": true,
+      "viewport_size": [393, 852]
+    },
+    {
+      "game": "quetzal",
+      "viewport": "narrow-short",
+      "margins": {
+        "top": 12,
+        "bottom": -1216,
+        "documentBottom": 12,
+        "height": 1772,
+        "pageHeight": 1796,
+        "viewportHeight": 568
+      },
+      "passed": true,
+      "scrollSafe": true,
+      "viewport_size": [320, 568]
+    },
+    {
+      "game": "emerald",
+      "viewport": "desktop-tall",
+      "margins": {
+        "top": 113.5,
+        "bottom": 113.5,
+        "documentBottom": 113.5,
+        "height": 853,
+        "pageHeight": 1080,
+        "viewportHeight": 1080
+      },
+      "passed": true,
+      "scrollSafe": "fits",
+      "viewport_size": [1440, 1080]
+    },
+    {
+      "game": "emerald",
+      "viewport": "desktop-short",
+      "margins": {
+        "top": 16,
+        "bottom": -149,
+        "documentBottom": 16,
+        "height": 853,
+        "pageHeight": 885,
+        "viewportHeight": 720
+      },
+      "passed": true,
+      "scrollSafe": true,
+      "viewport_size": [1440, 720]
+    },
+    {
+      "game": "emerald",
+      "viewport": "mobile-tall",
+      "margins": {
+        "top": 12,
+        "bottom": -892,
+        "documentBottom": 12,
+        "height": 1732,
+        "pageHeight": 1756,
+        "viewportHeight": 852
+      },
+      "passed": true,
+      "scrollSafe": true,
+      "viewport_size": [393, 852]
+    },
+    {
+      "game": "emerald",
+      "viewport": "narrow-short",
+      "margins": {
+        "top": 12,
+        "bottom": -1216,
+        "documentBottom": 12,
+        "height": 1772,
+        "pageHeight": 1796,
+        "viewportHeight": 568
+      },
+      "passed": true,
+      "scrollSafe": true,
+      "viewport_size": [320, 568]
+    }
+  ],
+  "transitions": [
+    {
+      "label": "quetzal/desktop-tall/party-to-pc",
+      "frames": 13,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "quetzal/desktop-tall/pc-to-party",
+      "frames": 19,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "quetzal/desktop-short/party-to-pc",
+      "frames": 20,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "quetzal/desktop-short/pc-to-party",
+      "frames": 23,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "quetzal/desktop-short/scrolled-party-to-pc",
+      "frames": 21,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "quetzal/mobile-tall/party-to-pc",
+      "frames": 30,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "quetzal/mobile-tall/pc-to-party",
+      "frames": 30,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "quetzal/mobile-tall/scrolled-party-to-pc",
+      "frames": 26,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "quetzal/narrow-short/party-to-pc",
+      "frames": 30,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "quetzal/narrow-short/pc-to-party",
+      "frames": 30,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "quetzal/narrow-short/scrolled-party-to-pc",
+      "frames": 31,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "emerald/desktop-tall/party-to-pc",
+      "frames": 15,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "emerald/desktop-tall/pc-to-party",
+      "frames": 24,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "emerald/desktop-short/party-to-pc",
+      "frames": 18,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "emerald/desktop-short/pc-to-party",
+      "frames": 25,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "emerald/desktop-short/scrolled-party-to-pc",
+      "frames": 18,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "emerald/mobile-tall/party-to-pc",
+      "frames": 22,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "emerald/mobile-tall/pc-to-party",
+      "frames": 37,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "emerald/mobile-tall/scrolled-party-to-pc",
+      "frames": 27,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "emerald/narrow-short/party-to-pc",
+      "frames": 33,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "emerald/narrow-short/pc-to-party",
+      "frames": 32,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    },
+    {
+      "label": "emerald/narrow-short/scrolled-party-to-pc",
+      "frames": 33,
+      "maximum_coordinate_size_scroll_delta_px": 0
+    }
+  ],
+  "tracked": [
+    "main",
+    "menubar",
+    "location tabs",
+    "editor",
+    "all three editor cards",
+    "page height",
+    "document width",
+    "scroll position"
+  ],
+  "total_sampled_frames": 557,
+  "page_errors": [],
+  "resource_errors": [],
+  "checks": {
+    "production_build": "passed",
+    "typescript": "passed",
+    "oxlint_warnings": 0,
+    "oxlint_errors": 0,
+    "formatting": "passed"
+  }
+}

@@ -6,6 +6,14 @@ Both storage panels contribute their natural size to one CSS grid area. The inac
 
 The editor keeps its three-card structure for empty boxes. Party and PC use the same location row in the header; populated, loading and empty move cards share the same responsive layout. Long nicknames stay on one line, and multi-form Mega controls fit within the existing header row.
 
+## Vertical centering
+
+The normal editor retains its original vertical centering whenever it fits the viewport. A follow-up restores that alignment after the initial layout fix also anchored the editor to the top. The shared storage sizing and stable editor rows keep Party/PC switching stationary while centered.
+
+The correction was checked with both real saves at 1440×1080, 1440×720, 393×852 and 320×568. All eight cases passed, and all 22 animation-frame traces recorded zero coordinate, size or scroll changes during switching. At 1440×1080, both views have exactly 113.5px above and below. Shorter screens retain 16px desktop / 12px mobile document padding, and all content remains reachable through normal scrolling.
+
+Production build, TypeScript, lint and formatting passed. The [centering verification record](validation/storage-centering.json) contains the tested App source hash, margins and transition results. The desktop screenshots below show the restored centered layout; the broader measurements below document the preceding stability work.
+
 ## Measured result
 
 Real Emerald and Quetzal saves were checked at six viewport sizes each:

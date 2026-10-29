@@ -4,14 +4,15 @@ import { ScrollableContainer, Skeleton } from '@/components/common'
 import { PokemonNatureCombobox } from '@/components/pokemon/PokemonNatureCombobox'
 import { findNatureForEffects, getStatAbbr, statAbbreviations } from '@/lib/parser/core/utils'
 import { computeTotalsWithHeldItem } from '@/lib/battle'
-import { usePokemonStore, useSaveFileStore } from '@/stores'
+import { selectActivePokemon, usePokemonStore, useSaveFileStore } from '@/stores'
 
 export const NatureTab: React.FC = () => {
-  const pokemon = usePokemonStore(s => s.partyList.find(p => p.id === s.activePokemonId))
+  const pokemon = usePokemonStore(selectActivePokemon)
   const activePokemonId = pokemon?.id ?? -1
   const setNature = usePokemonStore(s => s.setNature)
   const saveSessionId = useSaveFileStore(s => s.saveSessionId)
   const natureName = pokemon?.data.nature ?? 'Unknown'
+  const natureEditDisabledReason = pokemon?.data.natureEditDisabledReason
   const natureMods = pokemon?.data.natureModifiers
   const incIndex = natureMods?.increased ?? -1
   const decIndex = natureMods?.decreased ?? -1
@@ -26,7 +27,7 @@ export const NatureTab: React.FC = () => {
   }, [activePokemonId, saveSessionId])
 
   function handleSelectCounterpart(index: number) {
-    if (!pokemon || !natureMods) return
+    if (!pokemon || !natureMods || natureEditDisabledReason) return
     if (index === 0) return // HP unaffected by nature
     if (chooseMode === 'raise') {
       const newNature = findNatureForEffects(index, decIndex >= 0 ? decIndex : 1)
@@ -86,17 +87,27 @@ export const NatureTab: React.FC = () => {
         <ScrollableContainer className="absolute inset-0 px-4 pt-3 pb-4 overflow-y-auto custom-scrollbar">
           <div className="flex flex-col gap-3">
             <div className="text-foreground">
-              {pokemon ? <PokemonNatureCombobox value={pokemon.data.nature} onChange={nature => setNature(pokemon.id, nature)} asText triggerClassName="font-pixel text-xl text-foreground" /> : <Skeleton.Text className="font-pixel text-xl">{natureName}</Skeleton.Text>}
+              {pokemon ? (
+                <PokemonNatureCombobox value={pokemon.data.nature} onChange={nature => setNature(pokemon.id, nature)} disabled={!!natureEditDisabledReason} asText triggerClassName="font-pixel text-xl text-foreground disabled:cursor-default" />
+              ) : (
+                <Skeleton.Text className="font-pixel text-xl">{natureName}</Skeleton.Text>
+              )}
             </div>
+            {natureEditDisabledReason && (
+              <p className="text-xs leading-relaxed text-muted-foreground" role="note">
+                {natureEditDisabledReason}
+              </p>
+            )}
 
             <div className="flex flex-wrap items-center gap-2">
               {incIndex >= 0 && (
                 <button
                   type="button"
+                  disabled={!!natureEditDisabledReason}
                   onClick={() => setChooseMode(prev => (prev === 'raise' ? null : 'raise'))}
                   title="Click to change raised stat"
                   aria-pressed={chooseMode === 'raise'}
-                  className={`inline-flex items-center gap-1 rounded-md border dark:border-emerald-700/60 border-emerald-300 dark:bg-emerald-900/30 bg-emerald-100 dark:text-emerald-300 text-emerald-800 px-2 py-1 text-xs transition-all duration-150 ease-out cursor-pointer hover:ring-1 hover:dark:ring-emerald-300/40 hover:ring-emerald-400/40 ${
+                  className={`inline-flex items-center gap-1 rounded-md border dark:border-emerald-700/60 border-emerald-300 dark:bg-emerald-900/30 bg-emerald-100 dark:text-emerald-300 text-emerald-800 px-2 py-1 text-xs transition-[color,background-color,border-color,box-shadow] duration-150 ease-out cursor-pointer hover:ring-1 hover:dark:ring-emerald-300/40 hover:ring-emerald-400/40 ${
                     chooseMode === 'raise' ? 'ring-2 ring-emerald-400/60 hover:ring-2 hover:ring-emerald-400/60 animate-glow-emerald' : ''
                   }`}
                 >
@@ -107,10 +118,11 @@ export const NatureTab: React.FC = () => {
               {decIndex >= 0 && (
                 <button
                   type="button"
+                  disabled={!!natureEditDisabledReason}
                   onClick={() => setChooseMode(prev => (prev === 'lower' ? null : 'lower'))}
                   title="Click to change lowered stat"
                   aria-pressed={chooseMode === 'lower'}
-                  className={`inline-flex items-center gap-1 rounded-md border dark:border-rose-700/60 border-rose-300 dark:bg-rose-900/30 bg-rose-100 dark:text-rose-300 text-rose-800 px-2 py-1 text-xs transition-all duration-150 ease-out cursor-pointer hover:ring-1 hover:dark:ring-rose-300/40 hover:ring-rose-400/40 ${
+                  className={`inline-flex items-center gap-1 rounded-md border dark:border-rose-700/60 border-rose-300 dark:bg-rose-900/30 bg-rose-100 dark:text-rose-300 text-rose-800 px-2 py-1 text-xs transition-[color,background-color,border-color,box-shadow] duration-150 ease-out cursor-pointer hover:ring-1 hover:dark:ring-rose-300/40 hover:ring-rose-400/40 ${
                     chooseMode === 'lower' ? 'ring-2 ring-rose-400/60 hover:ring-2 hover:ring-rose-400/60 animate-glow-rose' : ''
                   }`}
                 >
@@ -132,22 +144,22 @@ export const NatureTab: React.FC = () => {
                 {statAbbreviations.map((abbr, i) => {
                   const isUp = incIndex === i
                   const isDown = decIndex === i
-                  const base = 'relative px-2 py-1 rounded-md border text-xs leading-none transition-[padding] duration-200 ease-out'
+                  const base = 'relative px-2 py-1 rounded-md border text-xs leading-none transition-[padding,color,background-color,border-color,box-shadow,opacity] duration-200 ease-out'
                   let color = 'bg-card/50 border text-muted-foreground'
                   if (isUp) color = 'dark:bg-emerald-900/30 bg-emerald-100 dark:border-emerald-700/60 border-emerald-300 dark:text-emerald-300 text-emerald-800'
                   else if (isDown) color = 'dark:bg-rose-900/30 bg-rose-100 dark:border-rose-700/60 border-rose-300 dark:text-rose-300 text-rose-800'
 
                   let interactive = false
-                  if (chooseMode === 'raise') interactive = i !== 0 && i !== decIndex
-                  if (chooseMode === 'lower') interactive = i !== 0 && i !== incIndex
+                  if (chooseMode === 'raise') interactive = !natureEditDisabledReason && i !== 0 && i !== decIndex
+                  if (chooseMode === 'lower') interactive = !natureEditDisabledReason && i !== 0 && i !== incIndex
 
                   let ringColor = 'hover:ring-ring/30'
                   if (chooseMode === 'raise') ringColor = 'hover:ring-emerald-300/40'
                   else if (chooseMode === 'lower') ringColor = 'hover:ring-rose-300/40'
 
-                  let interactiveCls = 'transition-all duration-150 ease-out'
+                  let interactiveCls = 'duration-150 ease-out'
                   if (chooseMode) {
-                    interactiveCls = interactive ? `cursor-pointer hover:ring-1 ${ringColor} transition-all duration-150 ease-out` : 'opacity-40 cursor-not-allowed'
+                    interactiveCls = interactive ? `cursor-pointer hover:ring-1 ${ringColor} duration-150 ease-out` : 'opacity-40 cursor-not-allowed'
                   }
 
                   const preview = hoveredStat === i ? getPreviewDelta(i) : null

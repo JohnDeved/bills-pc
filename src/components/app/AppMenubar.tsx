@@ -1,4 +1,4 @@
-import { Copy, ExternalLinkIcon } from 'lucide-react'
+import { ArrowRightLeft, Copy, ExternalLinkIcon } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { toast } from 'sonner'
 import { triggerPWAInstall } from '@/components/common/PWAInstallPrompt'
@@ -13,11 +13,13 @@ import { hasFsPermissions } from '@/types/fs'
 
 interface AppMenubarProps {
   onRequestOpenFile: () => void
+  onTransfer: () => void
+  transferDisabled?: boolean
   canSaveAs: boolean
   commitHash: string
 }
 
-export const AppMenubar: React.FC<AppMenubarProps> = ({ onRequestOpenFile, canSaveAs, commitHash }) => {
+export const AppMenubar: React.FC<AppMenubarProps> = ({ onRequestOpenFile, onTransfer, transferDisabled = false, canSaveAs, commitHash }) => {
   const [aboutOpen, setAboutOpen] = useState(false)
   const shaderEnabled = useSettingsStore(s => s.shaderEnabled)
   const setShaderEnabled = useSettingsStore(s => s.setShaderEnabled)
@@ -185,6 +187,11 @@ export const AppMenubar: React.FC<AppMenubarProps> = ({ onRequestOpenFile, canSa
               Save As
             </MenubarItem>
             <MenubarItem onClick={() => reconstructAndDownload()}>Download</MenubarItem>
+            <MenubarSeparator />
+            <MenubarItem onSelect={onTransfer} disabled={transferDisabled}>
+              <ArrowRightLeft className="size-4" aria-hidden />
+              Transfer Pokémon…
+            </MenubarItem>
             <MenubarSeparator />
             <MenubarSub>
               <MenubarSubTrigger>Party</MenubarSubTrigger>

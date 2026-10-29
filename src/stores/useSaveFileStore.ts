@@ -32,6 +32,14 @@ export interface SaveFileActions {
 
 export type SaveFileStore = SaveFileState & SaveFileActions
 
+// File reads may finish out of order (polling, file pickers, history or an
+// exported transfer). Only the newest request may replace the active editor.
+let parseRequestVersion = 0
+
+function cancelledParse(): DOMException {
+  return new DOMException('This save read was replaced by a newer request', 'AbortError')
+}
+
 export const useSaveFileStore = create<SaveFileStore>((set, get) => ({
   // Initial state
   saveData: null,
@@ -45,39 +53,39 @@ export const useSaveFileStore = create<SaveFileStore>((set, get) => ({
 
   // Actions
   parse: async (input: File | ArrayBuffer | FileSystemFileHandle | MgbaWebSocketClient, options?: { transient?: boolean }) => {
+    const requestVersion = ++parseRequestVersion
     const transient = Boolean(options?.transient)
-    // For non-transient parses (i.e., loading a new file), clear details and bump session
     if (!transient) {
-      try {
-        usePokemonStore.getState().clearPokemonDetails()
-        // Reset UI identity map when loading a brand new file
-        usePokemonStore.getState().resetUiIdentities()
-      } catch {}
-      set(state => ({
+      set({
         isLoading: true,
         error: null,
         lastParseFailed: false,
-        saveSessionId: state.saveSessionId + 1,
-      }))
+      })
     } else {
       // Keep UI steady; do not toggle isLoading or bump session
       set({ error: null, lastParseFailed: false })
     }
     try {
-      // Reuse existing parser instance to preserve fileHandle (for Save button)
-      let { parser } = get()
-      if (!parser) parser = new PokemonSaveParser()
+      // Only history navigation belongs to the existing file. A new open must
+      // never retain another file's write handle or mutate its parser on failure.
+      const parser = transient ? (get().parser ?? new PokemonSaveParser()) : new PokemonSaveParser()
 
       const saveData = await parser.parse(input)
-      set({
+      if (requestVersion !== parseRequestVersion) throw cancelledParse()
+      if (!transient) {
+        usePokemonStore.getState().clearPokemonDetails()
+        usePokemonStore.getState().resetUiIdentities()
+      }
+      set(state => ({
         saveData,
         isLoading: false,
         error: null,
         hasFile: true,
         lastParseFailed: false,
-        parser, // keep the same instance so fileHandle persists
+        parser,
+        saveSessionId: state.saveSessionId + (transient ? 0 : 1),
         lastUpdateTransient: transient,
-      })
+      }))
       // Opening a new file re-enables auto-restore behavior
       if (!transient) {
         try {
@@ -91,8 +99,10 @@ export const useSaveFileStore = create<SaveFileStore>((set, get) => ({
           }
         } catch {}
       }
+      if (requestVersion !== parseRequestVersion) throw cancelledParse()
       return saveData
     } catch (error) {
+      if (requestVersion !== parseRequestVersion) throw cancelledParse()
       const errorMessage = error instanceof Error ? error.message : 'Failed to parse save file'
       set({
         isLoading: false,
@@ -104,6 +114,7 @@ export const useSaveFileStore = create<SaveFileStore>((set, get) => ({
   },
 
   clearSaveFile: () => {
+    parseRequestVersion++
     try {
       usePokemonStore.getState().resetUiIdentities()
     } catch {}
@@ -127,7 +138,7 @@ export const useSaveFileStore = create<SaveFileStore>((set, get) => ({
     }
 
     // Use the same parser instance
-    const newSave = parser.reconstructSaveFile(saveData.party_pokemon)
+    const newSave = parser.reconstructSaveFile(saveData.party_pokemon, saveData.boxes)
     const blob = new Blob([newSave], { type: 'application/octet-stream' })
     const defaultFileName = parser.saveFileName ?? 'pokemon_save.sav'
 

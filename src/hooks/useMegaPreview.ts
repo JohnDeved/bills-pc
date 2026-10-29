@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { usePokemonStore, useSaveFileStore } from '@/stores'
+import { selectActivePokemon, usePokemonStore, useSaveFileStore } from '@/stores'
 import type { z } from 'zod'
 import type { PokeAPI } from 'pokeapi-types/dist/index'
 import { PokemonTypeSchema, type PokemonType } from '@/types'
@@ -89,7 +89,7 @@ function slugToShowdownSpriteName(slug: string): string {
 // Read ability effect text from PokeAPI.Ability (fallback)
 
 export function useMegaPreview() {
-  const pokemon = usePokemonStore(s => s.partyList.find(p => p.id === s.activePokemonId))
+  const pokemon = usePokemonStore(selectActivePokemon)
   const activePokemonId = usePokemonStore(s => s.activePokemonId)
   const megaState = usePokemonStore(s => s.megaPreview[activePokemonId])
   const setMegaPreviewEnabled = usePokemonStore(s => s.setMegaPreviewEnabled)

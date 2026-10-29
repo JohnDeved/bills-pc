@@ -52,7 +52,7 @@ function getCurrentSnapshot(idsBySlotOverride?: number[]): HistorySnapshot | nul
   const { saveData, parser } = useSaveFileStore.getState()
   if (!saveData || !parser) return null
   try {
-    const bytes = parser.reconstructSaveFile(saveData.party_pokemon)
+    const bytes = parser.reconstructSaveFile(saveData.party_pokemon, saveData.boxes)
     const idsBySlot = idsBySlotOverride ?? usePokemonStore.getState().partyList.map(p => p.id)
     return { bytes, idsBySlot }
   } catch {
@@ -80,7 +80,10 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
   queueSnapshot: (delayMs = 350, idsBySlotOverride?: number[]) => {
     const state = get()
     if (state.isApplying) return
-    const snap = getCurrentSnapshot(idsBySlotOverride)
+    // Keep the state before the first edit for the whole debounced gesture.
+    // Later slider events only extend the timer; replacing this would lose
+    // the original Undo target and retain an intermediate edited value.
+    const snap = state.queuedSnapshot ?? getCurrentSnapshot(idsBySlotOverride)
     if (!snap) return
     if (state.queueTimer) {
       clearTimeout(state.queueTimer)
@@ -105,12 +108,8 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
       })
     }, delayMs)
 
-    if (state.queuedSnapshot && areSnapshotsEqual(state.queuedSnapshot, snap)) {
-      set({ queueTimer: timer })
-      return
-    }
-
-    set({ queuedSnapshot: snap, queueTimer: timer })
+    // A new edit invalidates Redo immediately, before the debounce expires.
+    set({ queuedSnapshot: snap, queueTimer: timer, future: [] })
   },
 
   initFromCurrent: () => {
@@ -154,6 +153,11 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
         usePokemonStore.getState().setPendingIdsBySlot(previous.idsBySlot)
       } catch {}
       await parse(previous.bytes.buffer.slice(previous.bytes.byteOffset, previous.bytes.byteOffset + previous.bytes.byteLength), { transient: true })
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === 'AbortError')) throw error
+      // A newer file won the parse race. History must follow that file, not
+      // retain snapshots which could later restore the previous save into it.
+      get().initFromCurrent()
     } finally {
       set({ isApplying: false })
     }
@@ -185,6 +189,9 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
         usePokemonStore.getState().setPendingIdsBySlot(next.idsBySlot)
       } catch {}
       await parse(next.bytes.buffer.slice(next.bytes.byteOffset, next.bytes.byteOffset + next.bytes.byteLength), { transient: true })
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === 'AbortError')) throw error
+      get().initFromCurrent()
     } finally {
       set({ isApplying: false })
     }
@@ -213,6 +220,9 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
       await parse(initial.bytes.buffer.slice(initial.bytes.byteOffset, initial.bytes.byteOffset + initial.bytes.byteLength), { transient: true })
       // After reset, clear history to reflect fresh baseline
       set(() => ({ past: [], future: [] }))
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === 'AbortError')) throw error
+      get().initFromCurrent()
     } finally {
       set({ isApplying: false })
     }
@@ -220,7 +230,7 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
 }))
 
 export function canUndoSelector(s: HistoryStore): boolean {
-  return s.past.length > 0 && !s.isApplying
+  return (s.past.length > 0 || s.queuedSnapshot !== null) && !s.isApplying
 }
 
 export function canRedoSelector(s: HistoryStore): boolean {
@@ -228,5 +238,5 @@ export function canRedoSelector(s: HistoryStore): boolean {
 }
 
 export function hasEditsSelector(s: HistoryStore): boolean {
-  return s.past.length > 0 && !s.isApplying
+  return canUndoSelector(s)
 }

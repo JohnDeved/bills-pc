@@ -142,7 +142,7 @@ describe('Pokemon Save Parser - Unit Tests', () => {
 
       try {
         const result = await slot2Parser.parse(mockBuffer)
-        expect(result.active_slot).toBe(14) // Slot 2 starts at index 14
+        expect(result.active_slot).toBe(16) // Quetzal's second slot starts after 16 sectors
       } catch (error) {
         // Expected to fail with mock data, but the slot logic should be tested
         expect(error).toBeDefined()

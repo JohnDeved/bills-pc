@@ -3,7 +3,7 @@
  * TypeScript port of pokemon_save_parser.py with modern browser-compatible features
  */
 
-import { type GameConfig, type PlayTimeData, type SaveData, type SectorInfo, VANILLA_EMERALD_SIGNATURE } from './types'
+import { type GameConfig, type PlayTimeData, type PokemonBox, type PokemonStorage, type SaveData, type SectorInfo, VANILLA_EMERALD_SIGNATURE } from './types'
 
 import { MgbaWebSocketClient } from '../../mgba/websocket-client'
 import { GameConfigRegistry } from '../games'
@@ -44,6 +44,8 @@ export class PokemonSaveParser {
   private readonly sectorMap = new Map<number, number>()
   private readonly forcedSlot: 1 | 2 | undefined
   private config: GameConfig | null = null
+  private explicitConfig: boolean
+  private parsedBoxes: readonly PokemonBox[] = []
   public saveFileName: string | null = null
   public fileHandle: FileSystemFileHandle | null = null
 
@@ -58,6 +60,7 @@ export class PokemonSaveParser {
   constructor(forcedSlot?: 1 | 2, gameConfig?: GameConfig) {
     this.forcedSlot = forcedSlot
     this.config = gameConfig ?? null
+    this.explicitConfig = gameConfig !== undefined
   }
 
   /**
@@ -85,11 +88,10 @@ export class PokemonSaveParser {
     if (!items) return null
     const ids = new Set<number>()
     for (const entry of items.values()) {
-      if (entry.id != null) ids.add(entry.id)
+      if (entry.id !== null && entry.id !== undefined) ids.add(entry.id)
     }
     return ids
   }
-
 
   /**
    * Load input data from a File, ArrayBuffer, or WebSocket connection
@@ -99,6 +101,7 @@ export class PokemonSaveParser {
     try {
       // Always clear sectorMap before loading new data to avoid stale state
       this.sectorMap.clear()
+      this.parsedBoxes = []
 
       // Check if input is a WebSocket client for memory mode using proper instanceof check
       if (input instanceof MgbaWebSocketClient) {
@@ -145,7 +148,7 @@ export class PokemonSaveParser {
       this.saveData = new Uint8Array(buffer)
 
       // Auto-detect config if not provided
-      if (!this.config) {
+      if (!this.explicitConfig) {
         this.config = GameConfigRegistry.detectGameConfig(this.saveData)
         if (!this.config) {
           throw new Error('Unable to detect game type from save file')
@@ -173,19 +176,20 @@ export class PokemonSaveParser {
     console.log(`Memory mode: Connected to game "${gameTitle}"`)
 
     // Auto-detect config based on game title using overloaded detectGameConfig method
-    if (!this.config) {
+    if (!this.explicitConfig) {
       this.config = GameConfigRegistry.detectGameConfig(gameTitle)
 
       if (!this.config) {
         throw new Error(`Unsupported game for memory parsing: "${gameTitle}". No compatible config found.`)
       }
-    } else {
+    } else if (this.config) {
       // Verify existing config can handle this game
       if (!this.config.canHandleMemory?.(gameTitle)) {
         throw new Error(`Current config "${this.config.name}" cannot handle memory parsing for "${gameTitle}"`)
       }
     }
 
+    if (!this.config) throw new Error('Config not loaded')
     console.log(`Memory mode initialized for ${gameTitle} using config: ${this.config.name}`)
   }
 
@@ -211,12 +215,13 @@ export class PokemonSaveParser {
       const signature = view.getUint32(4, true)
       const counter = view.getUint32(8, true)
 
-      if (signature !== VANILLA_EMERALD_SIGNATURE) {
+      if (signature !== (this.config.signature ?? VANILLA_EMERALD_SIGNATURE)) {
         return { id: sectorId, checksum, counter, valid: false }
       }
 
       const sectorStart = sectorIndex * this.config.saveLayout.sectorSize
-      const sectorData = this.saveData.slice(sectorStart, sectorStart + this.config.saveLayout.sectorDataSize)
+      const checksumSize = this.config.getSectorDataSize?.(sectorId) ?? this.config.saveLayout.sectorDataSize
+      const sectorData = this.saveData.slice(sectorStart, sectorStart + checksumSize)
 
       const calculatedChecksum = this.calculateSectorChecksum(sectorData)
       const valid = calculatedChecksum === checksum
@@ -231,65 +236,40 @@ export class PokemonSaveParser {
    * Determine which save slot is active based on sector counters
    */
   private determineActiveSlot(): void {
-    if (!this.config) {
-      throw new Error('Config not loaded')
+    if (!this.config) throw new Error('Config not loaded')
+    const count = this.config.saveLayout.slotsPerSave
+    const readSlot = (start: number) => {
+      const infos = Array.from({ length: count }, (_, index) => this.getSectorInfo(start + index))
+      const { counter } = infos[0]!
+      const complete = infos.every(info => info.valid && info.id >= 0 && info.id < count && info.counter === counter) && new Set(infos.map(info => info.id)).size === count
+      return { start, counter, complete }
     }
-
+    const slots = [readSlot(0), readSlot(count)]
     if (this.forcedSlot !== undefined) {
-      this.activeSlotStart = this.forcedSlot === 1 ? 0 : 14
+      const forced = slots[this.forcedSlot - 1]!
+      if (!forced.complete) throw new Error('Selected save slot is incomplete or has invalid checksums')
+      this.activeSlotStart = forced.start
       return
     }
-
-    const getCounterSum = (range: number[]): number => {
-      const infos = range.map(i => this.getSectorInfo(i))
-      const validInfos = infos.filter(info => info.valid)
-      const sum = validInfos.reduce((sum, info) => sum + info.counter, 0)
-      return sum
+    const valid = slots.filter(slot => slot.complete)
+    if (valid.length === 0) throw new Error('No complete save slot with valid checksums found')
+    let selected = valid[0]!
+    for (const slot of valid.slice(1)) {
+      // Unsigned subtraction also handles the save counter wrapping from 0xffffffff to 0.
+      const difference = (slot.counter - selected.counter) >>> 0
+      if (difference > 0 && difference < 0x80000000) selected = slot
     }
-
-    this.activeSlotStart = this.config.determineActiveSlot?.(getCounterSum) ?? this.getDefaultActiveSlot(getCounterSum)
+    this.activeSlotStart = selected.start
   }
 
-  /**
-   * Default vanilla Emerald slot determination logic
-   */
-  private getDefaultActiveSlot(getCounterSum: (range: number[]) => number): number {
-    // Slot 1: sectors 0-13 (14 sectors)
-    // Slot 2: sectors 14-31 (18 sectors)
-    const slot1Range = Array.from({ length: 14 }, (_, i) => i)
-    const slot2Range = Array.from({ length: 18 }, (_, i) => i + 14)
-    const slot1Sum = getCounterSum(slot1Range)
-    const slot2Sum = getCounterSum(slot2Range)
-
-    return slot2Sum > slot1Sum ? 14 : 0
-  }
-
-  /**
-   * Build a mapping of sector IDs to physical sector indices
-   */
+  /** Map only the sections from the selected, complete save slot. */
   private buildSectorMap(): void {
-    if (!this.config) {
-      throw new Error('Config not loaded')
-    }
-
+    if (!this.config) throw new Error('Config not loaded')
     this.sectorMap.clear()
-
-    let sectorRange: number[]
-    if (this.forcedSlot !== undefined) {
-      if (this.forcedSlot === 1) {
-        sectorRange = Array.from({ length: 18 }, (_, i) => i)
-      } else {
-        sectorRange = Array.from({ length: 18 }, (_, i) => i + 14)
-      }
-    } else {
-      sectorRange = Array.from({ length: 18 }, (_, i) => i + this.activeSlotStart)
-    }
-
-    for (const i of sectorRange) {
-      const sectorInfo = this.getSectorInfo(i)
-      if (sectorInfo.valid) {
-        this.sectorMap.set(sectorInfo.id, i)
-      }
+    for (let index = 0; index < this.config.saveLayout.slotsPerSave; index++) {
+      const physical = this.activeSlotStart + index
+      const info = this.getSectorInfo(physical)
+      if (info.valid) this.sectorMap.set(info.id, physical)
     }
   }
 
@@ -335,6 +315,62 @@ export class PokemonSaveParser {
     const sectorIdx = this.sectorMap.get(0)!
     const startOffset = sectorIdx * this.config.saveLayout.sectorSize
     return this.saveData.slice(startOffset, startOffset + this.config.saveLayout.sectorDataSize)
+  }
+
+  private extractBoxStorage(): Uint8Array {
+    if (!this.saveData || !this.config) throw new Error('Save data and config not loaded')
+    const { sectorDataSize, sectorSize, slotsPerSave } = this.config.saveLayout
+    const storage = new Uint8Array((slotsPerSave - 5) * sectorDataSize)
+    for (let id = 5; id < slotsPerSave; id++) {
+      const physical = this.sectorMap.get(id)
+      if (physical === undefined) throw new Error(`PC storage section ${id} is missing`)
+      const offset = physical * sectorSize
+      storage.set(this.saveData.subarray(offset, offset + sectorDataSize), (id - 5) * sectorDataSize)
+    }
+    return storage
+  }
+
+  private parseBoxStorage(): PokemonStorage {
+    if (!this.config) throw new Error('Config not loaded')
+    const storage = this.extractBoxStorage()
+    if (this.config.parseBoxStorage) return this.config.parseBoxStorage(storage)
+
+    const boxes = Array.from({ length: 14 }, (_, boxIndex): PokemonBox => {
+      const nameOffset = 0x8344 + boxIndex * 9
+      const name = decodePokemonText(storage.subarray(nameOffset, nameOffset + 9)) || `BOX${boxIndex + 1}`
+      const pokemon = Array.from({ length: 30 }, (_, slot) => {
+        const offset = 4 + (boxIndex * 30 + slot) * 80
+        const bytes = storage.slice(offset, offset + 80)
+        if (bytes.every(byte => byte === 0)) return null
+        const mon = new PokemonBase(bytes, this.config!, true)
+        const species = mon.speciesId
+        const flags = bytes[0x13]! & 3 // Unencrypted isBadEgg / hasSpecies bits.
+        if (species === 0 && flags === 0) return null
+        if (species === 0 || !mon.hasValidEncryptionChecksum || (flags & 1) !== 0) {
+          throw new Error(`Box ${boxIndex + 1}, slot ${slot + 1} has a damaged Pokémon record. PC editing is disabled to preserve its data; party editing is available.`)
+        }
+        return mon
+      })
+      return { name, pokemon }
+    })
+    return { boxes, currentBox: Math.min(storage[0] ?? 0, boxes.length - 1) }
+  }
+
+  private writeBoxStorage(boxes: readonly PokemonBox[]): Uint8Array {
+    if (!this.config) throw new Error('Config not loaded')
+    const storage = this.extractBoxStorage()
+    if (this.config.writeBoxStorage) return this.config.writeBoxStorage(storage, boxes)
+    if (boxes.length !== 14 || boxes.some(box => box.pokemon.length !== 30)) throw new Error('Invalid PC box dimensions')
+    boxes.forEach((box, boxIndex) => {
+      box.pokemon.forEach((mon, slot) => {
+        // Editing only: preserve empty records, names, wallpapers, and every unrelated byte.
+        if (!mon) return
+        const bytes = mon.rawBytes
+        if (!mon.isBoxed || bytes.length !== 80) throw new Error('Invalid boxed Pokemon record')
+        storage.set(bytes, 4 + (boxIndex * 30 + slot) * 80)
+      })
+    })
+    return storage
   }
 
   /**
@@ -441,28 +477,11 @@ export class PokemonSaveParser {
    * Calculate checksum for a sector's data
    */
   private calculateSectorChecksum(sectorData: Uint8Array): number {
-    if (!this.config) {
-      throw new Error('Config not loaded')
-    }
-
-    if (sectorData.length < this.config.saveLayout.sectorDataSize) {
-      return 0
-    }
-
     let checksum = 0
-    const view = new DataView(sectorData.buffer, sectorData.byteOffset)
-
-    for (let i = 0; i < this.config.saveLayout.sectorDataSize; i += 4) {
-      if (i + 4 <= sectorData.length) {
-        try {
-          const value = view.getUint32(i, true)
-          checksum += value
-        } catch {
-          break
-        }
-      }
+    const view = new DataView(sectorData.buffer, sectorData.byteOffset, sectorData.byteLength)
+    for (let offset = 0; offset + 4 <= sectorData.length; offset += 4) {
+      checksum = (checksum + view.getUint32(offset, true)) >>> 0
     }
-
     return ((checksum >>> 16) + (checksum & 0xffff)) & 0xffff
   }
 
@@ -487,6 +506,7 @@ export class PokemonSaveParser {
     const updated = new Uint8Array(saveblock1)
     for (let i = 0; i < party.length; i++) {
       const offset = this.config.saveLayout.partyOffset + i * this.config.pokemonSize
+      if (party[i]!.isBoxed || party[i]!.rawBytes.length !== this.config.pokemonSize) throw new Error('Invalid party Pokemon record')
       // Use the most up-to-date raw data for each Pokemon
       updated.set(party[i]!.rawBytes, offset)
     }
@@ -524,9 +544,21 @@ export class PokemonSaveParser {
     const playerName = this.parsePlayerName(saveblock2Data)
     const partyPokemon = await this.parsePartyPokemon(saveblock1Data)
     const playTime = this.parsePlayTime(saveblock2Data)
+    let storage: PokemonStorage | undefined
+    let boxError: string | undefined
+    try {
+      storage = this.parseBoxStorage()
+      this.parsedBoxes = storage.boxes
+    } catch (error) {
+      // An unknown hack storage variant must not prevent existing party edits, or be rewritten.
+      boxError = error instanceof Error ? error.message : 'PC storage format is not supported'
+    }
 
     return {
       party_pokemon: partyPokemon,
+      boxes: storage?.boxes,
+      current_box: storage?.currentBox,
+      box_error: boxError,
       player_name: playerName,
       play_time: playTime,
       active_slot: this.activeSlotStart,
@@ -547,6 +579,7 @@ export class PokemonSaveParser {
    */
   setGameConfig(config: GameConfig): void {
     this.config = config
+    this.explicitConfig = true
   }
 
   /**
@@ -562,7 +595,7 @@ export class PokemonSaveParser {
    *
    * @param partyPokemon Array of PokemonInstance to update party in SaveBlock1
    */
-  reconstructSaveFile(partyPokemon: readonly PokemonBase[]): Uint8Array {
+  reconstructSaveFile(partyPokemon: readonly PokemonBase[], boxes: readonly PokemonBox[] = this.parsedBoxes): Uint8Array {
     if (!this.saveData || !this.config) throw new Error('Save data and config not loaded')
 
     const baseSaveblock1 = this.extractSaveblock1()
@@ -573,12 +606,14 @@ export class PokemonSaveParser {
     const writeSector = (sectorId: number, data: Uint8Array) => {
       if (!this.config) throw new Error('Game configuration not loaded during sector reconstruction')
 
-      if (!this.sectorMap.has(sectorId)) return
+      if (!this.sectorMap.has(sectorId)) throw new Error(`Save section ${sectorId} is missing`)
       const sectorIdx = this.sectorMap.get(sectorId)!
       const startOffset = sectorIdx * this.config.saveLayout.sectorSize
+      if (data.every((byte, index) => byte === newSave[startOffset + index])) return
       newSave.set(data, startOffset)
       // Recalculate checksum for this sector
-      const checksum = this.calculateSectorChecksum(data)
+      const checksumSize = this.config.getSectorDataSize?.(sectorId) ?? this.config.saveLayout.sectorDataSize
+      const checksum = this.calculateSectorChecksum(newSave.subarray(startOffset, startOffset + checksumSize))
       const footerOffset = startOffset + this.config.saveLayout.sectorSize - 12
       const view = new DataView(newSave.buffer, newSave.byteOffset + footerOffset, 12)
       view.setUint16(2, checksum, true)
@@ -589,6 +624,15 @@ export class PokemonSaveParser {
       const chunkOffset = (sectorId - 1) * this.config.saveLayout.sectorDataSize
       const chunk = updatedSaveblock1.slice(chunkOffset, chunkOffset + this.config.saveLayout.sectorDataSize)
       writeSector(sectorId, chunk)
+    }
+    if (boxes.length > 0) {
+      const storage = this.writeBoxStorage(boxes)
+      const { sectorDataSize, slotsPerSave } = this.config.saveLayout
+      if (storage.length !== (slotsPerSave - 5) * sectorDataSize) throw new Error('Invalid PC storage size')
+      for (let sectorId = 5; sectorId < slotsPerSave; sectorId++) {
+        const offset = (sectorId - 5) * sectorDataSize
+        writeSector(sectorId, storage.subarray(offset, offset + sectorDataSize))
+      }
     }
     return newSave
   }

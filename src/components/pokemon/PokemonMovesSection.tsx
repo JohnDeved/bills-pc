@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Skeleton } from '@/components/common'
 import { PokemonMoveButton } from '@/components/pokemon/PokemonMoveButton'
 import { PokemonMovePlaceholder } from '@/components/pokemon/PokemonMovePlaceholder'
+import { PokemonMoveSummary } from '@/components/pokemon/PokemonMoveSummary'
 import { useActivePokemonLoading } from '@/hooks'
-import { usePokemonStore } from '@/stores'
+import { selectActivePokemon, usePokemonStore } from '@/stores'
 import type { MoveWithDetails } from '@/types'
 
 const EMPTY_MOVE: MoveWithDetails = {
@@ -17,7 +18,7 @@ const EMPTY_MOVE: MoveWithDetails = {
 }
 
 export const PokemonMovesSection: React.FC = () => {
-  const pokemon = usePokemonStore(s => s.partyList.find(p => p.id === s.activePokemonId))
+  const pokemon = usePokemonStore(selectActivePokemon)
   const activePokemonId = pokemon?.id ?? -1
   const isLoading = useActivePokemonLoading()
   const moves = pokemon?.details?.moves ?? []
@@ -36,25 +37,16 @@ export const PokemonMovesSection: React.FC = () => {
           if (!isLoading && move.id === 0) {
             // Show placeholder for empty slot or move id 0
             return (
-              <div key={i} className="group cursor-default">
+              <div key={i} className="@container/move group min-w-0 cursor-default">
                 <PokemonMovePlaceholder />
               </div>
             )
           }
           return (
-            <div key={i} className="group">
+            <div key={i} className="@container/move group min-w-0">
               {isLoading ? (
-                <div className="w-full text-left p-3 rounded-lg bg-card/50 group-hover:bg-card/70 backdrop-blur-sm border shadow-lg transition-all duration-200">
-                  <div className="flex items-center justify-between">
-                    <Skeleton.Text className="text-sm text-foreground">Move Name</Skeleton.Text>
-                  </div>
-                  <div className="flex items-center justify-between mt-2">
-                    <div className="inline-flex items-center justify-center gap-1.5 rounded-md text-foreground bg-gradient-to-br px-2 py-1 text-[8px] shadow-md">
-                      <Skeleton.Image className="w-3 h-3" />
-                      <Skeleton.Text>TYPE</Skeleton.Text>
-                    </div>
-                    <Skeleton.Text className="text-xs text-muted-foreground">25/25</Skeleton.Text>
-                  </div>
+                <div className="h-full w-full text-left p-3 rounded-lg bg-card/50 group-hover:bg-card/70 backdrop-blur-sm border shadow-lg transition-colors duration-200">
+                  <PokemonMoveSummary name="Move Name" type="UNKNOWN" pp="25/25" loading />
                 </div>
               ) : (
                 <PokemonMoveButton move={move} isExpanded={expandedMoveIndex === i} opensUpward={i < totalSlots / 2} onHoverStart={() => setExpandedMoveIndex(i)} onHoverEnd={() => setExpandedMoveIndex(null)} />

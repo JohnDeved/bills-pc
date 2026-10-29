@@ -18,6 +18,7 @@ export class VanillaConfig extends GameConfigBase implements GameConfig {
   readonly name = 'Pokemon Emerald (Vanilla)'
 
   readonly pokemonSize = 100
+  readonly boxPokemonSize = 80
   readonly maxPartySize = 6
 
   // Vanilla Emerald does not support Mega Evolution
@@ -25,6 +26,14 @@ export class VanillaConfig extends GameConfigBase implements GameConfig {
 
   // Use default save layout with no overrides
   readonly saveLayout = VANILLA_SAVE_LAYOUT
+
+  getSectorDataSize(sectorId: number): number {
+    // sizeof(SaveBlock2), final SaveBlock1 chunk, final PokemonStorage chunk.
+    if (sectorId === 0) return 0xf2c
+    if (sectorId === 4) return 0xf08
+    if (sectorId === 13) return 0x7d0
+    return this.saveLayout.sectorDataSize
+  }
 
   // Load mapping data for translating internal IDs to external IDs using utility function
   readonly mappings = {

@@ -60,7 +60,7 @@ describe('useHistoryStore snapshots', () => {
     expect(useHistoryStore.getState().past).toHaveLength(1)
   })
 
-  it('coalesces queued snapshots to the latest state before flush', () => {
+  it('keeps the first queued snapshot as the undo target for the whole gesture', () => {
     let seed = 1
     useSaveFileStore.setState({
       parser: {
@@ -76,13 +76,13 @@ describe('useHistoryStore snapshots', () => {
     history.queueSnapshot(200, [1])
     history.queueSnapshot(200, [2])
 
-    expect(useHistoryStore.getState().queuedSnapshot?.idsBySlot).toEqual([2])
+    expect(useHistoryStore.getState().queuedSnapshot?.idsBySlot).toEqual([1])
 
     vi.advanceTimersByTime(200)
 
     const { past } = useHistoryStore.getState()
     expect(past).toHaveLength(1)
-    expect(past[0]?.idsBySlot).toEqual([2])
-    expect([...(past[0]?.bytes ?? [])]).toEqual([2])
+    expect(past[0]?.idsBySlot).toEqual([1])
+    expect([...(past[0]?.bytes ?? [])]).toEqual([1])
   })
 })

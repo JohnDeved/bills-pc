@@ -1,12 +1,12 @@
 import { ScrollableContainer, Skeleton } from '@/components/common'
 import { getItemSpriteUrl } from '@/lib/parser/core/utils'
-import { usePokemonStore } from '@/stores'
+import { selectActivePokemon, usePokemonStore } from '@/stores'
 import { PokemonItemCombobox } from '@/components/pokemon/PokemonItemCombobox'
 import { useQueryClient } from '@tanstack/react-query'
 import { useActiveItemDetails } from '@/hooks'
 
 export const ItemTab: React.FC = () => {
-  const pokemon = usePokemonStore(s => s.partyList.find(p => p.id === s.activePokemonId))
+  const pokemon = usePokemonStore(selectActivePokemon)
   const setItemId = usePokemonStore(s => s.setItemId)
   const itemIdName = pokemon?.data.itemIdName
   const { itemDetails, isFetching, queryKey } = useActiveItemDetails()

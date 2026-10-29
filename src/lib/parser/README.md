@@ -9,6 +9,7 @@ A modern TypeScript library for parsing and editing Pokemon save files with depe
 - **Auto-detection** - Automatically detects game type from save file characteristics
 - **Dependency injection** - Clean separation of game-specific logic and data
 - **Real-time editing** - Parse, modify, and reconstruct save files
+- **PC storage** - Edit Emerald box records and Quetzal's packed PC layouts while preserving unrelated save bytes
 
 ## Quick Start
 
@@ -42,7 +43,36 @@ console.log(`IVs: ${firstPokemon.ivs}`)
 ## Supported Games
 
 - **Pokemon Quetzal** - Full support with unencrypted IVs and custom shiny logic
-- **Pokemon Emerald (Vanilla)** - Basic support with encrypted data handling
+- **Pokemon Emerald (Vanilla)** - Party and PC support with encrypted data handling
+
+### Box Pokémon
+
+File parses return optional `boxes` and `current_box` fields. Each box has a
+`name` and 30 `pokemon` slots containing a `PokemonBase` or `null`. Box Pokémon
+expose `isBoxed`; their derived battle stats are never written into the next
+record. Emerald box levels can be hydrated with `setBoxLevel()` after looking up
+the species' growth curve. Quetzal box levels use its common Medium Slow curve.
+
+```typescript
+const parser = new PokemonSaveParser()
+const save = await parser.parse(file)
+const pokemon = save.boxes?.[0]?.pokemon[0]
+if (pokemon) {
+  pokemon.setIvs([31, 31, 31, 31, 31, 31])
+  const edited = parser.reconstructSaveFile(save.party_pokemon, save.boxes)
+}
+```
+
+`reconstructSaveFile(party)` remains supported and includes the parser's current
+box objects. The optional second argument makes box persistence explicit.
+`box_error` explains unavailable box support without preventing party editing;
+unrecognized PC bytes remain untouched. Memory-mode parses omit boxes.
+
+Emerald nature changes select a personality value that preserves gender,
+shininess, Unown's form, and Wurmple's evolution branch. Check
+`natureEditDisabledReason` before offering nature edits: Emerald Spinda is blocked
+to preserve its personality-dependent spot pattern. Invalid Emerald PC Pokémon
+checksums or Bad Egg flags produce `box_error`; their original bytes are preserved.
 
 ## Adding Game Support
 

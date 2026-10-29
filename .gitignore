@@ -45,3 +45,4 @@ docker-compose.override.yml
 
 
 playwright-report
+test-results/
